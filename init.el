@@ -35,7 +35,7 @@
      ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (monokai-theme sublime-themes whole-line-or-region autopair highlight-parentheses flycheck-irony flycheck-rtags cmake-ide helm-rtags rtags auto-complete company-irony-c-headers company-irony irony yasnippet list-packages-ext helm cmake-mode dart-mode atom-one-dark-theme)))
+    (magit monokai-theme sublime-themes whole-line-or-region autopair highlight-parentheses flycheck-irony flycheck-rtags cmake-ide helm-rtags rtags auto-complete company-irony-c-headers company-irony irony yasnippet list-packages-ext helm cmake-mode dart-mode atom-one-dark-theme)))
  '(safe-local-variable-values (quote ((cmake-ide-build-dir . "./build"))))
  '(sentence-end-base "[.?!…‽][]\"'”’)}]*")
  '(sentence-end-double-space nil)
@@ -227,9 +227,12 @@
 ;;   if there's not, it will kill current line (including newline sign)
 (add-hook 'after-init-hook #'whole-line-or-region-mode)
 
+;; MAGIT
+(global-set-key (kbd "C-x g") 'magit-status)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background nil)))))
