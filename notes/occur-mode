@@ -1,0 +1,23 @@
+Occur mode (something like grep in current buffer):
+      M-s o   	Occur mode
+      M-s o	Activate occur on current search string inside Isearch
+      
+If you want to view lines before and after matching one you need to customize
+   list-matching-lines-default-context-lines variable
+
+	Occur mode keybindings:
+	M-n , M-p	Go to next and previous occurrence
+	< , >		Go to beginning and end of buffer
+	g   		Revert the buffer, refreshing the search results
+	q		Quits occur mode
+	e		Switches to occur edit mode
+	C-c C-c		Exits occur edit mode and applies changse
+
+	M-g M-n	    Jump to next “error”
+	M-g M-p	    Jump to previous “error”
+	# Note: it's called an error because its main purpose is to cycle
+	#       through compile errors, but it works in the occur buffer
+	
+	Multi-occur:
+	M-x multi-occur				For on multiple buffers
+	M-x multi-occur-in-matching-buffers	Matches buffers by regexp

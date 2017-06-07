@@ -1,0 +1,11 @@
+C-h i		info (tutorials, books etc.)
+C-h i m		concrete manual by name
+C-h F 		info about concrete command
+C-h a		apropos-command (searching for commands)
+C-h d		apropos-documentation (searching for documentation of something)
+M-x apropos	apropos (searching for everything)
+
+C-h m		describe-mode (info about active modes)
+C-h f		describe-function (info about function)
+C-h v		describe-variable
+C-h k		describe-key (info about key binding)

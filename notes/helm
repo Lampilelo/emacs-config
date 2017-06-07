@@ -1,0 +1,25 @@
+C-x c			Prefix for all Helm completion commands
+
+C-h a RET ^helm-	Display all Helm's commands
+M-x helm-apropos	Display help (commands, variables, functions)
+C-x c C-h		Show all Helm's keybindings
+
+Some of the general keybindings:
+RET  	    	Primary action
+C-e		Secondary action
+C-j		Tertiary action
+TAB		Switch to action selector
+C-n , C-p	Next and previous candidate
+M-< , M->	Beginning and end of completion list
+C-g   		Exit Helm
+
+C-x c b		Resumes last Helm command
+C-x c /		Invokes the command line utility find on the active buffer’s current directory
+C-x c a		Completes M-x apropos results
+C-x c m		Completion engine for the man page program
+C-x c i		Lists completions sourced from M-x imenu or Semantic
+C-x c r		Interactive regular expression builder
+C-x c h r	Search Emacs topics in M-x info
+C-x c M-x	List completions sourced from M-x
+C-x c M-s o	Use Helm to match M-x occur patterns
+C-x c C-c g	Show matches from Google Suggest

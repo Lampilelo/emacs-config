@@ -1,0 +1,46 @@
+* company
+
+** company-mode
+Company mode is used to autocomplete things.
+
+I think it doesn't work with classes defined by user.
+
+Webpage: [[http://company-mode.github.io][company-mode]]
+
+** company-irony
+Irony plugin for company, that works on irony-server.
+It's for autocompletion in C and C++
+
+Git page: [[https://github.com/Sarcasm/company-irony][company-irony]]
+
+** company-irony-c-headers
+For headers completion.
+
+* yasnippet
+YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more.
+
+Check git page to download snippets as they are not included by default.
+
+Git page: [[https://github.com/joaotavora/yasnippet][yasnippet-git]]
+Documentation: [[http://joaotavora.github.io/yasnippet/][yasnippet-documentation]]
+
+* flycheck
+Flycheck checks syntax on the fly.
+
+I added hook for flycheck to c++-mode and c-mode
+
+* rtags
+To install check [[http://syamajala.github.io/c-ide.html][link]].
+
+For completion from the source tree and more!!!
+
+* cmake-ide
+Runs cmake when file in source tree is changed for rtags to update.
+
+For it to work you need a file in root of source tree named .dir-locals.el which contains defined cmake-ide-build-dir variable.
+
+#+BEGIN_EXAMPLE
+((nil . ((cmake-ide-build-dir . "./build"))))
+#+END_EXAMPLE
+
+Git page: [[https://github.com/atilaneves/cmake-ide][cmake-ide-git]]

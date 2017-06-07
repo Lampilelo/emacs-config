@@ -1,0 +1,5 @@
+Region modes:
+
+delete-selection-mode
+When the region is active and you type text into the buffer, Emacs will delete the selected text first.
+

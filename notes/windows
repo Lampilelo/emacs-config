@@ -1,0 +1,22 @@
+C-x 0	Delete active window
+C-x 1	Delete all other windows
+C-x 2	Split window below
+C-x 3	Split window right
+
+C-x o	Swich active window (Rebount it to M-o)
+
+
+Undo changes to windows arrangement
+M-x winner-mode		Enable winner-mode
+C-c <left>		Undo
+C-c <right>		Redo
+
+M-x customize-option RET winner-mode RET	Enable winner-mode permanently
+
+Operations on other window:
+C-x 4 C-f     	Finds a file in the other window
+C-x 4 d		Opens M-x dired in the other window
+C-x 4 C-o	Displays a buffer in the other window
+C-x 4 b		Switches the buffer in the other window and makes it the active window
+C-x 4 0		Kills the buffer and window
+C-x 4 C-h	Display commands

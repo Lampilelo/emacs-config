@@ -1,0 +1,15 @@
+Balanced expression motion:
+Jumping around the brackets
+
+C-M-f	       Jump through s-expression
+C-M-b	       Jump through s-expression backwards
+
+C-M-d	       Jump one level down
+C-M-u	       Jump one level up
+C-M-n	       Jump to next balanced expr at current nested level
+C-M-p	       Jump to previous -||-
+
+
+Jumping over functions/classes:
+C-M-a	     Move to beggining of defun
+C-M-e	     Move to end of defun

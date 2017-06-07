@@ -1,0 +1,149 @@
+* Killing
+
+| Key Binding        | Purpose                    |
+|--------------------+----------------------------|
+| C-d                | Delete character           |
+| <backspace>        | Delete previous character  |
+| M-d, C-<backspace> | Kill word (next, previous) |
+| C-k                | Kill rest of line          |
+| M-k                | Kill sentence              |
+| C-M-k              | Kill s-expression          |
+| C-S-<backspace>    | Kill current line          |
+
+For killing multiple words press for example: M-3 M-d
+The same applies to another commands, like: C-M-3 C-M-k
+
+| Key Binding | Kill Ring Purpose        | Clipboard |
+|-------------+--------------------------+-----------|
+| C-w         | Kill active region       | cut       |
+| M-w         | Copy to kill ring        | copy      |
+| C-M-w       | Append kill              |           |
+| C-y         | Yank last kill           | paste     |
+| M-y         | Cycle through kill ring, |           |
+|             | replacing yanked text    |           |
+
+** Killing lines
+C-S-<backspace> doesn't work in a terminal.
+We can modify C-w behavior to kill line if there is no active region.
+
+To do that, download package:
+M-x package-install RET whole-line-or-region RET
+And activate whole-line-or-region-mode
+
+* Yanking
+
+| Key Binding | Purpose                  | Clipboard |
+|-------------+--------------------------+-----------|
+| C-y         | Yank last kill           | paste     |
+| M-y         | Cycle through kill ring, |           |
+|             | replacing yanked text    |           |
+
+* Transposing
+
+| Key Binding              | Purpose                |
+|--------------------------+------------------------|
+| C-t                      | Transpose characters   |
+| M-t                      | Transpose words        |
+| C-M-t                    | Transpose s-expression |
+| C-x C-t                  | Transpose lines        |
+| M-x transpose-paragraphs | Transpose paragraphs   |
+| M-x transpose-sentence   | Transpose sentence     |
+
+* Filling & Commenting
+
+** Filling
+If you want for every line of your document not to exceed certain lenth, you should use filling.
+
+| Key Binding        | Purpose                           |
+|--------------------+-----------------------------------|
+| M-q                | Refills the paragraph point is in |
+| C-u M-q            | Refill paragraph and justify      |
+| C-x f              | Sets the fill column width        |
+| C-x .              | Sets the fill prefix              |
+| C-x ..             | Remove the fill prefix            |
+| M-x auto-fill-mode | Toggles auto-filling              |
+
+M-q is usefull when writing comments in code
+
+** Commenting
+
+| Key Binding     | Purpose                          |
+|-----------------+----------------------------------|
+| M-;             | Comment or uncoment DWIM         |
+|                 | (Do What I Mean)                 |
+| C-x C-;         | Comment or uncoment line         |
+| M-x comment-box | Comments the region but as a box |
+| M-j, C-M-j      | Inserts new line and continues   |
+|                 | with comment on a new line       |
+
+
+If active major mode does not designate comment variables you have to set them yourself:
+
+| Variable Name   | Purpose                                      |
+|-----------------+----------------------------------------------|
+| comment-style   | Style of comment to use                      |
+| comment-styles  | Association list of available comment styles |
+| comment-start   | Character(s) to mark start of the comment    |
+| comment-end     | Character(s) to mark end of the comment      |
+| comment-padding | Padding used (usually space) between comment |
+|                 | character(s) and the text                    |
+
+* Search & Replace
+
+| Key Binding        | Purpose                         |
+|--------------------+---------------------------------|
+| C-M-%              | Query regexp search and replace |
+| M-%                | Query search and replace        |
+| M-x replace-string | Search and replace              |
+| M-x replace-regexp | Regexp search and replace       | 
+
+In I-search:
+
+| Isearch Key Binding | Purpose                         |
+|---------------------+---------------------------------|
+| C-M-%               | Query regexp search and replace |
+| M-%                 | Query search and replace        | 
+
+If found:
+
+| Query Key Binding | Purpose                            |
+|-------------------+------------------------------------|
+| SPC, y            | Replaces one match, then continues |
+| .                 | Replaces one match, then exits     |
+| RET, q            | Exits without replacing match      |
+| !                 | Replaces all matches in buffer     |
+| ^                 | Moves point back to previous match |
+
+When replacing emacs preserves case, so it's useful with case folding.
+
+** Regular Expressions
+- In emacs regexp is working differently than everywhere else, so be wary. Some of characters are taken literally in emacs that need to be escaped in other places (i.e. |, (, ), {, }). To use their specific functions you need to escape them in emacs.
+- Look-ahead and look-behind are not working in emacs.
+- \d doesn't exist, so you have to use [0-9] or [:digit:].
+
+Emacs has some exclusive regexp features.
+They are described in Mastering Emacs starting on page [[docview:~/Books/Emacs/Mickey-Petersen-Mastering-Emacs-2015.pdf::189][189]].
+
+* Changing Case
+
+| Key Binding                | Purpose                   |
+|----------------------------+---------------------------|
+| C-x C-u                    | Uppercase the region      |
+| C-x C-l                    | Lowercase the region      |
+| M-x upcase-initials-region | Capitalizes the region    |
+|                            |                           |
+| M-c                        | Capitalizes the next word |
+| M-u                        | Uppercases the next word  |
+| M-l                        | Lowercases the next word  |
+
+* Counting Things
+
+| Command                     | Description                          |
+|-----------------------------+--------------------------------------|
+| M-x count-lines-region      | Counts number of lines in the region |
+| M-x count-matches           | Counts number of patterns that match |
+|                             | in a region                          |
+| M-x count-words             | Counts words, lines and chars in the |
+|                             | buffer                               |
+| M-x count-words-region, M-= | Counts words, lines and chars in the |
+|                             | region                               |

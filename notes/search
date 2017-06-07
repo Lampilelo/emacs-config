@@ -1,0 +1,18 @@
+To disable case folding (when you don't want automatic case sensitivity detection):
+   M-x customize-option case-fold-search RET
+
+C-w		Add word at point to search string
+C-M-y		Add character at point to search string
+M-s C-e		Add rest of line at point to search string
+C-y		Yank (“paste”) from clipboard to search string
+
+Changing current search behavior:
+M-s c	 	Toggles case-sensitivity
+M-s r		Toggles regular-expression mode
+M-s w		Toggles word mode
+M-s _		Toggles symbol mode (useful if you don't know or care if there is . or ->)
+M-s <SPC>	Toggles lax whitespace matching
+
+For grep-like search, check occur-mode note.
+For searching by index entries added by specific modes check imenu note.
+For more advanced stuff check helm

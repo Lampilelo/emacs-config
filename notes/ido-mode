@@ -1,0 +1,4 @@
+C-j	create new buffer with given name
+
+C-s	Previous choice while finding file
+C-r	Next choice while finding file

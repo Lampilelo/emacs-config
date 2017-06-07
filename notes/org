@@ -1,0 +1,11 @@
+C-c C-x D       org-shiftmetadown
+C-c C-x L       org-shiftmetaleft
+C-c C-x R       org-shiftmetaright
+C-c C-x U       org-shiftmetaup
+C-c C-x d       org-metadown
+C-c C-x l       org-metaleft
+C-c C-x m       org-meta-return
+C-c C-x r       org-metaright
+C-c C-x u       org-metaup
+
+To ensure these are on enable org-use-extra-keys option.
