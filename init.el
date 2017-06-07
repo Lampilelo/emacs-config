@@ -123,7 +123,7 @@
 
 ;set rtags bin dir and start rdm process
 (setq rtags-path "~/.emacs.d/rtags/build")
-(rtags-start-process-unless-running)
+;(rtags-start-process-unless-running)
 
 ;integration with helm
 (setq rtags-display-result-backend 'helm)
