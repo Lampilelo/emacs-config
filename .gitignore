@@ -7,3 +7,5 @@ ido.last
 irony/
 rtags/
 session.*
+notes/*.html
+notes/*.pdf
