@@ -188,6 +188,8 @@
 
 ;;================= END OF AUTO-COMPLETION =================
 
+;; Eldoc to show function interface in minibuffer
+(setq eldoc-documentation-function #'rtags-eldoc)
 
 ;; parentheses highlighting
 (require 'highlight-parentheses)
