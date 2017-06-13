@@ -35,7 +35,7 @@
      ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (magit monokai-theme sublime-themes whole-line-or-region autopair highlight-parentheses flycheck-irony flycheck-rtags cmake-ide helm-rtags rtags auto-complete company-irony-c-headers company-irony irony yasnippet list-packages-ext helm cmake-mode dart-mode atom-one-dark-theme)))
+    (smartparens which-key nyan-mode speed-type magit monokai-theme sublime-themes whole-line-or-region autopair highlight-parentheses flycheck-irony flycheck-rtags cmake-ide helm-rtags rtags auto-complete company-irony-c-headers company-irony irony yasnippet list-packages-ext helm cmake-mode dart-mode atom-one-dark-theme)))
  '(safe-local-variable-values (quote ((cmake-ide-build-dir . "./build"))))
  '(sentence-end-base "[.?!…‽][]\"'”’)}]*")
  '(sentence-end-double-space nil)
@@ -178,6 +178,17 @@
 ;; YASNIPPET
 (require 'yasnippet)
 (yas-global-mode 1)
+;; Add yasnippet support for all company backends
+(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend)    (member 'company-yasnippet backend)))
+  backend
+(append (if (consp backend) backend (list backend))
+        '(:with company-yasnippet))))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
 
 ;; activate automatic cmake for rtags completion
 (require 'cmake-ide)
@@ -189,12 +200,15 @@
 ;;================= END OF AUTO-COMPLETION =================
 
 ;; Eldoc to show function interface in minibuffer
-(setq eldoc-documentation-function #'rtags-eldoc)
+(defun my-eldoc-hook ()
+  (setq-local eldoc-documentation-function #'rtags-eldoc))
+(add-hook 'c-mode-common-hook #'my-eldoc-hook)
 
 ;; parentheses highlighting
 (require 'highlight-parentheses)
 
-; integrate autopair with highlight-parentheses-mode
+;; integrate autopair with highlight-parentheses-mode
+;; autopair actually isn't activated
 (require 'autopair)
 (add-hook 'highlight-parentheses-mode-hook
 	  '(lambda ()
@@ -208,6 +222,18 @@
 
 (add-hook 'c-mode-common-hook #'highlight-parentheses-mode)
 (add-hook 'emacs-lisp-mode-hook #'highlight-parentheses-mode)
+
+
+;; smartparens
+(require 'smartparens-config)
+(show-smartparens-global-mode +1)
+(smartparens-global-mode 1)
+;; when you press RET, the curly braces automatically
+;; add another newline
+(sp-with-modes '(c-mode c++-mode)
+  (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET")))
+  (sp-local-pair "/*" "*/" :post-handlers '((" | " "SPC")
+                                            ("* ||\n[i]" "RET"))))
 
 ;; org-mode
 (add-hook 'org-mode-hook #'visual-line-mode)
@@ -242,4 +268,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:background nil)))))
+
+;; org-mode source coloring
+;; Note 1: python-pygments needs to be installed
+(setq org-latex-listings 'minted)
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
 
