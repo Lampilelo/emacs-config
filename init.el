@@ -163,8 +163,12 @@
 ;; no delay for tab-completion
 (setq company-idle-delay 0)
 (require 'cc-mode)
-(define-key c-mode-map [(tab)] 'company-complete)
-(define-key c++-mode-map [(tab)] 'company-complete)
+;; (define-key c-mode-map [(tab)] 'company-complete)
+;; (define-key c++-mode-map [(tab)] 'company-complete)
+;; Define key for force search completion
+(define-key c-mode-map (kbd "C-'") 'company-complete)
+(define-key c++-mode-map (kbd "C-'") 'company-complete)
+
 
 (require 'company-irony-c-headers)
 (eval-after-load 'company
