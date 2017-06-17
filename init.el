@@ -299,3 +299,15 @@
  ;; Non-nil means display source file containing the main routine at startup
  gdb-show-main t
  )
+
+;; DOXYMACS
+;; It's not entirely functioning because it depends on:
+;;   W3 (emacs www browser)
+;;   tempo (some script, not shure what it does)
+;; Above packages are not installed!
+(add-to-list 'load-path "~/.emacs.d/doxymacs-1.8.0/build/lisp/")
+(require 'doxymacs)
+(add-hook 'c-mode-common-hook 'doxymacs-mode)
+(setq doxymacs-external-xml-parser-executable
+      "~/.emacs.d/doxymacs-1.8.0/build/c/doxymacs_parser")
+
