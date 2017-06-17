@@ -137,6 +137,12 @@
 ;; c-mode-common-hook is also called by c++-mode
 (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
 
+;; Rebind keys for finding symbols and references
+(define-key c-mode-map (kbd "C-.") 'rtags-find-symbol-at-point)
+(define-key c++-mode-map (kbd "C-.") 'rtags-find-symbol-at-point)
+(define-key c-mode-map (kbd "C-,") 'rtags-find-references-at-point)
+(define-key c++-mode-map (kbd "C-,") 'rtags-find-references-at-point)
+
 ;; IRONY
 
 ;; irony-mode
