@@ -9,3 +9,6 @@ rtags/
 session.*
 notes/*.html
 notes/*.pdf
+bookmarks
+speed-type/
+url/
