@@ -99,13 +99,13 @@
 (add-hook 'c++-mode-hook 'flycheck-mode)
 (add-hook 'c-mode-hook 'flycheck-mode)
 
-;; Set flycheck to work with c++11
+;; Set flycheck to work with c++17
+;; !! It's not working with rtags and irony checkers, because these are
+;; !! using compiler flags defined in compile-commands.json
 ;; better to do that in .dir-locals.el with:
-;;   ((c++-mode (flycheck-gcc-language-standard . "c++1y")))
-;; IT'S NOT WORKING!
+;;   ((c++-mode (flycheck-gcc-language-standard . "c++17")))
 ;;(add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))
-;(add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++1y")))
-;(add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-language-standard "c++1y")))
+;(add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-language-standard "c++17")))
 ; (add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-pedantic t)))
 
 ;; company-mode
