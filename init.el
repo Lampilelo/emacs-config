@@ -49,8 +49,7 @@
 ; '(default ((t (:inherit nil :stipple nil :background "#282C34" :foreground "#ABB2BF" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 130 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
 (set-face-attribute 'default nil :height 135)
 (tool-bar-mode -1)
-
-;(toggle-frame-maximized)
+(menu-bar-mode -1)
 
 ;; Privacy and security while downloading packages
 (let ((trustfile
