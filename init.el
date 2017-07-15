@@ -324,3 +324,40 @@
             (if (eq window-system 'x)
                 (font-lock-mode 1))))
 
+
+;; ERC
+;; ident
+(setq
+ erc-nick "Oxon"
+ erc-server "irc.rizon.net"
+ erc-prompt-for-password nil
+ erc-prompt-for-nickserv-password nil)
+;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
+(load "~/.erc/passwords")
+(setq erc-nickserv-passwords
+      `((Rizon (("Oxon" . ,rizon-oxon-pass)))))
+;; logs
+(setq
+ erc-log-channels-directory "~/.erc/logs/"
+ erc-save-buffer-on-part t)
+;; load modules
+(defun my-erc-hook()
+  (require 'erc-services)
+  'erc-services-enable t
+  ;; (require 'erc-notifications)
+  ;; 'erc-notifications-enable t
+  (require 'erc-log)
+  'erc-log-enable t)
+(add-hook 'erc-mode-hook 'my-erc-hook)
+;; auto-join channels
+(erc-autojoin-mode 0)
+(setq erc-autojoin-channels-alist
+      '((".*rizon.*" "#krasnale" "#emurh")))
+(add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
+(defun my-post-vhost-autojoin (proc parsed)
+  "Autojoin when NickServ tells us to."
+  (with-current-buffer (process-buffer proc)
+    (when (string-match ".*Password accepted.*"
+                             (erc-response.contents parsed))
+      (erc-autojoin-channels erc-session-server (erc-current-nick))
+      nil)))
