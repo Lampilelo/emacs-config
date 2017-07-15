@@ -310,3 +310,17 @@
 (setq doxymacs-external-xml-parser-executable
       "~/.emacs.d/doxymacs-1.8.0/build/c/doxymacs_parser")
 
+;; OCTAVE
+;; for info check http://wiki.octave.org/Emacs
+;; set octave-mode for all .m files
+(autoload 'octave-mode "octave-mod" nil t)
+(setq auto-mode-alist
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+;; turn on the abbrevs, auto-fill and font-lock features automatically
+(add-hook 'octave-mode-hook
+          (lambda ()
+            (abbrev-mode 1)
+            (auto-fill-mode 1)
+            (if (eq window-system 'x)
+                (font-lock-mode 1))))
+
