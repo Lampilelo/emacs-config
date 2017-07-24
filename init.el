@@ -333,22 +333,21 @@
  erc-prompt-for-password nil
  erc-prompt-for-nickserv-password nil)
 ;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
+(add-hook 'erc-mode-hook 'erc-nickserv-mode)
 (load "~/.erc/passwords")
 (setq erc-nickserv-passwords
       `((Rizon (("Oxon" . ,rizon-oxon-pass)))))
 ;; logs
-(setq
- erc-log-channels-directory "~/.erc/logs/"
- erc-save-buffer-on-part t)
+(require 'erc-log)
+(erc-log-enable)
+(setq erc-log-channels-directory "~/.erc/logs/")
+(setq erc-save-buffer-on-part t)
 ;; load modules
-(defun my-erc-hook()
-  (require 'erc-services)
-  'erc-services-enable t
-  ;; (require 'erc-notifications)
-  ;; 'erc-notifications-enable t
-  (require 'erc-log)
-  'erc-log-enable t)
-(add-hook 'erc-mode-hook 'my-erc-hook)
+(require 'erc-services)
+(setq erc-services-enable t)
+;; (require 'erc-notifications)
+;; 'erc-notifications-enable t
+
 ;; auto-join channels
 (erc-autojoin-mode 0)
 (setq erc-autojoin-channels-alist
@@ -361,3 +360,6 @@
                              (erc-response.contents parsed))
       (erc-autojoin-channels erc-session-server (erc-current-nick))
       nil)))
+
+;; PYTHON
+(setq flycheck-python-pycompile-executable "python3")
