@@ -325,7 +325,7 @@
                 (font-lock-mode 1))))
 
 
-;; ERC
+;; ==================== ERC ====================
 ;; ident
 (setq
  erc-nick "Oxon"
@@ -360,6 +360,17 @@
                              (erc-response.contents parsed))
       (erc-autojoin-channels erc-session-server (erc-current-nick))
       nil)))
+;; misc options
+;; Kill buffers for channels after /part
+(setq erc-kill-buffer-on-part t)
+;; Kill buffers for private queries after quitting the server
+(setq erc-kill-queries-on-quit t)
+;; Kill buffers for server messages after quitting the server
+(setq erc-kill-server-buffer-on-quit t)
+ ;; Interpret mIRC-style color commands in IRC chats
+(setq erc-interpret-mirc-color t)
+
+;; =============================================
 
 ;; PYTHON
 (setq flycheck-python-pycompile-executable "python3")
