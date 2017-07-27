@@ -35,7 +35,7 @@
      ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (smartparens which-key nyan-mode speed-type magit monokai-theme sublime-themes whole-line-or-region autopair highlight-parentheses flycheck-irony flycheck-rtags cmake-ide helm-rtags rtags auto-complete company-irony-c-headers company-irony irony yasnippet list-packages-ext helm cmake-mode dart-mode atom-one-dark-theme)))
+    (use-package docker-compose-mode dockerfile-mode smartparens which-key nyan-mode speed-type magit monokai-theme sublime-themes whole-line-or-region autopair highlight-parentheses flycheck-irony flycheck-rtags cmake-ide helm-rtags rtags auto-complete company-irony-c-headers company-irony irony yasnippet list-packages-ext helm cmake-mode dart-mode atom-one-dark-theme)))
  '(safe-local-variable-values (quote ((cmake-ide-build-dir . "./build"))))
  '(sentence-end-base "[.?!…‽][]\"'”’)}]*")
  '(sentence-end-double-space nil)
@@ -374,3 +374,7 @@
 
 ;; PYTHON
 (setq flycheck-python-pycompile-executable "python3")
+
+;; WHICH KEY
+(require 'which-key)
+(add-hook 'after-init-hook 'which-key-mode)
