@@ -9,6 +9,7 @@
 	("gnu" . "http://elpa.gnu.org/packages/")))
 
 ;; Privacy and security while downloading packages
+;; it needs gnutls(-bin) and python-certifi packages to work
 (let ((trustfile
        (replace-regexp-in-string
         "\\\\" "/"
