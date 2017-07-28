@@ -119,11 +119,11 @@
   (rtags-start-process-unless-running)
   ;; Rebind keys for finding symbols and references
   :bind (:map c-mode-map
-	 (("C-." . rtags-find-symbol-at-point)
-	  ("C-," . rtags-find-references-at-point))
+	      ("C-." . rtags-find-symbol-at-point)
+	      ("C-," . rtags-find-references-at-point)
 	 :map c++-mode-map
-	 (("C-." . rtags-find-symbol-at-point)
-	  ("C-," . rtags-find-references-at-point))))
+	      ("C-." . rtags-find-symbol-at-point)
+	      ("C-," . rtags-find-references-at-point)))
 
 (use-package company-rtags
   :init
