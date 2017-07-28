@@ -23,6 +23,10 @@
   (setq gnutls-trustfiles (list trustfile)))
 
 ;; USE-PACKAGE
+(if (not (package-installed-p 'use-package))
+    (progn
+      (package-refresh-contents)
+      (package-install 'use-package)))
 (require 'use-package)
 (setq use-package-always-ensure t)
 
