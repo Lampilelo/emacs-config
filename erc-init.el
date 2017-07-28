@@ -7,9 +7,16 @@
  erc-prompt-for-nickserv-password nil)
 ;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
 (add-hook 'erc-mode-hook 'erc-nickserv-mode)
-(load "~/.erc/passwords")
-(setq erc-nickserv-passwords
-      `((Rizon (("Oxon" . ,rizon-oxon-pass)))))
+
+(if (file-exists-p "~/.erc/passwords")
+    ;; then
+    (progn
+      (load "~/.erc/passwords")
+      (setq erc-nickserv-passwords
+	    `((Rizon (("Oxon" . ,rizon-oxon-pass))))))
+  ;; else
+  (message "ERC config: file ~/.etc/passwords NOT FOUND"))
+
 ;; logs
 (require 'erc-log)
 (erc-log-enable)
