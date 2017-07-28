@@ -88,7 +88,7 @@
 
 (use-package monokai-theme
   :config
-  (setq custom-enabled-themes 'monokai)
+  (load-theme 'monokai)
   (set-face-attribute 'default nil :height 120))
 
 (use-package auto-complete)
