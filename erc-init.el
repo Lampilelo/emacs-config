@@ -31,7 +31,7 @@
 ;; auto-join channels
 (erc-autojoin-mode 0)
 (setq erc-autojoin-channels-alist
-      '((".*rizon.*" "#krasnale" "#emurh")))
+      '((".*rizon.*" "#krasnale")))
 (add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
 (defun my-post-vhost-autojoin (proc parsed)
   "Autojoin when NickServ tells us to."
