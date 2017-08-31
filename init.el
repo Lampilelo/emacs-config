@@ -85,6 +85,8 @@
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-i") 'imenu)
 
+(add-hook 'org-mode-hook 'visual-line-mode)
+
 ;; ==================== PACKAGES ====================
 
 (use-package monokai-theme
