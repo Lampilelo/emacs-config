@@ -275,3 +275,34 @@
 
 ;; ERC
 (load "~/.emacs.d/erc-init.el")
+
+;; YAML-MODE
+(use-package yaml-mode)
+
+;; LATEX
+
+;; mainly additional navigation for LaTeX
+(use-package latex-extra
+  :config
+  (add-hook 'LaTeX-mode-hook #'latex-extra-mode))
+
+; preview buffer for LaTeX
+(use-package latex-preview-pane
+  :config
+  (latex-preview-pane-enable))
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
