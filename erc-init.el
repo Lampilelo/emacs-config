@@ -25,8 +25,8 @@
 ;; load modules
 (require 'erc-services)
 (setq erc-services-enable t)
-;; (require 'erc-notifications)
-;; 'erc-notifications-enable t
+(add-to-list 'erc-modules 'notifications)
+(setq erc-notifications-enable t)
 
 ;; auto-join channels
 (erc-autojoin-mode 0)
