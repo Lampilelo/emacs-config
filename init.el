@@ -282,9 +282,10 @@
 ;; LATEX
 
 ;; mainly additional navigation for LaTeX
-(use-package latex-extra
-  :config
-  (add-hook 'LaTeX-mode-hook #'latex-extra-mode))
+(let ((byte-compile-warnings '(not-free-vars)))
+  (use-package latex-extra
+    :config
+    (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
 
 ; preview buffer for LaTeX
 (use-package latex-preview-pane
