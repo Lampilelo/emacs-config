@@ -50,4 +50,29 @@
  ;; Interpret mIRC-style color commands in IRC chats
 (setq erc-interpret-mirc-color t)
 
+;; sound notifications
+(defun erc-my-play-new-message-sound ()
+  "Play the freedesktop message-new-instant sound."
+  (and
+   (start-process-shell-command
+ "new-message"
+ nil
+ "ffplay -vn -nodisp -autoexit /usr/share/sounds/freedesktop/stereo/message-new-instant.oga")
+   (x-urgent)))
+
+(defun erc-my-privmsg-sound (proc parsed)
+    (let* ((tgt (car (erc-response.command-args parsed)))
+           (privp (erc-current-nick-p tgt)))
+      (and
+       privp
+       (erc-my-play-new-message-sound)
+       nil)))
+(add-hook 'erc-server-PRIVMSG-functions 'erc-my-privmsg-sound)
+
+(add-hook 'erc-insert-post-hook 
+	  (lambda () (goto-char (point-min)) 
+	    (when (re-search-forward
+		   (regexp-quote  (erc-current-nick)) nil t)
+	      (erc-my-play-new-message-sound))))
+
 ;; =============================================
