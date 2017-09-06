@@ -27,6 +27,7 @@
 (setq erc-services-enable t)
 (add-to-list 'erc-modules 'notifications)
 (setq erc-notifications-enable t)
+(setq erc-notifications-icon "/usr/share/icons/hicolor/128x128/apps/emacs.png")
 
 ;; auto-join channels
 (erc-autojoin-mode 0)
