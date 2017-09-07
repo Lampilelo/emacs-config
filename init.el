@@ -318,7 +318,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 ; preview buffer for LaTeX
 (use-package latex-preview-pane
   :config
-  (latex-preview-pane-enable))
+  (latex-preview-pane-enable)
+  (add-hook 'LaTeX-mode-hook 'latex-preview-pane-mode))
 
 ; emacs' notifications.el
 (use-package notifications)
