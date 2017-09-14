@@ -44,6 +44,11 @@
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-use-extra-keys t)
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+(setq org-todo-keyword-faces
+      '(("IN-PROGRESS" . "yellow1")
+	("WAITING" . "gold2")))
 ;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
 (column-number-mode 1)
 (setq split-width-threshold 140)
