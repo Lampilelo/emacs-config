@@ -54,6 +54,11 @@
 (setq split-width-threshold 140)
 (setq split-window-preferred-function (quote split-window-sensibly))
 
+;; Transparent emacs
+;;                                        (<active> . <inactive)
+; (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+; (add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+
 ;; autosaves
 ;; create the autosave dir if necessary, since emacs won't.
 (defvar my-autosave-directory "~/.emacs.d/autosaves/")
