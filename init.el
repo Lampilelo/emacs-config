@@ -334,6 +334,9 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 ; emacs' notifications.el
 (use-package notifications)
 
+;; Ace jump mode for jumping to char
+(use-package ace-jump-mode
+  :bind (("C-;" . ace-jump-mode)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
