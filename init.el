@@ -338,6 +338,14 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 (use-package ace-jump-mode
   :bind (("C-;" . ace-jump-mode)))
 
+;; Mutliple cursors
+;; Documentation: https://github.com/magnars/multiple-cursors.el
+(use-package multiple-cursors
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+	 ("C->" . mc/mark-next-like-this)
+	 ("C-<" . mc/mark-previous-like-this)
+	 ("C-c C-<" . mc/mark-all-like-this)))
+
 ;; Undo tree
 ;; C-x u - undo-tree-visualize
 ;; C-?   - undo-tree-redo
@@ -350,7 +358,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete))))
+    (multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
