@@ -338,6 +338,11 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 (use-package ace-jump-mode
   :bind (("C-;" . ace-jump-mode)))
 
+;; Undo tree
+;; C-x u - undo-tree-visualize
+;; C-?   - undo-tree-redo
+(use-package undo-tree)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
