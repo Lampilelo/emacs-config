@@ -336,7 +336,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 
 ;; Ace jump mode for jumping to char
 (use-package ace-jump-mode
-  :bind (("C-;" . ace-jump-mode)))
+  :bind (("C-;" . ace-jump-char-mode)))
 
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
