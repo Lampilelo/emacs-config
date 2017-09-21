@@ -100,7 +100,6 @@
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
 
-
 ;; ==================== FUNCTIONS ===================
 
 ;; Got it from here: http://www.draketo.de/light/english/emacs/babcore
@@ -285,6 +284,12 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 					      ("* ||\n[i]" "RET")))))
 
 (use-package magit
+  :init
+  ;; set up ssh-agent
+  (setenv "SSH_AUTH_SOCK"
+	(concat
+	 (getenv "XDG_RUNTIME_DIR")
+	 "/ssh-agent.socket"))
   :bind ("C-x g" . magit-status))
 
 (use-package which-key
