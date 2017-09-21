@@ -97,6 +97,9 @@
 
 (add-hook 'org-mode-hook 'visual-line-mode)
 
+;; Monday as first day of the week
+(setq calendar-week-start-day 1)
+
 
 ;; ==================== FUNCTIONS ===================
 
