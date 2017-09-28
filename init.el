@@ -143,7 +143,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 (use-package flycheck
   :config
   (add-hook 'c++-mode-hook 'flycheck-mode)
-  (add-hook 'c-mode-hook 'flycheck-mode))
+  (add-hook 'c-mode-hook 'flycheck-mode)
+  (add-hook 'python-mode-hook 'flycheck-mode))
 
 (use-package company
   :config
