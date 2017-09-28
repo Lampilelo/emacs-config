@@ -360,6 +360,13 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 ;; C-?   - undo-tree-redo
 (use-package undo-tree)
 
+;; PYTHON
+(use-package company-jedi
+  ;; python-virtualenv must be installed on a host system
+  ;; I could automate it by checking and calling pip install
+  :config
+  (add-to-list 'company-backends 'company-jedi))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
