@@ -151,7 +151,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (("C-x f" . helm-locate)
    ("C-x C-b" . helm-buffers-list)
    :map helm-buffer-map
-   ("C-k" . helm-buffer-run-kill-persistent)))
+   ("C-k" . helm-buffer-run-kill-persistent)
+   ("C-M-k" . helm-buffer-run-kill-buffers)))
 
 (use-package flycheck
   :config
