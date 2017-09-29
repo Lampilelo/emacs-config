@@ -146,7 +146,12 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 
 (use-package helm
   :config
-  (require 'helm-config))
+  (require 'helm-config)
+  :bind
+  (("C-x f" . helm-locate)
+   ("C-x C-b" . helm-buffers-list)
+   :map helm-buffer-map
+   ("C-k" . helm-buffer-run-kill-persistent)))
 
 (use-package flycheck
   :config
