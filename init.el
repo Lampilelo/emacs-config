@@ -147,6 +147,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 (use-package helm
   :config
   (require 'helm-config)
+  ;; It's necessary to load helm-buffers so that helm-buffer-map is loaded
+  (require 'helm-buffers)
   :bind
   (("C-x f" . helm-locate)
    ("C-x C-b" . helm-buffers-list)
