@@ -34,6 +34,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (setq inhibit-startup-screen t)
+
 ;; ido mode
 ;; TODO: check out https://masteringemacs.org/article/introduction-to-ido-mode
 (setq ido-enable-flex-matching t)
@@ -135,6 +136,13 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (set-face-attribute 'default nil :height 120))
 
 (use-package auto-complete)
+
+;; IVY
+(ivy-mode t)
+(use-package swiper
+  :bind ("C-s" . swiper))
+(use-package counsel
+  :bind ("M-x" . counsel-M-x))
 
 (use-package helm
   :config
@@ -380,7 +388,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete))))
+    (counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
