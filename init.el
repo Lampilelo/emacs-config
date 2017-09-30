@@ -319,7 +319,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (add-hook 'after-init-hook 'which-key-mode)
   ;; Below is probably temporary
   ;; TODO: Change this binding
-  :bind ("C-'" . which-key-show-top-level))
+  :bind ("C-*" . which-key-show-top-level))
 
 (use-package whole-line-or-region
   :config
