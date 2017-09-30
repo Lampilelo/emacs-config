@@ -130,10 +130,16 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 
 ;; ==================== PACKAGES ====================
 
+;; TODO: customize company theming for tangotango and remove monokai
+;; or customize coloring in monokai
 (use-package monokai-theme
   :config
   (load-theme 'monokai t)
   (set-face-attribute 'default nil :height 120))
+
+(use-package tangotango-theme
+  :config
+  (load-theme 'tangotango t))
 
 (use-package org-bullets
   :config
