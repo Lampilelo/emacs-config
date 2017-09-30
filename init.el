@@ -160,7 +160,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   ;; It's necessary to load helm-buffers so that helm-buffer-map is loaded
   (require 'helm-buffers)
   :bind
-  (("C-x f" . helm-locate)
+  (("C-x f" . helm-for-files)
    ("C-x C-b" . helm-buffers-list)
    :map helm-buffer-map
    ("C-k" . helm-buffer-run-kill-persistent)
