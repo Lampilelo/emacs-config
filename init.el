@@ -315,8 +315,11 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   :bind ("C-x g" . magit-status))
 
 (use-package which-key
-  :config
-  (add-hook 'after-init-hook 'which-key-mode)
+  ;; According to documentation this should be :config, but it seems
+  ;; like these options are reversed
+  ;; How do you load mode before package is loaded?
+  :init
+  (which-key-mode 1)
   ;; Below is probably temporary
   ;; TODO: Change this binding
   :bind ("C-*" . which-key-show-top-level))
