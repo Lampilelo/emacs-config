@@ -150,7 +150,9 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 ;; IVY
 (ivy-mode t)
 (use-package swiper
-  :bind ("C-s" . swiper))
+  :bind
+  (("C-s" . swiper)
+   ("M-s M-s" . isearch-forward)))
 (use-package counsel
   :bind ("M-x" . counsel-M-x))
 
