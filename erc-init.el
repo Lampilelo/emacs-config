@@ -24,6 +24,7 @@
 (erc-log-enable)
 (setq erc-log-channels-directory "~/.erc/logs/")
 (setq erc-save-buffer-on-part t)
+(setq erc-log-insert-log-on-open t)
 ;; load modules
 (require 'erc-services)
 (setq erc-services-enable t)
