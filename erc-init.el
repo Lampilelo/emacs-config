@@ -8,6 +8,8 @@
 ;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
 (add-hook 'erc-mode-hook 'erc-nickserv-mode)
 
+(setq erc-fill-column 76)
+
 (if (file-exists-p "~/.erc/passwords")
     ;; then
     (progn
