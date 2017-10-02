@@ -176,7 +176,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
    ("<f1> u" . counsel-unicode-char)
    ;; Attention: C-c bindings for git (may interfere with other modes)
    ("C-c g" . counsel-git)
-   ("C-c j" . counsel-git-grep)))
+   ("C-c j" . counsel-git-grep)
+   ("C-c k" . counsel-ag)))
 
 (use-package helm
   :config
