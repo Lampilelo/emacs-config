@@ -149,7 +149,15 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 (use-package auto-complete)
 
 ;; IVY
-(ivy-mode t)
+(use-package flx)
+(use-package ivy
+  :init
+  ;; use fuzzy regex for everything but swiper
+  (setq ivy-re-builders-alist
+      '((t . ivy--regex-fuzzy)
+        (swiper . ivy--regex-plus)))
+  :config
+  (ivy-mode t))
 (use-package swiper
   :bind
   (("C-s" . swiper)
@@ -419,7 +427,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy))))
+    (flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
