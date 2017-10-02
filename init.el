@@ -37,9 +37,10 @@
 
 ;; ido mode
 ;; TODO: check out https://masteringemacs.org/article/introduction-to-ido-mode
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode 1)
+;; (setq ido-enable-flex-matching t)
+;; (setq ido-everywhere t)
+;; (ido-mode 1)
+
 ;; org mode customizations
 (setq org-edit-src-content-indentation 2)
 (setq org-src-fontify-natively t)
