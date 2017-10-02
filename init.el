@@ -163,7 +163,18 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (("C-s" . swiper)
    ("M-s M-s" . isearch-forward)))
 (use-package counsel
-  :bind ("M-x" . counsel-M-x))
+  :bind
+  (("M-x" . counsel-M-x)
+   ("C-x C-f" . counsel-find-file)
+   ("<f1> f" . counsel-describe-function)
+   ("<f1> v" . counsel-describe-variable)
+   ("<f1> l" . counsel-find-library)
+   ("<f1> s" . counsel-info-lookup-symbol)
+   ("<f1> S" . describe-syntax) ;; switched from "<f1> s"
+   ("<f1> u" . counsel-unicode-char)
+   ;; Attention: C-c bindings for git (may interfere with other modes)
+   ("C-c g" . counsel-git)
+   ("C-c j" . counsel-git-grep)))
 
 (use-package helm
   :config
