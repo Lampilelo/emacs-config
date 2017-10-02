@@ -155,7 +155,9 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   ;; use fuzzy regex for everything but swiper
   (setq ivy-re-builders-alist
       '((t . ivy--regex-fuzzy)
-        (swiper . ivy--regex-plus)))
+        (swiper . ivy--regex-plus)
+	(counsel-git . ivy--regex-plus)
+	(counsel-git-grep . ivy--regex-plus)))
   :config
   (ivy-mode t))
 (use-package swiper
