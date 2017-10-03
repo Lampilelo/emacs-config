@@ -141,28 +141,18 @@ Returns path on success, nil on failure."
   (when (not (string-equal cmd-output (concat name " not found")))
     cmd-output)))
 
-;; TODO: It iterates on all packages just to check one. I should change that.
-;; maybe I should just check /usr/lib/python3.6/site-packages for package?
-(defun my-check-python-package (name)
-  (let ((result "nil"))
-    (dolist (package		 ;VAR
-	     (split-string ;splits all packages list to singular
-		      (substring (shell-command-to-string
- "python -c '
-import pip
-print(pip.get_installed_distributions())
-'") 1 -2)
-		      ", ")		;LIST
-	     result)			;RESULT
-      ;; splits package string to name, version and path
-      (let ((package-as-list (split-string package " ")))
-	(when (string-equal (car package-as-list) name) ;check package name
-	  (setq result (concat				;save package path
-	   ;; package path
-	   (substring (car (last package-as-list)) 1 -1)
-	   "/"
-	   name))
-	  )))))
+(defun my-find-python-package (name)
+  "Checks host system for python package NAME.
+Returns path on success, nil of failure."
+  (let ((result
+	 (replace-regexp-in-string
+	  "\n" ""
+	  (shell-command-to-string
+	   (concat
+	    "find /usr/lib/$(basename $(readlink /usr/bin/python))*/site-packages -maxdepth 1 -name "
+	    name)))))
+    (when (not (string-equal result ""))
+      result)))
 
 (defun my-check-missing-packages-on-host (package-list)
   "Checks host system for packages.
