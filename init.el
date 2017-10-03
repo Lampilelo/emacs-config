@@ -129,7 +129,6 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (let (frame (selected-frame))
     (x-urgency-hint frame (not arg))))
 
-;; TODO: check also python packages
 (defun my-find-package-on-host (name)
   "Checks host system for package NAME.
 Returns path on success, nil on failure."
@@ -154,13 +153,18 @@ Returns path on success, nil of failure."
     (when (not (string-equal result ""))
       result)))
 
-(defun my-check-missing-packages-on-host (package-list)
+(defun my-check-missing-packages-on-host (package-list &optional python)
   "Checks host system for packages.
-
+PACKAGE-LIST is a list of strings. If PYTHON is not nil it checks also for python packages.
 Returns list of missing packages or nil if didn't found any missing."
   (let ((result (list)))
     (dolist (item package-list)
-    (when (not (my-find-package-on-host item)) ;if package wasn't found
+      (when (not
+	     (if (not python)
+		 (my-find-package-on-host item)
+	       ;; if python 
+	       (or (my-find-package-on-host item)
+		   (my-find-python-package item)))) ;if package wasn't found
       (add-to-list 'result item)))
     result))
 
