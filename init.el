@@ -173,6 +173,16 @@ Returns list of missing packages or nil if didn't found any missing."
       (add-to-list 'result item)))
     result))
 
+(defun my-print-missing-packages-as-warnings (warn-type package-list)
+  "Checks list of packages and displays warning if found any missing.
+WARN-TYPE can be a name of package that requres PACKAGE-LIST."
+  (let ((missing-packages (my-check-missing-packages-on-host package-list)))
+    (when missing-packages
+      (display-warning
+       (concat "Missing host packages - " warn-type)
+       (mapconcat 'identity missing-packages ", ")
+       :emergency))))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
