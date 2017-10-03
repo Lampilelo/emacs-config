@@ -131,7 +131,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 
 ;; TODO: check also python packages
 (defun my-find-package-on-host (name)
-  "Checks host system for package 'name'. Returns path on success, nil on failure."
+  "Checks host system for package NAME.
+Returns path on success, nil on failure."
 (let ((cmd-output
       (substring
        (shell-command-to-string (concat "which " name))
