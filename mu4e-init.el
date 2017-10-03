@@ -2,6 +2,8 @@
 (my-print-missing-packages-as-warnings "MU4E" '("mu"))
 (require 'mu4e)
 
+
+(setq mu4e-change-filenames-when-moving t)
 (setq mu4e-maildir "~/Mail")
 (setq mu4e-contexts
       `( ,(make-mu4e-context
@@ -11,9 +13,14 @@
 	   :vars '(
 		   (mu4e-trash-folder . "/gmail/[Gmail].Bin")
 		   (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
-	 ;; ,(make-mu4e-context
-	 ;;   :name "Yahoo"
-	 ;;   whatevs)
+	 ,(make-mu4e-context
+	   :name "Yahoo"
+	   :match-func (lambda (msg) (when msg
+				       (string-prefix-p "/yahoo" (mu4e-message-field msg :maildir))))
+	   :vars '(
+	   	   (mu4e-trash-folder . "/yahoo/Trash")
+	   	   (mu4e-refile-folder . "yahoo/Archive"))
+	   )
 	 ))
 
 (use-package mu4e-alert
@@ -21,11 +28,10 @@
   :after mu4e
   :init
   (setq mu4e-alert-interesting-mail-query
-	"flag:unread maildir:/gmail/Inbox"
-	;; (concat
-	;;  "flag:unread maildir:/gmail/INBOX "
-	;;  "OR "
-	;;  "flag:unread maildir:/yahoo/INBOX")
+	(concat
+	 "flag:unread maildir:/gmail/Inbox "
+	 "OR "
+	 "flag:unread maildir:/yahoo/Inbox")
 	)
   :config
   (mu4e-alert-enable-mode-line-display)
