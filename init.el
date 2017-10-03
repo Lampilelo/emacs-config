@@ -492,8 +492,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   ;; Python packages needed:
   ;;   jedi or rope, flake8, importmagic, autopep8, yapf
   :init
-  ;; (my-print-missing-packages-as-warnings
-  ;;  "ELPY" '("jedi" "flake8" "importmagic" "autopep8" "yapf"))
+  (my-print-missing-packages-as-warnings
+   "ELPY" '("jedi" "flake8" "importmagic" "autopep8" "yapf") t)
   :config
   (elpy-enable))
 
