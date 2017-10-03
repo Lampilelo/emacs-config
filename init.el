@@ -168,10 +168,12 @@ Returns list of missing packages or nil if didn't found any missing."
       (add-to-list 'result item)))
     result))
 
-(defun my-print-missing-packages-as-warnings (warn-type package-list)
+(defun my-print-missing-packages-as-warnings
+    (warn-type package-list &optional python) ;args
   "Checks list of packages and displays warning if found any missing.
-WARN-TYPE can be a name of package that requres PACKAGE-LIST."
-  (let ((missing-packages (my-check-missing-packages-on-host package-list)))
+WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not nil it checks also for python packages."
+  (let ((missing-packages
+	 (my-check-missing-packages-on-host package-list python)))
     (when missing-packages
       (display-warning
        (concat "Missing host packages - " warn-type)
