@@ -264,6 +264,11 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST."
   (setq rtags-display-result-backend 'helm)
   :config
   (rtags-enable-standard-keybindings)
+  (my-print-missing-packages-as-warnings ;check for requirements on host
+   "RTAGS"
+   '("make" "cmake" "gcc" "clang" "git"))
+  ;; Could use rtags package from aur, but it won't work on other systems
+  ;; Maybe search for latest release with python-requests in rtags repo?
   (if (not (file-exists-p rtags-path))
       (shell-command "sh ~/.emacs.d/get-rtags.sh"))
   (rtags-start-process-unless-running)
@@ -355,6 +360,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST."
 
 (use-package cmake-ide
   :init
+  (my-print-missing-packages-as-warnings "CMAKE-IDE" '("cmake"))
   (setq cmake-ide-rdm-executable "~/.emacs.d/rtags/build/bin/rdm")
   (setq cmake-ide-rdm-rc-path "~/.emacs.d/rtags/build/bin/"))  
 
@@ -392,6 +398,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST."
 
 (use-package magit
   :init
+  (my-print-missing-packages-as-warnings "MAGIT" '("git"))
   ;; set up ssh-agent
   (setenv "SSH_AUTH_SOCK"
 	(concat
@@ -481,6 +488,9 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST."
 (use-package elpy
   ;; Python packages needed:
   ;;   jedi or rope, flake8, importmagic, autopep8, yapf
+  :init
+  ;; (my-print-missing-packages-as-warnings
+  ;;  "ELPY" '("jedi" "flake8" "importmagic" "autopep8" "yapf"))
   :config
   (elpy-enable))
 
