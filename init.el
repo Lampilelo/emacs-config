@@ -183,6 +183,12 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST."
        (mapconcat 'identity missing-packages ", ")
        :emergency))))
 
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
