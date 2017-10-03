@@ -163,6 +163,16 @@ print(pip.get_installed_distributions())
 	   name))
 	  )))))
 
+(defun my-check-missing-packages-on-host (package-list)
+  "Checks host system for packages.
+
+Returns list of missing packages or nil if didn't found any missing."
+  (let ((result (list)))
+    (dolist (item package-list)
+    (when (not (my-find-package-on-host item)) ;if package wasn't found
+      (add-to-list 'result item)))
+    result))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
