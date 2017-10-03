@@ -9,8 +9,8 @@
 	   :match-func (lambda (msg) (when msg
 				       (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
 	   :vars '(
-		   (mu4e-trash-folder . "/gmail/[Gmail]/.Bin")
-		   (mu4e-refile-folder . "/gmail/[Gmail]/.Archive")))
+		   (mu4e-trash-folder . "/gmail/[Gmail].Bin")
+		   (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
 	 ;; ,(make-mu4e-context
 	 ;;   :name "Yahoo"
 	 ;;   whatevs)
