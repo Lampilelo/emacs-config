@@ -127,7 +127,18 @@ If you unset the urgency, you still have to visit the frame to make the urgency 
 With a prefix argument which does not equal a boolean value of nil, remove the urgency flag (which might or might not change display, depending on the window manager)."
   (interactive "P")
   (let (frame (selected-frame))
-  (x-urgency-hint frame (not arg))))
+    (x-urgency-hint frame (not arg))))
+
+;; TODO: check also python packages
+(defun my-find-package-on-host (name)
+  "Checks host system for package 'name'. Returns path on success, nil on failure."
+(let ((cmd-output
+      (substring
+       (shell-command-to-string (concat "which " name))
+       0 -1)))	;substring because shell-command returns \n sign at the end
+  ;; Return nil if not found and command output if found
+  (when (not (string-equal cmd-output (concat name " not found")))
+    cmd-output)))
 
 ;; ==================== PACKAGES ====================
 
