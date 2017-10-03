@@ -1,4 +1,5 @@
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(my-print-missing-packages-as-warnings "MU4E" '("mu"))
 (require 'mu4e)
 
 (setq mu4e-maildir "~/Mail")
