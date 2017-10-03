@@ -140,6 +140,29 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (when (not (string-equal cmd-output (concat name " not found")))
     cmd-output)))
 
+;; TODO: It iterates on all packages just to check one. I should change that.
+;; maybe I should just check /usr/lib/python3.6/site-packages for package?
+(defun my-check-python-package (name)
+  (let ((result "nil"))
+    (dolist (package		 ;VAR
+	     (split-string ;splits all packages list to singular
+		      (substring (shell-command-to-string
+ "python -c '
+import pip
+print(pip.get_installed_distributions())
+'") 1 -2)
+		      ", ")		;LIST
+	     result)			;RESULT
+      ;; splits package string to name, version and path
+      (let ((package-as-list (split-string package " ")))
+	(when (string-equal (car package-as-list) name) ;check package name
+	  (setq result (concat				;save package path
+	   ;; package path
+	   (substring (car (last package-as-list)) 1 -1)
+	   "/"
+	   name))
+	  )))))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
