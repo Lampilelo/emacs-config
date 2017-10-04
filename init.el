@@ -273,7 +273,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (rtags-enable-standard-keybindings)
   (my-print-missing-packages-as-warnings ;check for requirements on host
    "RTAGS"
-   '("make" "cmake" "gcc" "clang" "git"))
+   '("make" "cmake" "gcc" "clang" "git" "doxygen"))
   ;; Could use rtags package from aur, but it won't work on other systems
   ;; Maybe search for latest release with python-requests in rtags repo?
   (if (not (file-exists-p rtags-path))
