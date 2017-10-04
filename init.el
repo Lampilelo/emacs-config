@@ -512,7 +512,22 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy))))
+    (flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
+ '(safe-local-variable-values
+   (quote
+    ((eval set
+	   (make-local-variable
+	    (quote cmake-ide-build-dir))
+	   (concat
+	    (file-name-directory
+	     (let
+		 ((d
+		   (dir-locals-find-file ".")))
+	       (if
+		   (stringp d)
+		   d
+		 (car d))))
+	    "build"))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
