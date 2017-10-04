@@ -88,6 +88,10 @@
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
+;; C++ default options
+(setq c-default-style "linux"
+      c-basic-offset 4)
+
 ;; GDB
 (setq gdb-many-windows t
       ;; Display source file containing the main routine at startup
