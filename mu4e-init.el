@@ -40,3 +40,57 @@
     (mu4e~proc-kill)
     (mu4e-alert-enable-mode-line-display))
   (run-with-timer 0 300 'my-refresh-mu4e-alert-mode-line))
+
+;; I have my "default" parameters from Gmail
+(setq mu4e-sent-folder "/sent"
+      ;; mu4e-sent-messages-behavior 'delete ;; Unsure how this should be configured
+      mu4e-drafts-folder "/drafts"
+      user-mail-address "cubex7@gmail.com"
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587)
+
+;; Now I set a list of 
+(defvar my-mu4e-account-alist
+  '(("Gmail"
+     (mu4e-sent-folder "/gmail/sent")
+     (user-mail-address "cubex7@gmail.com")
+     (smtpmail-smtp-user "cubex7")
+     (smtpmail-local-domain "gmail.com")
+     (smtpmail-default-smtp-server "smtp.gmail.com")
+     (smtpmail-smtp-server "smtp.gmail.com")
+     (smtpmail-smtp-service 587)
+     )
+    ("Yahoo"
+     (mu4e-sent-folder "/yahoo/sent")
+     (user-mail-address "jakub.wojciech@ymail.com")
+     (smtpmail-smtp-user "jakub.wojciech@ymail.com")
+     (smtpmail-local-domain "ymail.com")
+     (smtpmail-default-smtp-server "smtp.mail.yahoo.com")
+     (smtpmail-smtp-server "smtp.mail.yahoo.com")
+     (smtpmail-smtp-service 587)
+     )
+     ;; Include any other accounts here ...
+    ))
+
+(defun my-mu4e-set-account ()
+  "Set the account for composing a message.
+   This function is taken from: 
+     https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html"
+  (let* ((account
+    (if mu4e-compose-parent-message
+        (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+    (string-match "/\\(.*?\\)/" maildir)
+    (match-string 1 maildir))
+      (completing-read (format "Compose with account: (%s) "
+             (mapconcat #'(lambda (var) (car var))
+            my-mu4e-account-alist "/"))
+           (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+           nil t nil nil (caar my-mu4e-account-alist))))
+   (account-vars (cdr (assoc account my-mu4e-account-alist))))
+    (if account-vars
+  (mapc #'(lambda (var)
+      (set (car var) (cadr var)))
+        account-vars)
+      (error "No email account found"))))
+(add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
