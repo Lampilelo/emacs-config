@@ -94,3 +94,37 @@
         account-vars)
       (error "No email account found"))))
 (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+
+;; Fixing issue with not trashing mail in remote maildir.
+;; (defun remove-nth-element (nth list)
+;;   (if (zerop nth) (cdr list)
+;;     (let ((last (nthcdr (1- nth) list)))
+;;       (setcdr last (cddr last))
+;;       list)))
+;; (setq mu4e-marks (remove-nth-element 5 mu4e-marks))
+;; (add-to-list 'mu4e-marks
+;;      '(trash
+;;        :char ("d" . "▼")
+;;        :prompt "dtrash"
+;;        :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
+;;        :action (lambda (docid msg target) 
+;;                  (mu4e~proc-move docid
+;;                     (mu4e~mark-check-target target) "-N"))))
+
+;; Additional settings
+;; ;; Include a bookmark to open all of my inboxes
+;; (add-to-list 'mu4e-bookmarks
+;;        (make-mu4e-bookmark
+;;         :name "All Inboxes"
+;;         :query "maildir:/Exchange/INBOX OR maildir:/Gmail/INBOX"
+;;         :key ?i))
+
+;; ;; This allows me to use 'helm' to select mailboxes
+;; (setq mu4e-completing-read-function 'completing-read)
+;; ;; Why would I want to leave my message open after I've sent it?
+;; (setq message-kill-buffer-on-exit t)
+;; Don't ask for a 'context' upon opening mu4e
+(setq mu4e-context-policy 'pick-first)
+;; Don't ask to quit... why is this the default?
+(setq mu4e-confirm-quit nil)
+
