@@ -2,6 +2,8 @@
 (my-print-missing-packages-as-warnings "MU4E" '("mu"))
 (require 'mu4e)
 
+(global-set-key (kbd "C-x m") 'mu4e-compose-new)
+(setq mu4e-compose-context-policy 'pick-first)
 
 (setq mu4e-change-filenames-when-moving t)
 (setq mu4e-maildir "~/Mail")
