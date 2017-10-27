@@ -31,9 +31,8 @@
   :init
   (setq mu4e-alert-interesting-mail-query
 	(concat
-	 "flag:unread maildir:/gmail/Inbox "
-	 "OR "
-	 "flag:unread maildir:/yahoo/Inbox")
+	 "flag:unread AND NOT flag:trashed "
+	 "AND NOT 'maildir:/gmail/[Gmail].Spam'")
 	)
   :config
   (mu4e-alert-enable-mode-line-display)
