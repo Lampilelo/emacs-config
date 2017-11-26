@@ -25,14 +25,45 @@
 	   )
 	 ))
 
+;; Replace default bookmarks
+(setq mu4e-bookmarks
+      `( ,(make-mu4e-bookmark
+	   :name  "Unread messages"
+	   ;; Modified bookmark. Doesn't include spam in unread messages
+	   :query (concat
+		   "flag:unread AND NOT flag:trashed "
+		   "AND NOT maildir:/gmail/\[Gmail\].Spam")
+	   :key ?u)
+	 ,(make-mu4e-bookmark
+	   :name "Today's messages"
+	   :query "date:today..now"
+	   :key ?t)
+	 ,(make-mu4e-bookmark
+	   :name "Last 7 days"
+	   :query "date:7d..now"
+	   :key ?w)
+	 ,(make-mu4e-bookmark
+	   :name "Messages with images"
+	   :query "mime:image/*"
+	   :key ?p)
+	 ,(make-mu4e-bookmark
+	   :name "Spam (last 7 days)"
+	   ;; Custom bookmark
+	   :query "date:7d..now AND maildir:/gmail/\[Gmail\].Spam"
+	   :key ?s)))
+
 (use-package mu4e-alert
   :ensure t
   :after mu4e
   :init
   (setq mu4e-alert-interesting-mail-query
+	;; (concat
+	;;  "flag:unread AND NOT flag:trashed "
+	;;  "AND NOT maildir:/gmail/\[Gmail\].Spam")
 	(concat
-	 "flag:unread AND NOT flag:trashed "
-	 "AND NOT 'maildir:/gmail/[Gmail].Spam'")
+	 "flag:unread maildir:/gmail/Inbox "
+	 "OR "
+	 "flag:unread maildir:/yahoo/Inbox")
 	)
   :config
   (mu4e-alert-enable-mode-line-display)

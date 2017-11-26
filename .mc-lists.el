@@ -16,4 +16,5 @@
 
 (setq mc/cmds-to-run-once
       '(
+	end-of-buffer
 	))

@@ -527,7 +527,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 		   (stringp d)
 		   d
 		 (car d))))
-	    "build"))))))
+	    "build")))))
+ '(send-mail-function (quote smtpmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
