@@ -9,6 +9,12 @@
 (add-hook 'erc-mode-hook 'erc-nickserv-mode)
 (add-hook 'erc-mode-hook 'erc-track-mode)
 
+(defun start-irc()
+  "Connect to IRC."
+  (interactive)
+  (erc-tls :server erc-server :port 6697
+	   :nick erc-nick))
+
 (setq erc-fill-column 76)
 
 (if (file-exists-p "~/.erc/passwords")
