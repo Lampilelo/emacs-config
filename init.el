@@ -10,6 +10,7 @@
 
 ;; Privacy and security while downloading packages
 ;; it needs gnutls(-bin) and python-certifi packages to work
+(require 'tls)
 (let ((trustfile
        (replace-regexp-in-string
         "\\\\" "/"
