@@ -51,6 +51,7 @@
                              (erc-response.contents parsed))
       (erc-autojoin-channels erc-session-server (erc-current-nick))
       nil)))
+
 ;; misc options
 ;; Kill buffers for channels after /part
 (setq erc-kill-buffer-on-part t)
@@ -85,5 +86,22 @@
 	    (when (re-search-forward
 		   (regexp-quote  (erc-current-nick)) nil t)
 	      (erc-my-play-new-message-sound))))
+
+;; Show message whenever ctcp request is issued.
+(defun erc-ctcp-notice (proc parsed)
+  ;; (let ((mess (format "%s" parsed)))
+  (let ((msg (erc-response.contents parsed)))
+    ;; if message is CTCP
+    (if (erc-is-message-ctcp-and-not-action-p msg)
+	;; is CTCP
+	(erc-display-line
+	 (format "-CTCP- %s request from %s"
+		 ;; (format "%s" parsed)
+		 (replace-regexp-in-string "" "" msg)
+		 (erc-response.sender parsed))
+	 (first (erc-buffer-list)))
+      ;; do nothing if isn't CTCP
+      )))
+(add-hook 'erc-server-PRIVMSG-functions 'test-check-ctcp)
 
 ;; =============================================
