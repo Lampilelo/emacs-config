@@ -87,6 +87,7 @@
 		   (regexp-quote  (erc-current-nick)) nil t)
 	      (erc-my-play-new-message-sound))))
 
+;; Something is broken here
 ;; Show message whenever ctcp request is issued.
 (defun erc-ctcp-notice (proc parsed)
   ;; (let ((mess (format "%s" parsed)))
@@ -102,6 +103,6 @@
 	 (first (erc-buffer-list)))
       ;; do nothing if isn't CTCP
       )))
-(add-hook 'erc-server-PRIVMSG-functions 'test-check-ctcp)
+;; (add-hook 'erc-server-PRIVMSG-functions 'test-check-ctcp)
 
 ;; =============================================
