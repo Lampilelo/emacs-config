@@ -52,6 +52,7 @@
 (setq org-todo-keyword-faces
       '(("IN-PROGRESS" . "yellow1")
 	("WAITING" . "gold2")))
+(add-hook 'org-mode-hook 'org-display-inline-images)
 ;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
 (column-number-mode 1)
 (setq split-width-threshold 140)
