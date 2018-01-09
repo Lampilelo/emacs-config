@@ -192,6 +192,11 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
      ,@body
      (message "%.06f" (float-time (time-since time)))))
 
+;; MOTD
+(defun my-create-motd-buffer ()
+  "Creates *MOTD* buffer and switches to it."
+  (switch-to-buffer (generate-new-buffer "*MOTD*")))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
@@ -506,6 +511,16 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 ;; MAIL
 (load "~/.emacs.d/mu4e-init.el")
 
+;; RUST
+(use-package lsp-mode
+  :config
+  (require 'lsp-flycheck))
+
+(use-package lsp-rust
+  :config
+  (setq lsp-rust-rls-command '("rustup" "run" "nightly" "rls"))
+  (add-hook 'rust-mode-hook #'lsp-rust-enable)
+  (add-hook 'rust-mode-hook #'flycheck-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -514,7 +529,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
+    (lsp-rust ivy-youtube flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
  '(safe-local-variable-values
    (quote
     ((eval set
