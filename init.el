@@ -363,7 +363,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :init
   (yas-global-mode 1)
   :bind
-  "C-'" . 'yas-insert-snippet)
+  ("C-'" . 'yas-insert-snippet))
 (use-package yasnippet-snippets)
 
 (use-package cmake-mode)
