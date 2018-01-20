@@ -346,8 +346,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :config
   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   (add-to-list 'company-backends 'company-irony)
-  :bind (:map c-mode-map ("C-'" . company-complete)
-	 :map c++-mode-map ("C-'" . company-complete)))
+  :bind (:map c-mode-map ("C-S-'" . company-complete)
+	 :map c++-mode-map ("C-S-'" . company-complete)))
 
 (use-package flycheck-irony
   :config
@@ -361,7 +361,9 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   
 (use-package yasnippet
   :init
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  :bind
+  "C-'" . 'yas-insert-snippet)
 (use-package yasnippet-snippets)
 
 (use-package cmake-mode)
