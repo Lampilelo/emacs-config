@@ -326,7 +326,11 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 	(shell-quote-argument (concat "-DCMAKE_INSTALL_PREFIX="
 				      (expand-file-name
 				       irony-server-install-prefix)))
-	(shell-quote-argument irony-server-source-dir)
+	(shell-quote-argument
+	 (or irony-server-source-dir
+	     (expand-file-name "server"
+			       (file-name-directory
+				(find-library-name "irony")))))
 	(shell-quote-argument irony-cmake-executable))))  
   (add-hook 'c-mode-common-hook 'irony-mode)
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
