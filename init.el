@@ -349,30 +349,20 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :bind (:map c-mode-map ("C-'" . company-complete)
 	 :map c++-mode-map ("C-'" . company-complete)))
 
-(use-package flycheck-irony)
-
-(use-package company-irony-c-headers
+(use-package flycheck-irony
   :config
-  (add-to-list 'company-backends
-	       '(company-irony-c-headers company-irony))
   (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
 
+;; (use-package company-irony-c-headers
+  ;; :config
+  ;; (eval-after-load 'company
+  ;;   '(add-to-list 'company-backends
+	       ;; '(company-irony-c-headers company-irony))))
+  
 (use-package yasnippet
   :init
-  (yas-global-mode 1)
-  ;; Add yasnippet support for all company backends
-  (defvar company-mode/enable-yas t
-    "Enable yasnippet for all backends.")
-  :config
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas)
-	    (and (listp backend)
-		 (member 'company-yasnippet backend)))
-	backend
-        (append (if (consp backend) backend (list backend))
-		'(:with company-yasnippet))))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas
-				company-backends)))
+  (yas-global-mode 1))
+(use-package yasnippet-snippets)
 
 (use-package cmake-mode)
 
@@ -533,7 +523,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (lsp-rust ivy-youtube flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
+    (yasnippet-snippets lsp-rust ivy-youtube flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
  '(safe-local-variable-values
    (quote
     ((eval set
