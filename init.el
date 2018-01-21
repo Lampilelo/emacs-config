@@ -346,8 +346,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :config
   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   (add-to-list 'company-backends 'company-irony)
-  :bind (:map c-mode-map ("C-S-'" . company-complete)
-	 :map c++-mode-map ("C-S-'" . company-complete)))
+  :bind (:map c-mode-map ("C-\"" . company-complete)
+	 :map c++-mode-map ("C-\"" . company-complete)))
 
 (use-package flycheck-irony
   :config
