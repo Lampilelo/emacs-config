@@ -372,7 +372,10 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :init
   (my-print-missing-packages-as-warnings "CMAKE-IDE" '("cmake"))
   (setq cmake-ide-rdm-executable "~/.emacs.d/rtags/build/bin/rdm")
-  (setq cmake-ide-rdm-rc-path "~/.emacs.d/rtags/build/bin/"))  
+  (setq cmake-ide-rdm-rc-path "~/.emacs.d/rtags/build/bin/")
+  :bind
+  (:map c++-mode-map
+	("C-c C-c" . 'cmake-ide-compile)))
 
 ;; Eldoc to show function interface in minibuffer
 (defun my-eldoc-hook ()
@@ -525,7 +528,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yasnippet-snippets lsp-rust ivy-youtube flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
+    (inf-ruby yasnippet-snippets lsp-rust ivy-youtube flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
  '(safe-local-variable-values
    (quote
     ((eval set
