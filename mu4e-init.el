@@ -3,6 +3,7 @@
 (require 'mu4e)
 
 (global-set-key (kbd "C-x m") 'mu4e)
+(define-key message-mode-map (kbd "C-c C-a") 'mail-add-attachment)
 (setq mu4e-compose-context-policy 'pick-first)
 
 (setq mu4e-change-filenames-when-moving t)
