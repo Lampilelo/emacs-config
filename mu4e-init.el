@@ -24,6 +24,14 @@
 	   	   (mu4e-trash-folder . "/yahoo/Trash")
 	   	   (mu4e-refile-folder . "yahoo/Archive"))
 	   )
+	 ,(make-mu4e-context
+	   :name "Riseup"
+	   :match-func(lambda (msg) (when msg
+				      (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+	   :vars '(
+		   (mu4e-trash-folder . "/riseup/Trash")
+		   (mu4e-refile-folder . "/riseup/Archive"))
+	   )
 	 ))
 
 ;; Replace default bookmarks
@@ -64,7 +72,9 @@
 	(concat
 	 "flag:unread maildir:/gmail/Inbox "
 	 "OR "
-	 "flag:unread maildir:/yahoo/Inbox")
+	 "flag:unread maildir:/yahoo/Inbox "
+	 "OR "
+	 "flag:unread maildir:/riseup/Inbox")
 	)
   :config
   (mu4e-alert-enable-mode-line-display)
@@ -102,6 +112,16 @@
      (smtpmail-default-smtp-server "smtp.mail.yahoo.com")
      (smtpmail-smtp-server "smtp.mail.yahoo.com")
      (smtpmail-smtp-service 587)
+     )
+    ("Riseup"
+     (mu4e-sent-folder "/riseup/Sent")
+     (user-mail-address "jakub-w@riseup.net")
+     (smtpmail-smtp-user "jakub-w")
+     (smtpmail-local-domain "riseup.net")
+     (smtpmail-default-smtp-server "mail.riseup.net")
+     (smtpmail-smtp-server "mail.riseup.net")
+     (smtpmail-stream-type ssl)
+     (smtpmail-smtp-service 465)
      )
      ;; Include any other accounts here ...
     ))
