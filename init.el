@@ -484,6 +484,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 ;; Ace jump mode for jumping to char
 (use-package ace-jump-mode
   :bind (("C-;" . ace-jump-char-mode)))
+;; TODO: Change to avy (https://github.com/abo-abo/avy)
 
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
