@@ -197,6 +197,12 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   "Creates *MOTD* buffer and switches to it."
   (switch-to-buffer (generate-new-buffer "*MOTD*")))
 
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
