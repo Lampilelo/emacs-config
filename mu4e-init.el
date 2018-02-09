@@ -101,6 +101,9 @@
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
+;; Strip mails from unnecessary data.
+(setq mu4e-user-agent-string nil)
+
 ;; Now I set a list of 
 (defvar my-mu4e-account-alist
   '(("gmail"
