@@ -10,14 +10,14 @@
 (setq mu4e-maildir "~/Mail")
 (setq mu4e-contexts
       `( ,(make-mu4e-context
-	   :name "Gmail"
+	   :name "gmail"
 	   :match-func (lambda (msg) (when msg
 				       (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
 	   :vars '(
 		   (mu4e-trash-folder . "/gmail/[Gmail].Bin")
 		   (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
 	 ,(make-mu4e-context
-	   :name "Yahoo"
+	   :name "yahoo"
 	   :match-func (lambda (msg) (when msg
 				       (string-prefix-p "/yahoo" (mu4e-message-field msg :maildir))))
 	   :vars '(
@@ -25,7 +25,7 @@
 	   	   (mu4e-refile-folder . "yahoo/Archive"))
 	   )
 	 ,(make-mu4e-context
-	   :name "Riseup"
+	   :name "riseup"
 	   :match-func(lambda (msg) (when msg
 				      (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
 	   :vars '(
@@ -95,7 +95,7 @@
 
 ;; Now I set a list of 
 (defvar my-mu4e-account-alist
-  '(("Gmail"
+  '(("gmail"
      (mu4e-sent-folder "/gmail/sent")
      (user-mail-address "cubex7@gmail.com")
      (smtpmail-smtp-user "cubex7")
@@ -104,7 +104,7 @@
      (smtpmail-smtp-server "smtp.gmail.com")
      (smtpmail-smtp-service 587)
      )
-    ("Yahoo"
+    ("yahoo"
      (mu4e-sent-folder "/yahoo/sent")
      (user-mail-address "jakub.wojciech@ymail.com")
      (smtpmail-smtp-user "jakub.wojciech@ymail.com")
@@ -113,7 +113,7 @@
      (smtpmail-smtp-server "smtp.mail.yahoo.com")
      (smtpmail-smtp-service 587)
      )
-    ("Riseup"
+    ("riseup"
      (mu4e-sent-folder "/riseup/Sent")
      (user-mail-address "jakub-w@riseup.net")
      (smtpmail-smtp-user "jakub-w")
