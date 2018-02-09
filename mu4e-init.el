@@ -52,6 +52,13 @@
 	   :query "date:7d..now"
 	   :key ?w)
 	 ,(make-mu4e-bookmark
+	   :name "Sent messages"
+	   :query (concat
+		   "maildir:/gmail/Sent"
+		   " OR maildir:/yahoo/sent"
+		   " OR maildir:/riseup/sent")
+	   :key ?e)
+	 ,(make-mu4e-bookmark
 	   :name "Messages with images"
 	   :query "mime:image/*"
 	   :key ?p)
