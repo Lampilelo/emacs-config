@@ -267,126 +267,158 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 
 (use-package flycheck
   :config
-  (add-hook 'c++-mode-hook 'flycheck-mode)
-  (add-hook 'c-mode-hook 'flycheck-mode)
-  ;; (add-hook 'python-mode-hook 'flycheck-mode)
+  (add-hook 'c-mode-common-hook 'flycheck-mode)
+  (add-hook 'python-mode-hook 'flycheck-mode)
   )
 
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode))
 
-;;(shell-command )
-(use-package rtags
-  :init
-  (setq rtags-path "~/.emacs.d/rtags/build/bin/")
-  ;; helm as backend for displaying
-  (setq rtags-display-result-backend 'helm)
-  :config
-  (rtags-enable-standard-keybindings)
-  (my-print-missing-packages-as-warnings ;check for requirements on host
-   "RTAGS"
-   '("make" "cmake" "gcc" "clang" "git" "doxygen"))
-  ;; Could use rtags package from aur, but it won't work on other systems
-  ;; Maybe search for latest release with python-requests in rtags repo?
-  (if (not (file-exists-p rtags-path))
-      (shell-command "sh ~/.emacs.d/get-rtags.sh"))
-  (rtags-start-process-unless-running)
-  ;; Rebind keys for finding symbols and references
-  :bind (:map c-mode-map
-	      ("C-." . rtags-find-symbol-at-point)
-	      ("C-," . rtags-find-references-at-point)
-	 :map c++-mode-map
-	      ("C-." . rtags-find-symbol-at-point)
-	      ("C-," . rtags-find-references-at-point)))
-
-(use-package company-rtags
-  :init
-  (setq rtags-completions-enabled t)
-  (setq rtags-autostart-diagnostics t)
-  :config
-  (push 'company-rtags company-backends))
-
-(use-package flycheck-rtags
-  :config
-  (add-hook 'c-mode-common-hook
-	    (lambda ()
-	      "Flycheck RTags setup"
-	      (flycheck-select-checker 'rtags)
-		(message "flycheck-rtags lambda")
-	       ;;RTags creates more accurate overlays
-	       (setq-local flycheck-highlighting-mode nil) 
-	       (setq-local flycheck-check-syntax-automatically nil))))
-
-(use-package helm-rtags)
-
-;; TODO: build server if there's a new version
-(use-package irony
-  :config
-  (if (not (file-exists-p "~/.emacs.d/irony/bin/irony-server"))
-      (irony-install-server
-       (format
-	(concat "%s %s %s && %s --build . "
-		"--use-stderr --config Release --target install")
-	(shell-quote-argument irony-cmake-executable)
-	(shell-quote-argument (concat "-DCMAKE_INSTALL_PREFIX="
-				      (expand-file-name
-				       irony-server-install-prefix)))
-	(shell-quote-argument
-	 (or irony-server-source-dir
-	     (expand-file-name "server"
-			       (file-name-directory
-				(find-library-name "irony")))))
-	(shell-quote-argument irony-cmake-executable))))  
-  (add-hook 'c-mode-common-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  :bind (:map irony-mode-map
-	      ([remap completion-at-point] .
-	       irony-completion-at-point-async)
-	      ([remap complete-symbol] .
-	       irony-completion-at-point-async)))
-
-(use-package company-irony
-  :init
-  (setq company-idle-delay 0)
-  :config
-  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-  (add-to-list 'company-backends 'company-irony)
-  :bind (:map c-mode-map ("C-\"" . company-complete)
-	 :map c++-mode-map ("C-\"" . company-complete)))
-
-(use-package flycheck-irony
-  :config
-  (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
-
-;; (use-package company-irony-c-headers
-  ;; :config
-  ;; (eval-after-load 'company
-  ;;   '(add-to-list 'company-backends
-	       ;; '(company-irony-c-headers company-irony))))
-  
 (use-package yasnippet
   :init
   (yas-global-mode 1)
+  :config
   :bind
-  ("C-'" . 'yas-insert-snippet))
+  ("C-'" . 'company-yasnippet))
 (use-package yasnippet-snippets)
 
-(use-package cmake-mode)
+;; ========================= DEPRECATED =========================
+;;                     (left for reference)
 
-(use-package cmake-ide
+;; ;;(shell-command )
+;; (use-package rtags
+;;   :init
+;;   (setq rtags-path "~/.emacs.d/rtags/build/bin/")
+;;   ;; helm as backend for displaying
+;;   (setq rtags-display-result-backend 'helm)
+;;   :config
+;;   (rtags-enable-standard-keybindings)
+;;   (my-print-missing-packages-as-warnings ;check for requirements on host
+;;    "RTAGS"
+;;    '("make" "cmake" "gcc" "clang" "git" "doxygen"))
+;;   ;; Could use rtags package from aur, but it won't work on other systems
+;;   ;; Maybe search for latest release with python-requests in rtags repo?
+;;   (if (not (file-exists-p rtags-path))
+;;       (shell-command "sh ~/.emacs.d/get-rtags.sh"))
+;;   (rtags-start-process-unless-running)
+;;   ;; Rebind keys for finding symbols and references
+;;   :bind (:map c-mode-map
+;; 	      ("C-." . rtags-find-symbol-at-point)
+;; 	      ("C-," . rtags-find-references-at-point)
+;; 	 :map c++-mode-map
+;; 	      ("C-." . rtags-find-symbol-at-point)
+;; 	      ("C-," . rtags-find-references-at-point)))
+
+;; (use-package company-rtags
+;;   :init
+;;   (setq rtags-completions-enabled t)
+;;   (setq rtags-autostart-diagnostics t)
+;;   :config
+;;   (push 'company-rtags company-backends))
+
+;; (use-package flycheck-rtags
+;;   :config
+;;   (add-hook 'c-mode-common-hook
+;; 	    (lambda ()
+;; 	      "Flycheck RTags setup"
+;; 	      (flycheck-select-checker 'rtags)
+;; 		(message "flycheck-rtags lambda")
+;; 	       ;;RTags creates more accurate overlays
+;; 	       (setq-local flycheck-highlighting-mode nil) 
+;; 	       (setq-local flycheck-check-syntax-automatically nil))))
+
+;; (use-package helm-rtags)
+
+;; ;; TODO: build server if there's a new version
+;; (use-package irony
+;;   :config
+;;   (if (not (file-exists-p "~/.emacs.d/irony/bin/irony-server"))
+;;       (irony-install-server
+;;        (format
+;; 	(concat "%s %s %s && %s --build . "
+;; 		"--use-stderr --config Release --target install")
+;; 	(shell-quote-argument irony-cmake-executable)
+;; 	(shell-quote-argument (concat "-DCMAKE_INSTALL_PREFIX="
+;; 				      (expand-file-name
+;; 				       irony-server-install-prefix)))
+;; 	(shell-quote-argument
+;; 	 (or irony-server-source-dir
+;; 	     (expand-file-name "server"
+;; 			       (file-name-directory
+;; 				(find-library-name "irony")))))
+;; 	(shell-quote-argument irony-cmake-executable))))  
+;;   (add-hook 'c-mode-common-hook 'irony-mode)
+;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+;;   :bind (:map irony-mode-map
+;; 	      ([remap completion-at-point] .
+;; 	       irony-completion-at-point-async)
+;; 	      ([remap complete-symbol] .
+;; 	       irony-completion-at-point-async)))
+
+;; (use-package company-irony
+;;   :init
+;;   (setq company-idle-delay 0)
+;;   :config
+;;   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+;;   (add-to-list 'company-backends 'company-irony)
+;;   :bind (:map c-mode-map ("C-\"" . company-complete)
+;; 	 :map c++-mode-map ("C-\"" . company-complete)))
+
+;; (use-package flycheck-irony
+;;   :config
+;;   (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
+
+;; ;; (use-package company-irony-c-headers
+;;   ;; :config
+;;   ;; (eval-after-load 'company
+;;   ;;   '(add-to-list 'company-backends
+;; 	       ;; '(company-irony-c-headers company-irony))))
+
+;; (use-package cmake-mode)
+
+;; (use-package cmake-ide
+;;   :init
+;;   (my-print-missing-packages-as-warnings "CMAKE-IDE" '("cmake"))
+;;   (setq cmake-ide-rdm-executable "~/.emacs.d/rtags/build/bin/rdm")
+;;   (setq cmake-ide-rdm-rc-path "~/.emacs.d/rtags/build/bin/")
+;;   :bind
+;;   (:map c++-mode-map
+;; 	("C-c C-c" . 'cmake-ide-compile)))
+
+;; ;; Eldoc to show function interface in minibuffer
+;; (defun my-eldoc-hook ()
+;;   (setq-local eldoc-documentation-function #'rtags-eldoc))
+;; (add-hook 'c-mode-common-hook 'my-eldoc-hook)
+
+;; ============================================================
+
+
+
+(use-package lsp-mode
+  :config
+  ;; (require 'lsp-flycheck)
+  ;; (require 'lsp-mode)
+  (with-eval-after-load 'lsp-mode
+    (require 'lsp-flycheck))
+  (require 'lsp-mode))
+
+;; (use-package cquery
+;;   :init
+;;   (setq cquery-executable "/usr/bin/cquery")) 
+(use-package cquery
   :init
-  (my-print-missing-packages-as-warnings "CMAKE-IDE" '("cmake"))
-  (setq cmake-ide-rdm-executable "~/.emacs.d/rtags/build/bin/rdm")
-  (setq cmake-ide-rdm-rc-path "~/.emacs.d/rtags/build/bin/")
-  :bind
-  (:map c++-mode-map
-	("C-c C-c" . 'cmake-ide-compile)))
+  (setq cquery-executable "/usr/bin/cquery")
+  (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
+  :config
+  (add-hook 'c-mode-common-hook 'lsp-cquery-enable))
 
-;; Eldoc to show function interface in minibuffer
-(defun my-eldoc-hook ()
-  (setq-local eldoc-documentation-function #'rtags-eldoc))
-(add-hook 'c-mode-common-hook 'my-eldoc-hook)
+(use-package company-lsp
+  :config
+  (push 'company-lsp company-backends)
+  (setq company-transformers nil
+	company-lsp-async t
+	company-lsp-cache-candidates nil))
 
 (use-package highlight-parentheses)
 
@@ -518,15 +550,12 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 (load "~/.emacs.d/mu4e-init.el")
 
 ;; RUST
-(use-package lsp-mode
-  :config
-  (require 'lsp-flycheck))
+;; (use-package lsp-rust
+;;   :config
+;;   (setq lsp-rust-rls-command '("rustup" "run" "nightly" "rls"))
+;;   (add-hook 'rust-mode-hook #'lsp-rust-enable)
+;;   (add-hook 'rust-mode-hook #'flycheck-mode))
 
-(use-package lsp-rust
-  :config
-  (setq lsp-rust-rls-command '("rustup" "run" "nightly" "rls"))
-  (add-hook 'rust-mode-hook #'lsp-rust-enable)
-  (add-hook 'rust-mode-hook #'flycheck-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -535,23 +564,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (inf-ruby yasnippet-snippets lsp-rust ivy-youtube flx mu4e-alert org-bullets counsel swiper multiple-cursors ace-jump-mode latex-preview-pane latex-extra yasnippet yaml-mode whole-line-or-region which-key use-package smartparens monokai-theme magit highlight-parentheses helm-rtags flycheck-rtags flycheck-irony dockerfile-mode company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete undo-tree elpy)))
- '(safe-local-variable-values
-   (quote
-    ((eval set
-	   (make-local-variable
-	    (quote cmake-ide-build-dir))
-	   (concat
-	    (file-name-directory
-	     (let
-		 ((d
-		   (dir-locals-find-file ".")))
-	       (if
-		   (stringp d)
-		   d
-		 (car d))))
-	    "build")))))
- '(send-mail-function (quote smtpmail-send-it)))
+    (company-lsp yasnippet-snippets yaml-mode whole-line-or-region which-key use-package undo-tree tangotango-theme smartparens password-store org-bullets multiple-cursors mu4e-alert monokai-theme magit lsp-rust latex-preview-pane latex-extra ivy-youtube inf-ruby highlight-parentheses helm-rtags flycheck-rtags flycheck-irony flx elpy dockerfile-mode diminish cquery counsel company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
