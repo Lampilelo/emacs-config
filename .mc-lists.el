@@ -9,6 +9,8 @@
 	indent-for-tab-command
 	mark-sexp
 	swiper
+	wdired-next-line
+	wdired-previous-line
 	whole-line-or-region-kill-region
 	whole-line-or-region-kill-ring-save
 	whole-line-or-region-yank
