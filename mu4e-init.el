@@ -35,6 +35,9 @@
 	   )
 	 ))
 
+;; TODO: Moving spam to trash after some time (maybe 7 days)
+;; TODO: sendmail should check for password in password-store. I installed package for pass.
+
 ;; Replace default bookmarks
 (setq mu4e-bookmarks
       `( ,(make-mu4e-bookmark
@@ -64,9 +67,9 @@
 	   :query "mime:image/*"
 	   :key ?p)
 	 ,(make-mu4e-bookmark
-	   :name "Spam (last 7 days)"
+	   :name "Spam (last 3 days)"
 	   ;; Custom bookmark
-	   :query "date:7d..now AND maildir:/gmail/\[Gmail\].Spam"
+	   :query "date:3d..now AND maildir:/gmail/\[Gmail\].Spam"
 	   :key ?s)))
 
 (use-package mu4e-alert
