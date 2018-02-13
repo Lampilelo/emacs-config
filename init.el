@@ -536,7 +536,9 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 ;; Undo tree
 ;; C-x u - undo-tree-visualize
 ;; C-?   - undo-tree-redo
-(use-package undo-tree)
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode 1))
 
 ;; PYTHON
 ;; (use-package company-jedi
