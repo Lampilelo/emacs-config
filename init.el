@@ -47,6 +47,7 @@
 ;; org mode customizations
 (setq org-edit-src-content-indentation 2)
 (setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
 (setq org-startup-indented t)
 (setq org-use-extra-keys t)
 (setq org-todo-keywords
@@ -56,6 +57,9 @@
 	("WAITING" . "gold2")))
 (add-hook 'org-mode-hook 'org-display-inline-images)
 ;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
+(setq org-ellipsis " ↴")
+
+
 (column-number-mode 1)
 (setq split-width-threshold 140)
 (setq split-window-preferred-function (quote split-window-sensibly))
