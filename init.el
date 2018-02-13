@@ -89,6 +89,7 @@
 ;; Note 1: python-pygments needs to be installed
 (setq org-latex-listings 'minted)
 (require 'ox-latex)
+(require 'ox-beamer)
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 
 (setq org-latex-pdf-process
