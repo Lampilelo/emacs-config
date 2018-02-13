@@ -36,6 +36,7 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (setq inhibit-startup-screen t)
+(setq scroll-conservatively 100)
 
 ;; ido mode
 ;; TODO: check out https://masteringemacs.org/article/introduction-to-ido-mode
