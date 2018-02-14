@@ -61,14 +61,12 @@
       '(("IN-PROGRESS" . "yellow1")
 	("WAITING" . "gold2")))
 (add-hook 'org-mode-hook 'org-display-inline-images)
-;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
+(add-hook 'org-mode-hook 'visual-line-mode)
 (setq org-ellipsis " ↴")
 
 ;; org-mode source coloring
 ;; Note 1: python-pygments needs to be installed
 (setq org-latex-listings 'minted)
-(require 'ox-latex)
-(require 'ox-beamer)
 (setq org-export-with-smart-quotes t)
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 
@@ -95,6 +93,11 @@
 ;; Default to polish language for export
 ;; To change language per document add i.e. '#+LANGUAGE: en' to the org file
 (setq org-export-default-language "pl")
+
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook 'org-bullets-mode))
+
 
 ;; TODO: Check if we can convert current mode name to helm-info function
 ;; Relevant symbols:
@@ -162,8 +165,6 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 ;; Custom global keybindings
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-i") 'imenu)
-
-(add-hook 'org-mode-hook 'visual-line-mode)
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
@@ -275,10 +276,6 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 (use-package tangotango-theme
   :config
   (load-theme 'tangotango t))
-
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook 'org-bullets-mode))
 
 (use-package auto-complete)
 
