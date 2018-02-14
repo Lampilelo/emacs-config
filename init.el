@@ -60,6 +60,21 @@
 ;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
 (setq org-ellipsis " ↴")
 
+;; org-mode source coloring
+;; Note 1: python-pygments needs to be installed
+(setq org-latex-listings 'minted)
+(require 'ox-latex)
+(require 'ox-beamer)
+(setq org-export-with-smart-quotes t)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+(load "~/.emacs.d/org-agenda-init.el")
+
 ;; Polish quotation marks
 (push
  '("pl"
@@ -130,19 +145,6 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 ;; Set default browser for opening links
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "vivaldi")
-
-;; org-mode source coloring
-;; Note 1: python-pygments needs to be installed
-(setq org-latex-listings 'minted)
-(require 'ox-latex)
-(require 'ox-beamer)
-(setq org-export-with-smart-quotes t)
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-
-(setq org-latex-pdf-process
-      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 ;; C++ default options
 (setq c-default-style "linux"
