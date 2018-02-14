@@ -280,7 +280,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 (use-package auto-complete)
 
 ;; IVY
-(use-package flx)
+(use-package flx)  ;better matching for Ivy
+(use-package smex) ;better M-x, remembers frequently used commands
 (use-package ivy
   :init
   ;; use fuzzy regex for everything but swiper
