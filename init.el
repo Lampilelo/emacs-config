@@ -35,6 +35,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(global-hl-line-mode)
 (setq inhibit-startup-screen t)
 (setq scroll-conservatively 100)
 
