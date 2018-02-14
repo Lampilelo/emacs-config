@@ -60,6 +60,19 @@
 ;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
 (setq org-ellipsis " ↴")
 
+;; Polish quotation marks
+(push
+ '("pl"
+   (opening-double-quote :utf-8 "„" :html "&bdquo;" :latex ",," :texinfo "@quotedblbase{}")
+   (closing-double-quote :utf-8 "”" :html "&rdquo;" :latex "''" :texinfo "@quotedblright{}")
+   (opening-single-quote :utf-8 "‚" :html "&sbquo;" :latex "," :texinfo "@quotesinglbase{}")
+   (closing-single-quote :utf-8 "’" :html "&rsquo;" :latex "'" :texinfo "@quoteright{}")
+   (apostrophe :utf-8 "’" :html "&rsquo;"))
+ org-export-smart-quotes-alist)
+;; Default to polish language for export
+;; To change language per document add i.e. '#+LANGUAGE: en' to the org file
+(setq org-export-default-language "pl")
+
 ;; TODO: Check if we can convert current mode name to helm-info function
 ;; Revelant symbols:
 ;;   helm-default-info-index-list, helm-info-search-index
@@ -124,6 +137,7 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 (setq org-latex-listings 'minted)
 (require 'ox-latex)
 (require 'ox-beamer)
+(setq org-export-with-smart-quotes t)
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 
 (setq org-latex-pdf-process
