@@ -78,7 +78,7 @@
 (setq org-export-default-language "pl")
 
 ;; TODO: Check if we can convert current mode name to helm-info function
-;; Revelant symbols:
+;; Relevant symbols:
 ;;   helm-default-info-index-list, helm-info-search-index
 (defun my-contextual-helm-info (&optional generic-info)
   "If there is known defun for helm-info-<MODE> for current major mode, call it.
