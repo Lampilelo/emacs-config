@@ -465,9 +465,6 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
     (require 'lsp-flycheck))
   (require 'lsp-mode))
 
-;; (use-package cquery
-;;   :init
-;;   (setq cquery-executable "/usr/bin/cquery")) 
 (use-package cquery
   :init
   (setq cquery-executable "/usr/bin/cquery")
@@ -498,7 +495,6 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (add-hook 'c-mode-common-hook 'highlight-parentheses-mode)
   (add-hook 'emacs-lisp-mode-hook 'highlight-parentheses-mode))
 
-;; TODO: check out https://github.com/Fuco1/smartparens/wiki#information-for-new-users
 (use-package smartparens
   :config
   (require 'smartparens-config)
@@ -525,8 +521,6 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   ;; How do you load mode before package is loaded?
   :init
   (which-key-mode 1)
-  ;; Below is probably temporary
-  ;; TODO: Change this binding
   :bind ("C-*" . which-key-show-top-level))
 
 (use-package whole-line-or-region
@@ -578,7 +572,6 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 ;; Ace jump mode for jumping to char
 (use-package ace-jump-mode
   :bind (("C-;" . ace-jump-char-mode)))
-;; TODO: Change to avy (https://github.com/abo-abo/avy)
 
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
