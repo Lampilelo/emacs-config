@@ -335,7 +335,13 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (yas-global-mode 1)
   :config
   :bind
-  ("C-'" . 'company-yasnippet))
+  ;; In company-search-mode company-active-map is used
+  ;; We need to exit that mode to call company-yasnippet
+  ;; Also we pass all needed args to it
+  ("C-'" . (lambda (command &optional arg &rest ignore)
+	     (interactive (list 'interactive))
+	     (company-abort)
+	     (company-yasnippet command arg ignore))))
 (use-package yasnippet-snippets)
 
 ;; ========================= DEPRECATED =========================
