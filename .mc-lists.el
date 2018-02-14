@@ -6,7 +6,10 @@
 	ace-jump-char-mode
 	ace-jump-move
 	counsel-M-x
+	electric-newline-and-maybe-indent
 	indent-for-tab-command
+	isearch-forward-regexp
+	isearch-printing-char
 	mark-sexp
 	swiper
 	wdired-next-line
