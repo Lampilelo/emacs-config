@@ -42,3 +42,6 @@
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
 (define-key global-map (kbd "C-c c") 'org-capture)
+
+(define-key org-agenda-mode-map (kbd "M-p") 'org-agenda-priority-up)
+(define-key org-agenda-mode-map (kbd "M-n") 'org-agenda-priority-down)
