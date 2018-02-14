@@ -60,6 +60,39 @@
 ;; (add-hook 'org-mode-hook #'visual-line-mode) ;; TODO: check it out
 (setq org-ellipsis " ↴")
 
+;; TODO: Check if we can convert current mode name to helm-info function
+;; Revelant symbols:
+;;   helm-default-info-index-list, helm-info-search-index
+(defun my-contextual-helm-info (&optional generic-info)
+  "If there is known defun for helm-info-<MODE> for current major mode, call it.
+Otherwise call helm-info.
+
+With a prefix argument \\[universal-argument], just call generic helm-info."
+  (interactive "P")
+  (catch 'placeholder ;because normal return sucks, TODO: refactor this!
+    (when generic-info			;if universal prefix argument is used
+    (funcall 'helm-info)		;call helm-info and exit
+    (throw 'placeholder "Defun called with a prefix argument"))
+       (let ((defun-to-call
+	       (intern 		;call defun by name
+		 (let ((current-mode 	;get mode name that matches helm-info
+			(downcase (replace-regexp-in-string
+				   "-mode" "" (symbol-name major-mode)))))
+
+		   ;; Get defun name, e.g. helm-info-cpp
+		   ;; Some modes are called differently in helm, so we need
+		   ;; to rename them before evaluating
+		   (concat "helm-info-"	;
+			   (cond ((equal current-mode "c++") "cpp")
+				 ((equal current-mode "emacs-lisp") "elisp")
+				 (t current-mode)))))))
+
+	 ;; check if helm-info-CURRENT_MODE exists, if so - call it
+	 ;; otherwise call generic helm-info
+	 (if (not (eq (symbol-function defun-to-call) nil))
+	     (funcall defun-to-call)
+	   (funcall 'helm-info)))))
+(global-set-key (kbd "C-h h") 'my-contextual-helm-info)
 
 (column-number-mode 1)
 (setq split-width-threshold 140)
