@@ -63,10 +63,14 @@
 ;; Polish quotation marks
 (push
  '("pl"
-   (opening-double-quote :utf-8 "„" :html "&bdquo;" :latex ",," :texinfo "@quotedblbase{}")
-   (closing-double-quote :utf-8 "”" :html "&rdquo;" :latex "''" :texinfo "@quotedblright{}")
-   (opening-single-quote :utf-8 "‚" :html "&sbquo;" :latex "," :texinfo "@quotesinglbase{}")
-   (closing-single-quote :utf-8 "’" :html "&rsquo;" :latex "'" :texinfo "@quoteright{}")
+   (opening-double-quote :utf-8 "„"  :html "&bdquo;"
+			 :latex ",," :texinfo "@quotedblbase{}")
+   (closing-double-quote :utf-8 "”"  :html "&rdquo;"
+			 :latex "''" :texinfo "@quotedblright{}")
+   (opening-single-quote :utf-8 "‚"  :html "&sbquo;"
+			 :latex "," :texinfo "@quotesinglbase{}")
+   (closing-single-quote :utf-8 "’"  :html "&rsquo;"
+			 :latex "'" :texinfo "@quoteright{}")
    (apostrophe :utf-8 "’" :html "&rsquo;"))
  org-export-smart-quotes-alist)
 ;; Default to polish language for export
@@ -84,37 +88,32 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
   (interactive "P")
   (catch 'placeholder ;because normal return sucks, TODO: refactor this!
     (when generic-info			;if universal prefix argument is used
-    (funcall 'helm-info)		;call helm-info and exit
-    (throw 'placeholder "Defun called with a prefix argument"))
-       (let ((defun-to-call
-	       (intern 		;call defun by name
-		 (let ((current-mode 	;get mode name that matches helm-info
-			(downcase (replace-regexp-in-string
-				   "-mode" "" (symbol-name major-mode)))))
+      (funcall 'helm-info)		;call helm-info and exit
+      (throw 'placeholder "Defun called with a prefix argument"))
+    (let ((defun-to-call
+	    (intern 		;call defun by name
+	     (let ((current-mode 	;get mode name that matches helm-info
+		    (downcase (replace-regexp-in-string
+			       "-mode" "" (symbol-name major-mode)))))
 
-		   ;; Get defun name, e.g. helm-info-cpp
-		   ;; Some modes are called differently in helm, so we need
-		   ;; to rename them before evaluating
-		   (concat "helm-info-"	;
-			   (cond ((equal current-mode "c++") "cpp")
-				 ((equal current-mode "emacs-lisp") "elisp")
-				 (t current-mode)))))))
+	       ;; Get defun name, e.g. helm-info-cpp
+	       ;; Some modes are called differently in helm, so we need
+	       ;; to rename them before evaluating
+	       (concat "helm-info-"	;
+		       (cond ((equal current-mode "c++") "cpp")
+			     ((equal current-mode "emacs-lisp") "elisp")
+			     (t current-mode)))))))
 
-	 ;; check if helm-info-CURRENT_MODE exists, if so - call it
-	 ;; otherwise call generic helm-info
-	 (if (not (eq (symbol-function defun-to-call) nil))
-	     (funcall defun-to-call)
-	   (funcall 'helm-info)))))
+      ;; check if helm-info-CURRENT_MODE exists, if so - call it
+      ;; otherwise call generic helm-info
+      (if (not (eq (symbol-function defun-to-call) nil))
+	  (funcall defun-to-call)
+	(funcall 'helm-info)))))
 (global-set-key (kbd "C-h h") 'my-contextual-helm-info)
 
 (column-number-mode 1)
 (setq split-width-threshold 140)
 (setq split-window-preferred-function (quote split-window-sensibly))
-
-;; Transparent emacs
-;;                                        (<active> . <inactive)
-; (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-; (add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 
 ;; autosaves
 ;; create the autosave dir if necessary, since emacs won't.
@@ -173,13 +172,13 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 - If arg is any other value, set the urgency.
 
 If you unset the urgency, you still have to visit the frame to make the urgency setting disappear (at least in KDE)."
-    (let* ((wm-hints (append (x-window-property 
-                "WM_HINTS" frame "WM_HINTS" source nil t) nil))
-     (flags (car wm-hints)))
+  (let* ((wm-hints (append (x-window-property 
+			    "WM_HINTS" frame "WM_HINTS" source nil t) nil))
+	 (flags (car wm-hints)))
     (setcar wm-hints
-        (if arg
-        (logior flags #x100)
-          (logand flags (lognot #x100))))
+	    (if arg
+		(logior flags #x100)
+	      (logand flags (lognot #x100))))
     (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
 
 (defun x-urgent (&optional arg)
@@ -193,13 +192,13 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 (defun my-find-package-on-host (name)
   "Checks host system for package NAME.
 Returns path on success, nil on failure."
-(let ((cmd-output
-      (substring
-       (shell-command-to-string (concat "which " name))
-       0 -1)))	;substring because shell-command returns \n sign at the end
-  ;; Return nil if not found and command output if found
-  (when (not (string-equal cmd-output (concat name " not found")))
-    cmd-output)))
+  (let ((cmd-output
+	 (substring
+	  (shell-command-to-string (concat "which " name))
+	  0 -1)))	;substring because shell-command returns \n sign at the end
+    ;; Return nil if not found and command output if found
+    (when (not (string-equal cmd-output (concat name " not found")))
+      cmd-output)))
 
 (defun my-find-python-package (name)
   "Checks host system for python package NAME.
@@ -226,7 +225,7 @@ Returns list of missing packages or nil if didn't found any missing."
 	       ;; if python 
 	       (or (my-find-package-on-host item)
 		   (my-find-python-package item)))) ;if package wasn't found
-      (add-to-list 'result item)))
+	(add-to-list 'result item)))
     result))
 
 (defun my-print-missing-packages-as-warnings
@@ -283,10 +282,10 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :init
   ;; use fuzzy regex for everything but swiper
   (setq ivy-re-builders-alist
-      '((t . ivy--regex-fuzzy)
-        (swiper . ivy--regex-plus)
-	(counsel-git . ivy--regex-plus)
-	(counsel-git-grep . ivy--regex-plus)))
+	'((t . ivy--regex-fuzzy)
+	  (swiper . ivy--regex-plus)
+	  (counsel-git . ivy--regex-plus)
+	  (counsel-git-grep . ivy--regex-plus)))
   :config
   (ivy-mode t))
 (use-package swiper
@@ -513,9 +512,9 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (my-print-missing-packages-as-warnings "MAGIT" '("git"))
   ;; set up ssh-agent
   (setenv "SSH_AUTH_SOCK"
-	(concat
-	 (getenv "XDG_RUNTIME_DIR")
-	 "/ssh-agent.socket"))
+	  (concat
+	   (getenv "XDG_RUNTIME_DIR")
+	   "/ssh-agent.socket"))
   :bind ("C-x g" . magit-status))
 
 (use-package which-key
@@ -565,13 +564,13 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
     :config
     (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
 
-; preview buffer for LaTeX
+;; preview buffer for LaTeX
 (use-package latex-preview-pane
   :config
   (latex-preview-pane-enable)
   (add-hook 'LaTeX-mode-hook 'latex-preview-pane-mode))
 
-; emacs' notifications.el
+;; emacs' notifications.el
 (use-package notifications)
 
 ;; Ace jump mode for jumping to char
