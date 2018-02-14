@@ -46,6 +46,10 @@
 ;; (ido-mode 1)
 
 ;; org mode customizations
+(require 'org)
+(require 'org-agenda)
+(require 'ox-latex)
+(require 'ox-beamer)
 (setq org-edit-src-content-indentation 2)
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
