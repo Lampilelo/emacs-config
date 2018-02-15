@@ -291,7 +291,10 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 	  (counsel-git . ivy--regex-plus)
 	  (counsel-git-grep . ivy--regex-plus)))
   :config
-  (ivy-mode t))
+  (ivy-mode t)
+  :bind (:map ivy-mode-map
+	      ("C-s" . 'ivy-toggle-fuzzy)))
+
 (use-package swiper
   :bind
   (("C-s" . swiper)
