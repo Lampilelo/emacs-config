@@ -513,6 +513,18 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (forward-char))
 (global-set-key (kbd "M-(") 'my-wrap-round)
 
+(defun my-kill-hybrid-sexp ()
+  "Kill a line respecting delimiters. Used second time kills the delimiter and everything up to the next delimiter."
+  (interactive)
+  (if (member (char-to-string (char-after))
+	      (loop for (left . right) in sp-pair-list
+		    collect right))
+      (progn (delete-char 1)
+	     (when (not (looking-at "\n"))
+	       (sp-kill-hybrid-sexp (point))))
+    (sp-kill-hybrid-sexp (point))))
+(define-key c-mode-base-map (kbd "C-k") 'my-kill-hybrid-sexp)
+
 (use-package magit
   :init
   (my-print-missing-packages-as-warnings "MAGIT" '("git"))
