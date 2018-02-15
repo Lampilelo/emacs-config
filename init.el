@@ -502,6 +502,17 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   ;; (global-set-key (kbd "M-r") 'sp-raise-sexp) ;replaces parent with the child
   (global-set-key (kbd "M-'") 'sp-rewrap-sexp))
 
+(defun my-wrap-round ()
+  "Wrap the following sexp in parentheses."
+  (interactive)
+  (save-excursion
+    (insert "(")
+    (forward-sexp)
+    (insert ")"))
+  (indent-sexp)
+  (forward-char))
+(global-set-key (kbd "M-(") 'my-wrap-round)
+
 (use-package magit
   :init
   (my-print-missing-packages-as-warnings "MAGIT" '("git"))
@@ -603,6 +614,12 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 ;; MAIL
 (load "~/.emacs.d/mu4e-init.el")
 
+;; password-store
+;; https://git.zx2c4.com/password-store/tree/contrib/emacs/README.md
+;; For smtp auth check defun smtpmail-try-auth-methods in smtpmail.el
+(use-package password-store)
+
+
 ;; RUST
 ;; (use-package lsp-rust
 ;;   :config
@@ -618,7 +635,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company-lsp yasnippet-snippets yaml-mode whole-line-or-region which-key use-package undo-tree tangotango-theme smartparens password-store org-bullets multiple-cursors mu4e-alert monokai-theme magit lsp-rust latex-preview-pane latex-extra ivy-youtube inf-ruby highlight-parentheses helm-rtags flycheck-rtags flycheck-irony flx elpy dockerfile-mode diminish cquery counsel company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete ace-jump-mode))))
+    (surfraw company-lsp yasnippet-snippets yaml-mode whole-line-or-region which-key use-package undo-tree tangotango-theme smartparens password-store org-bullets multiple-cursors mu4e-alert monokai-theme magit lsp-rust latex-preview-pane latex-extra ivy-youtube inf-ruby highlight-parentheses helm-rtags flycheck-rtags flycheck-irony flx elpy dockerfile-mode diminish cquery counsel company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
