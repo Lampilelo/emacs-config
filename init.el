@@ -481,21 +481,9 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 	company-lsp-async t
 	company-lsp-cache-candidates nil))
 
-(use-package highlight-parentheses)
-
-(use-package autopair
+(use-package highlight-parentheses
   :config
-  ;; (add-hook 'highlight-parentheses-mode-hook
-  ;; 	    '(lambda ()
-  ;; 	       (setq autopair-handle-action-fns
-  ;; 		     (append
-  ;; 		      (if autopair-handle-action-fns
-  ;; 			  autopair-handle-action-fns
-  ;; 			'(autopair-default-handle-action))
-  ;; 		      '((lambda (action pair pos-before)
-  ;; 			  (hl-paren-color-update)))))))
-  (add-hook 'c-mode-common-hook 'highlight-parentheses-mode)
-  (add-hook 'emacs-lisp-mode-hook 'highlight-parentheses-mode))
+  (global-highlight-parentheses-mode))
 
 (use-package smartparens
   :config
