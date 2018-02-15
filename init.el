@@ -490,10 +490,17 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (require 'smartparens-config)
   (show-smartparens-global-mode +1)
   (smartparens-global-mode 1)
+  ;; smartparens-strict-mode changes kill commands to omit parens
+  ;; TODO: add keybindings for manipulating sexpressions in elisp mode
+  (add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
   (sp-with-modes '(c-mode c++-mode)
     (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET")))
     (sp-local-pair "/*" "*/" :post-handlers '((" | " "SPC")
-					      ("* ||\n[i]" "RET")))))
+					      ("* ||\n[i]" "RET"))))
+
+  (global-set-key (kbd "C-M-t") 'sp-transpose-sexp)
+  ;; (global-set-key (kbd "M-r") 'sp-raise-sexp) ;replaces parent with the child
+  (global-set-key (kbd "M-'") 'sp-rewrap-sexp))
 
 (use-package magit
   :init
