@@ -62,7 +62,7 @@
 	("WAITING" . "gold2")))
 (add-hook 'org-mode-hook 'org-display-inline-images)
 (add-hook 'org-mode-hook 'visual-line-mode)
-(setq org-ellipsis " ↴")
+;; (setq org-ellipsis " ↴")
 
 ;; org-mode source coloring
 ;; Note 1: python-pygments needs to be installed
