@@ -484,6 +484,35 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 	company-lsp-async t
 	company-lsp-cache-candidates nil))
 
+;; TODO: use (or create) something more generic.
+(defun my-cpp-git-compile ()
+  "Compiles current git project in the \"build\" directory.
+
+Also checks if there is \"compile_commands.json\" file in the project root directory. If not, links to the one in \"build\".
+
+TEMPORARY FUNCTION"
+  (interactive)
+  (when (eq major-mode 'c++-mode)	;check if in c++-mode
+    (let* ((project-dir (vc-find-root buffer-file-name ".git")))
+      ;; make build directory if it doesn't exist
+      (when (not (file-exists-p (concat project-dir "build")))
+	(make-directory (concat project-dir "build")))
+      ;; run cmake and make from inside build dir
+      (compile (concat "cd " project-dir "build && "
+		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
+		       "make"))
+      ;; check if cquery is active and if compile_commands.json exists
+      ;; if both conditions aren't met, create link to compile_commands.json
+      ;;    and try to enable cquery afterwards
+      (when (not (or lsp--cur-workspace
+		     (file-exists-p (concat project-dir
+					    "compile_commands.json"))))
+	(async-shell-command (concat "ln -s "
+			       project-dir "build/compile_commands.json "
+			       project-dir "compile_commands.json"))
+	(lsp-cquery-enable)))))
+(define-key c++-mode-map (kbd "C-c C-c") 'my-cpp-git-compile)
+
 (use-package highlight-parentheses
   :config
   (global-highlight-parentheses-mode))
