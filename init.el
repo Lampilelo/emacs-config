@@ -548,7 +548,7 @@ TEMPORARY FUNCTION"
     (insert ")"))
   (indent-sexp)
   (forward-char))
-(global-set-key (kbd "M-(") 'my-wrap-round)
+(global-set-key (kbd "C-(") 'my-wrap-round)
 
 (defun my-kill-hybrid-sexp ()
   "Kill a line respecting delimiters. Used second time kills the delimiter and everything up to the next delimiter."
