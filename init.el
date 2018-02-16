@@ -512,6 +512,11 @@ TEMPORARY FUNCTION"
 			       project-dir "compile_commands.json"))
 	(lsp-cquery-enable)))))
 (define-key c++-mode-map (kbd "C-c C-c") 'my-cpp-git-compile)
+(define-key c++-mode-map (kbd "C-.") 'xref-find-definitions-other-window)
+
+(use-package helm-xref
+  :config
+  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 
 (use-package highlight-parentheses
   :config
