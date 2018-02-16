@@ -329,8 +329,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 (use-package flycheck
   :config
   (add-hook 'c-mode-common-hook 'flycheck-mode)
-  (add-hook 'python-mode-hook 'flycheck-mode)
-  )
+  (add-hook 'python-mode-hook 'flycheck-mode))
 
 (use-package company
   :config
