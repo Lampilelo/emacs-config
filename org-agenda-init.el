@@ -33,11 +33,20 @@
 (setq org-log-done 'time)
 
 ;; Capture templates for quickly adding notes
+;; Check out ORG INFO capture<1> for documentation
 (setq org-capture-templates
       '(("t" "Todo"
 	 entry
 	 (file+headline org-index-file "Inbox")
-	 "* TODO %?\nCREATED: %u\n")))
+	 "* TODO %?\nCREATED: %u\n")
+	("p" "Programming note"
+	 entry
+	 (file+headline (org-file-path "Notes.org") "Programming")
+	 "* %?\n---\nCREATED: %u\n")
+	("n" "Note"
+	 entry
+	 (file+headline (org-file-path "Notes.org") "Other")
+	 "* %?\n---\nCREATED: %u\n")))
 
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
