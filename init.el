@@ -165,6 +165,7 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 ;; Custom global keybindings
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-i") 'imenu)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
