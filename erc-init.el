@@ -27,20 +27,29 @@
   (message "ERC config: file ~/.etc/passwords NOT FOUND"))
 
 ;; logs
-(require 'erc-log)
-(erc-log-enable)
+;; (require 'erc-log)
+;; (add-hook 'erc-mode-hook 'erc-log-mode)
+;; (erc-log-enable)
+(add-hook 'erc-mode-hook '(lambda ()
+			    (erc-log-mode)
+			    (erc-log-enable)))
 (setq erc-log-channels-directory "~/.erc/logs/")
 (setq erc-save-buffer-on-part t)
 (setq erc-log-insert-log-on-open t)
 ;; load modules
-(require 'erc-services)
-(setq erc-services-enable t)
-(add-to-list 'erc-modules 'notifications)
-(setq erc-notifications-enable t)
+;; (require 'erc-services)
+(add-hook 'erc-mode-hook '(lambda ()
+			    (erc-services-mode)
+			    (add-to-list 'erc-modules 'notifications)
+			    (erc-services-enable)))
+;; (setq erc-notifications-enable t)
+;; (erc-services-enable)
+;; (setq erc-services-enable 1)
+
 (setq erc-notifications-icon "/usr/share/icons/hicolor/128x128/apps/emacs.png")
 
 ;; auto-join channels
-(erc-autojoin-mode 0)
+(add-hook 'erc-mode-hook 'erc-autojoin-mode)
 (setq erc-autojoin-channels-alist
       '((".*rizon.*" "#krasnale")))
 (add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
