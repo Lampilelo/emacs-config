@@ -687,15 +687,6 @@ TEMPORARY FUNCTION"
 ;;   (add-hook 'rust-mode-hook #'lsp-rust-enable)
 ;;   (add-hook 'rust-mode-hook #'flycheck-mode))
 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (surfraw company-lsp yasnippet-snippets yaml-mode whole-line-or-region which-key use-package undo-tree tangotango-theme smartparens password-store org-bullets multiple-cursors mu4e-alert monokai-theme magit lsp-rust latex-preview-pane latex-extra ivy-youtube inf-ruby highlight-parentheses helm-rtags flycheck-rtags flycheck-irony flx elpy dockerfile-mode diminish cquery counsel company-rtags company-irony-c-headers company-irony cmake-mode cmake-ide autopair auto-complete ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
