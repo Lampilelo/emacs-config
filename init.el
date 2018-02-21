@@ -629,6 +629,7 @@ TEMPORARY FUNCTION"
 
 ;; preview buffer for LaTeX
 (use-package latex-preview-pane
+  :pin melpa
   :config
   (latex-preview-pane-enable)
   (add-hook 'LaTeX-mode-hook 'latex-preview-pane-mode))
