@@ -303,7 +303,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 (use-package counsel
   :bind
   (("M-x" . counsel-M-x)
-   ("C-x C-f" . counsel-find-file)
+   ;; ("C-x C-f" . counsel-find-file) ;; switched to helm
    ("<f1> f" . counsel-describe-function)
    ("<f1> v" . counsel-describe-variable)
    ("<f1> l" . counsel-find-library)
@@ -322,6 +322,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   (require 'helm-buffers)
   :bind
   (("C-x f" . helm-for-files)
+   ("C-x C-f" . helm-find-files)
+   ("C-x b" . helm-buffers-list)
    ("C-x C-b" . helm-buffers-list)
    :map helm-buffer-map
    ("C-k" . helm-buffer-run-kill-persistent)
