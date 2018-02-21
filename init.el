@@ -466,7 +466,8 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 
 ;; ============================================================
 
-
+;; Load cc-mode so that c++-mode-map is not void.
+(require 'cc-mode)
 
 (use-package lsp-mode
   :config
