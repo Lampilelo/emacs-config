@@ -75,6 +75,10 @@
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
+;; Use pdf-tools instead of doc-view
+(use-package pdf-tools)
+;; to uninstall you have to call (pdf-tools-uninstall)
+
 (load "~/.emacs.d/org-agenda-init.el")
 
 ;; Polish quotation marks
