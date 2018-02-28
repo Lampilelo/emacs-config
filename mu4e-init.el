@@ -46,7 +46,7 @@
 	   ;; Modified bookmark. Doesn't include spam in unread messages
 	   :query (concat
 		   "flag:unread AND NOT flag:trashed "
-		   "AND NOT maildir:/gmail/\[Gmail\].Spam")
+		   "AND NOT maildir:/gmail/[Gmail].Spam")
 	   :key ?u)
 	 ,(make-mu4e-bookmark
 	   :name "Today's messages"
@@ -59,9 +59,9 @@
 	 ,(make-mu4e-bookmark
 	   :name "Sent messages"
 	   :query (concat
-		   "maildir:/gmail/Sent"
-		   " OR maildir:/yahoo/sent"
-		   " OR maildir:/riseup/sent")
+		   "maildir:/gmail/[Gmail].Sent\\ Mail"
+		   " OR maildir:/yahoo/Sent"
+		   " OR maildir:/riseup/Sent")
 	   :key ?e)
 	 ,(make-mu4e-bookmark
 	   :name "Messages with images"
@@ -70,7 +70,7 @@
 	 ,(make-mu4e-bookmark
 	   :name "Spam (last 3 days)"
 	   ;; Custom bookmark
-	   :query "date:3d..now AND maildir:/gmail/\[Gmail\].Spam"
+	   :query "date:3d..now AND maildir:/gmail/[Gmail].Spam"
 	   :key ?s)))
 
 (use-package mu4e-alert
@@ -80,7 +80,7 @@
   (setq mu4e-alert-interesting-mail-query
 	;; (concat
 	;;  "flag:unread AND NOT flag:trashed "
-	;;  "AND NOT maildir:/gmail/\[Gmail\].Spam")
+	;;  "AND NOT maildir:/gmail/[Gmail].Spam")
 	(concat
 	 "flag:unread maildir:/gmail/Inbox "
 	 "OR "
@@ -111,7 +111,7 @@
 ;; Now I set a list of 
 (defvar my-mu4e-account-alist
   '(("gmail"
-     (mu4e-sent-folder "/gmail/sent")
+     (mu4e-sent-folder "/gmail/[Gmail].Sent\ Mail")
      (user-mail-address "cubex7@gmail.com")
      (smtpmail-smtp-user "cubex7")
      (smtpmail-local-domain "gmail.com")
@@ -120,7 +120,7 @@
      (smtpmail-smtp-service 587)
      )
     ("yahoo"
-     (mu4e-sent-folder "/yahoo/sent")
+     (mu4e-sent-folder "/yahoo/Sent")
      (user-mail-address "jakub.wojciech@ymail.com")
      (smtpmail-smtp-user "jakub.wojciech@ymail.com")
      (smtpmail-local-domain "ymail.com")
