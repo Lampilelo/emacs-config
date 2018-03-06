@@ -8,6 +8,9 @@
 (define-key mu4e-view-mode-map (kbd "C-c C-o") 'org-open-at-point)
 (setq mu4e-compose-context-policy 'pick-first)
 
+;; Custom command for updating email.
+(setq mu4e-get-mail-command "systemctl --user start mbsync@$USER.service")
+
 (setq mu4e-change-filenames-when-moving t)
 (setq mu4e-maildir "~/Mail")
 (setq mu4e-contexts
