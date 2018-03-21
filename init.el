@@ -76,7 +76,9 @@
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 ;; Use pdf-tools instead of doc-view
-(use-package pdf-tools)
+(use-package pdf-tools
+  :config
+  (pdf-tools-install))
 ;; to uninstall you have to call (pdf-tools-uninstall)
 
 (load "~/.emacs.d/org-agenda-init.el")
