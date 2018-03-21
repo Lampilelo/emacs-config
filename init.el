@@ -473,12 +473,15 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
   :config
   ;; (require 'lsp-flycheck)
   ;; (require 'lsp-mode)
-  (with-eval-after-load 'lsp-mode
-    (require 'lsp-flycheck))
   (require 'lsp-mode)
   :bind
   (:map c++-mode-map
 	("C-c r" . 'lsp-rename)))
+
+(use-package lsp-ui
+  :config
+  (require 'lsp-ui)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
 (use-package cquery
   :init
