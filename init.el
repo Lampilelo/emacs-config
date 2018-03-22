@@ -60,6 +60,8 @@
 (setq org-todo-keyword-faces
       '(("IN-PROGRESS" . "yellow1")
 	("WAITING" . "gold2")))
+;; Enable changing width of an image in org with #+ATTR_ORG: :width <width>
+(setq org-image-actual-width nil)
 (add-hook 'org-mode-hook 'org-display-inline-images)
 (add-hook 'org-mode-hook 'visual-line-mode)
 ;; (setq org-ellipsis " ↴")
