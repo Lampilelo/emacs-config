@@ -4,7 +4,8 @@
 
 (global-set-key (kbd "C-x m") 'mu4e)
 (define-key message-mode-map (kbd "C-c C-a") 'mail-add-attachment)
-(define-key message-mode-map (kbd "C-c C-s") 'mml-secure-message-sign)
+(define-key message-mode-map (kbd "C-c s") 'mml-secure-message-sign)
+(define-key message-mode-map (kbd "C-c e") 'mml-secure-message-sign-encrypt)
 (define-key mu4e-view-mode-map (kbd "C-c C-o") 'org-open-at-point)
 (setq mu4e-compose-context-policy 'pick-first)
 
