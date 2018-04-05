@@ -1,0 +1,5 @@
+# -*- mode: c++ -*-
+# name: New line endl
+# key: ne
+# --
+"\n";
