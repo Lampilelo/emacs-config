@@ -6,7 +6,8 @@
 (package-initialize)
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
-	("gnu" . "http://elpa.gnu.org/packages/")))
+	("gnu" . "https://elpa.gnu.org/packages/")
+	("org" . "https://orgmode.org/elpa/")))
 
 ;; Privacy and security while downloading packages
 ;; it needs gnutls(-bin) and python-certifi packages to work
@@ -46,6 +47,9 @@
 ;; (ido-mode 1)
 
 ;; org mode customizations
+(use-package org
+  :ensure org-plus-contrib
+  :pin org)
 (require 'org)
 (require 'org-agenda)
 (require 'ox-latex)
