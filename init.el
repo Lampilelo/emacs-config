@@ -690,6 +690,21 @@ TEMPORARY FUNCTION"
 ;; For smtp auth check defun smtpmail-try-auth-methods in smtpmail.el
 (use-package password-store)
 
+;; elfeed - for rss feeds
+(use-package elfeed)
+(defun my-elfeed-open-yt-video ()
+    (interactive)
+  "Opens a youtube video in the current entry using MPV."
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+	     do (elfeed-untag entry 'unread)
+	     when (elfeed-entry-link entry)
+	     do (message (shell-command-to-string
+		  (concat "i3-msg exec mpv \"" it "\""))))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+(define-key elfeed-search-mode-map (kbd "v") 'my-elfeed-open-yt-video)
+
 
 ;; RUST
 ;; (use-package lsp-rust
