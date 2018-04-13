@@ -15,3 +15,6 @@
 	    ;; else
 	    (message "Could not determine song title or artist.\nPlease check if metadata is present in current playing file (ID3 tags for mp3, Vorbis comments for flac, etc.)"))))
     (message "MOC Player is not running.")))
+
+;; key for refreshing lyrics if there's playing a new song
+(define-key lyrics-show-mode-map (kbd "g") 'my-lyrics)
