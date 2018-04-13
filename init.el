@@ -691,7 +691,20 @@ TEMPORARY FUNCTION"
 (use-package password-store)
 
 ;; elfeed - for rss feeds
-(use-package elfeed)
+(use-package elfeed
+  :config
+  (setq elfeed-feeds
+   (quote
+    ("http://techtalk.today/rss"
+     "http://feeds.feedburner.com/linuxunplugged"
+     "http://linuxactionnews.com/rss"
+     "http://www.jupiterbroadcasting.com/show/linux-action-news/feed/"
+     "https://www.youtube.com/feeds/videos.xml?channel_id=UCkRmQ_G_NbdbCQMpALg6UPg"
+     "https://www.youtube.com/feeds/videos.xml?channel_id=UCkVdb9Yr8fc05_VbAVfskCA"
+     "https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA"
+     "https://www.youtube.com/feeds/videos.xml?channel_id=UChWv6Pn_zP0rI6lgGt3MyfA"
+     "https://www.youtube.com/feeds/videos.xml?channel_id=UCsxn3qKFpbnD-8f1d9F5ipA"
+     "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NO8MgTQKHAWXp6z8Xl7yQ"))))
 (defun my-elfeed-open-yt-video ()
     (interactive)
   "Opens a youtube video in the current entry using MPV."
