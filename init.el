@@ -718,6 +718,10 @@ TEMPORARY FUNCTION"
     (unless (use-region-p) (forward-line))))
 (define-key elfeed-search-mode-map (kbd "v") 'my-elfeed-open-yt-video)
 
+;; lyrics
+(use-package lyrics
+  :config
+  (load "~/.emacs.d/my-lyrics.el"))
 
 ;; RUST
 ;; (use-package lsp-rust
