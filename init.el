@@ -712,6 +712,12 @@ TEMPORARY FUNCTION"
   :config
   (load "~/.emacs.d/my-lyrics.el"))
 
+;; eww customization
+
+(use-package eww
+  :config
+  (load "~/.emacs.d/eww-init.el"))
+
 ;; RUST
 ;; (use-package lsp-rust
 ;;   :config
