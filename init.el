@@ -145,6 +145,23 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 	(funcall 'helm-info)))))
 (global-set-key (kbd "C-h h") 'my-contextual-helm-info)
 
+;; bind M-RET to open files externally with helm
+(define-key helm-find-files-map (kbd "M-RET") 'helm-ff-run-open-file-with-default-tool)
+(define-key helm-generic-files-map (kbd "M-RET") 'helm-ff-run-open-file-with-default-tool)
+
+;; bind M-RET to open files externally with dired
+(defun dired-open-file-with-default-tool ()
+  (interactive)
+  "Open FILE with the default tool on this platform."
+  (dired-do-shell-command
+   (cond ((eq system-type 'gnu/linux)
+	  "xdg-open")
+	 ((or (eq system-type 'darwin) ;; Mac OS X
+	      (eq system-type 'macos)) ;; Mac OS 9
+	  "open"))
+   nil (dired-get-marked-files)))
+(define-key dired-mode-map (kbd "M-RET") 'dired-open-file-with-default-tool)
+
 (column-number-mode 1)
 (setq split-width-threshold 140)
 (setq split-window-preferred-function (quote split-window-sensibly))
