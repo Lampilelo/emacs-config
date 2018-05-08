@@ -18,3 +18,5 @@
 
 ;; key for refreshing lyrics if there's playing a new song
 (define-key lyrics-show-mode-map (kbd "g") 'my-lyrics)
+(define-key lyrics-show-mode-map (kbd "n") 'scroll-up-line)
+(define-key lyrics-show-mode-map (kbd "p") 'scroll-down-line)
