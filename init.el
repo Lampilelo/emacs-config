@@ -302,14 +302,20 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 
 ;; TODO: customize company theming for tangotango and remove monokai
 ;; or customize coloring in monokai
-(use-package monokai-theme
-  :config
-  (load-theme 'monokai t)
-  (set-face-attribute 'default nil :height 120))
+;; (use-package monokai-theme
+;;   :config
+;;   (load-theme 'monokai t)
+;;   (set-face-attribute 'default nil :height 120))
 
-(use-package tangotango-theme
-  :config
-  (load-theme 'tangotango t))
+;; (use-package tangotango-theme
+;;   :config
+;;   (load-theme 'tangotango t))
+
+(load-theme 'leuven t)
+(set-face-attribute 'default nil :height 120)
+(eval-after-load 'leuven (set-background-color "#FFFFF7"))
+
+
 
 (use-package auto-complete)
 
