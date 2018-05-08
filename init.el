@@ -146,8 +146,12 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 (global-set-key (kbd "C-h h") 'my-contextual-helm-info)
 
 ;; bind M-RET to open files externally with helm
-(define-key helm-find-files-map (kbd "M-RET") 'helm-ff-run-open-file-with-default-tool)
-(define-key helm-generic-files-map (kbd "M-RET") 'helm-ff-run-open-file-with-default-tool)
+p(eval-after-load "helm-files"
+  '(progn
+     (define-key helm-find-files-map (kbd "M-RET")
+       'helm-ff-run-open-file-with-default-tool)
+     (define-key helm-generic-files-map (kbd "M-RET")
+       'helm-ff-run-open-file-with-default-tool)))
 
 ;; bind M-RET to open files externally with dired
 (defun dired-open-file-with-default-tool ()
