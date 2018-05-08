@@ -561,6 +561,7 @@ TEMPORARY FUNCTION"
 	(lsp-cquery-enable)))))
 (define-key c++-mode-map (kbd "C-c C-c") 'my-cpp-git-compile)
 (define-key c++-mode-map (kbd "C-.") 'xref-find-definitions-other-window)
+(define-key c++-mode-map (kbd "M-i") 'counsel-imenu)
 
 (use-package helm-xref
   :config
