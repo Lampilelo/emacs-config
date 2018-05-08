@@ -627,6 +627,7 @@ TEMPORARY FUNCTION"
   ;; How do you load mode before package is loaded?
   :init
   (which-key-mode 1)
+  (global-unset-key (kbd "C-h C-h"))	;unbind conflicting key binding
   :bind ("C-*" . which-key-show-top-level))
 
 (use-package whole-line-or-region
