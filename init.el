@@ -313,9 +313,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 
 (load-theme 'leuven t)
 (set-face-attribute 'default nil :height 120)
-(eval-after-load 'leuven (set-background-color "#FFFFF7"))
-
-
+(custom-set-faces `(default ((t (:background "#FFFFF7")))))
 
 (use-package auto-complete)
 
