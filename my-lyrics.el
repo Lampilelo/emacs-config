@@ -20,3 +20,6 @@
 (define-key lyrics-show-mode-map (kbd "g") 'my-lyrics)
 (define-key lyrics-show-mode-map (kbd "n") 'scroll-up-line)
 (define-key lyrics-show-mode-map (kbd "p") 'scroll-down-line)
+(define-key lyrics-show-mode-map (kbd "G") '(lambda () (interactive)
+					      (setq current-prefix-arg "t")
+					      (call-interactively 'lyrics)))
