@@ -11,6 +11,8 @@
 	isearch-forward-regexp
 	isearch-printing-char
 	mark-sexp
+	sp-delete-char
+	sp-kill-word
 	swiper
 	wdired-next-line
 	wdired-previous-line
@@ -22,4 +24,5 @@
 (setq mc/cmds-to-run-once
       '(
 	end-of-buffer
+	sp-backward-delete-char
 	))
