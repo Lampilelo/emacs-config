@@ -726,19 +726,21 @@ TEMPORARY FUNCTION"
 ;; elfeed - for rss feeds
 (use-package elfeed
   :config
-  (load "~/.emacs.d/elfeed_settings.el"))
-(defun my-elfeed-open-yt-video ()
+  (defun my-elfeed-open-yt-video ()
     (interactive)
-  "Opens a youtube video in the current entry using MPV."
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-	     do (elfeed-untag entry 'unread)
-	     when (elfeed-entry-link entry)
-	     do (message (shell-command-to-string
-		  (concat "i3-msg exec mpv \"" it "\""))))
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
-(define-key elfeed-search-mode-map (kbd "v") 'my-elfeed-open-yt-video)
+    "Opens a youtube video in the current entry using MPV."
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+	       do (elfeed-untag entry 'unread)
+	       when (elfeed-entry-link entry)
+	       do (message (shell-command-to-string
+			    (concat "i3-msg exec mpv \"" it "\""))))
+      (mapc #'elfeed-search-update-entry entries)
+      (unless (use-region-p) (forward-line))))
+  (defun my-elfeed-open-link () (interactive) (my-elfeed-open-yt-video))
+  (define-key elfeed-search-mode-map (kbd "v") 'my-elfeed-open-link)
+  (load "~/.emacs.d/elfeed_settings.el") ;overrites my-elfeed-open-link
+)
 
 ;; lyrics
 (use-package lyrics
