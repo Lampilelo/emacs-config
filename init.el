@@ -373,7 +373,9 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 
 (use-package company
   :config
-  (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+  :bind
+  ("C-\"" . company-complete))
 
 (use-package yasnippet
   :init
