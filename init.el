@@ -563,6 +563,10 @@ TEMPORARY FUNCTION"
 (define-key c++-mode-map (kbd "C-.") 'xref-find-definitions-other-window)
 (define-key c++-mode-map (kbd "M-i") 'counsel-imenu)
 
+(use-package meson-mode
+  :config
+  (my-print-missing-packages-as-warnings "MESON-MODE" '("meson")))
+
 (use-package helm-xref
   :config
   (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
