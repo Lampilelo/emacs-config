@@ -305,22 +305,46 @@ FILE-NAME is path to the file."
   (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
     (find-file tramp-file-name)))
 
-;; ==================== PACKAGES ====================
+(defun my-term-command (command &optional term-name pop-buffer)
+  "Run COMMAND in term-mode in the default shell.
 
-;; TODO: customize company theming for tangotango and remove monokai
-;; or customize coloring in monokai
-;; (use-package monokai-theme
-;;   :config
-;;   (load-theme 'monokai t)
-;;   (set-face-attribute 'default nil :height 120))
+TERM-NAME will be the buffer name, if nil it defaults to *term*.
 
-;; (use-package tangotango-theme
-;;   :config
-;;   (load-theme 'tangotango t))
+If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in current."
+  (interactive (let ((command (read-string "Command: ")))
+		 (list command)))
+  (let ((term-name (or term-name "term"))) ;default value for TERM-NAME
+    (set-buffer (apply 'make-term term-name
+  		       (getenv "SHELL")
+  		       nil
+  		       (list "-c" command)))
+    (term-mode)
+    (term-char-mode)
+    (if pop-buffer
+	(pop-to-buffer (concat "*" term-name "*"))
+      (switch-to-buffer (concat "*" term-name "*")))))
+
+  ;; ==================== PACKAGES ====================
+
+  ;; TODO: customize company theming for tangotango and remove monokai
+  ;; or customize coloring in monokai
+  ;; (use-package monokai-theme
+  ;;   :config
+  ;;   (load-theme 'monokai t)
+  ;;   (set-face-attribute 'default nil :height 120))
+
+  ;; (use-package tangotango-theme
+  ;;   :config
+  ;;   (load-theme 'tangotango t))
 
 (load-theme 'leuven t)
 (set-face-attribute 'default nil :height 120)
-(custom-set-faces `(default ((t (:background "#FFFFF7")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:background "#FFFFF7")))))
 
 (use-package auto-complete)
 
