@@ -137,6 +137,7 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 	       (concat "helm-info-"	;
 		       (cond ((equal current-mode "c++") "cpp")
 			     ((equal current-mode "emacs-lisp") "elisp")
+			     ((equal current-mode "lisp-interaction") "elisp")
 			     (t current-mode)))))))
 
       ;; check if helm-info-CURRENT_MODE exists, if so - call it
