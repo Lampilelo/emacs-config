@@ -39,6 +39,7 @@
 (global-hl-line-mode)
 (setq inhibit-startup-screen t)
 (setq scroll-conservatively 100)
+(setq sentence-end-double-space nil)
 
 ;; ido mode
 ;; TODO: check out https://masteringemacs.org/article/introduction-to-ido-mode
