@@ -1,7 +1,6 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+;;; init.el --- Initialization file for Emacs
+;;; Commentary: Emacs Startup File --- initialization for Emacs
+
 (require 'package)
 (package-initialize)
 (setq package-archives
@@ -118,6 +117,7 @@
 (defun my-contextual-helm-info (&optional generic-info)
   "If there is known defun for helm-info-<MODE> for current major mode, call it.
 Otherwise call helm-info.
+If GENERIC-INFO is non-nil, call generic helm-info.
 
 With a prefix argument \\[universal-argument], just call generic helm-info."
   (interactive "P")
@@ -157,8 +157,8 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 
 ;; bind M-RET to open files externally with dired
 (defun dired-open-file-with-default-tool ()
-  (interactive)
   "Open FILE with the default tool on this platform."
+  (interactive)
   (dired-do-shell-command
    (cond ((eq system-type 'gnu/linux)
 	  "xdg-open")
@@ -209,13 +209,13 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 
 ;; Got it from here: http://www.draketo.de/light/english/emacs/babcore
 (defun x-urgency-hint (frame arg &optional source)
-  "Set the x-urgency hint for the frame to arg: 
+  "Set the x-urgency hint for the FRAME to ARG:
 
 - If arg is nil, unset the urgency.
 - If arg is any other value, set the urgency.
 
 If you unset the urgency, you still have to visit the frame to make the urgency setting disappear (at least in KDE)."
-  (let* ((wm-hints (append (x-window-property 
+  (let* ((wm-hints (append (x-window-property
 			    "WM_HINTS" frame "WM_HINTS" source nil t) nil))
 	 (flags (car wm-hints)))
     (setcar wm-hints
@@ -225,7 +225,7 @@ If you unset the urgency, you still have to visit the frame to make the urgency 
     (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
 
 (defun x-urgent (&optional arg)
-  "Mark the current emacs frame as requiring urgent attention. 
+  "Mark the current Emacs frame as requiring urgent attention.
 
 With a prefix argument which does not equal a boolean value of nil, remove the urgency flag (which might or might not change display, depending on the window manager)."
   (interactive "P")
@@ -233,7 +233,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
     (x-urgency-hint frame (not arg))))
 
 (defun my-find-package-on-host (name)
-  "Checks host system for package NAME.
+  "Check host system for package NAME.
 Returns path on success, nil on failure."
   (let ((cmd-output
 	 (substring
@@ -244,7 +244,7 @@ Returns path on success, nil on failure."
       cmd-output)))
 
 (defun my-find-python-package (name)
-  "Checks host system for python package NAME.
+  "Check host system for python package NAME.
 Returns path on success, nil of failure."
   (let ((result
 	 (replace-regexp-in-string
@@ -257,15 +257,16 @@ Returns path on success, nil of failure."
       result)))
 
 (defun my-check-missing-packages-on-host (package-list &optional python)
-  "Checks host system for packages.
-PACKAGE-LIST is a list of strings. If PYTHON is not nil it checks also for python packages.
+  "Check host system for packages.
+PACKAGE-LIST is a list of strings. If PYTHON is not nil it checks also for
+python packages.
 Returns list of missing packages or nil if didn't found any missing."
   (let ((result (list)))
     (dolist (item package-list)
       (when (not
 	     (if (not python)
 		 (my-find-package-on-host item)
-	       ;; if python 
+	       ;; if python
 	       (or (my-find-package-on-host item)
 		   (my-find-python-package item)))) ;if package wasn't found
 	(add-to-list 'result item)))
@@ -273,8 +274,9 @@ Returns list of missing packages or nil if didn't found any missing."
 
 (defun my-print-missing-packages-as-warnings
     (warn-type package-list &optional python) ;args
-  "Checks list of packages and displays warning if found any missing.
-WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not nil it checks also for python packages."
+  "Check list of packages and display warning if found any missing.
+WARN-TYPE can be a name of package that requres PACKAGE-LIST.
+If PYTHON is not nil it checks also for python packages."
   (let ((missing-packages
 	 (my-check-missing-packages-on-host package-list python)))
     (when missing-packages
@@ -435,7 +437,7 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 ;; 	      (flycheck-select-checker 'rtags)
 ;; 		(message "flycheck-rtags lambda")
 ;; 	       ;;RTags creates more accurate overlays
-;; 	       (setq-local flycheck-highlighting-mode nil) 
+;; 	       (setq-local flycheck-highlighting-mode nil)
 ;; 	       (setq-local flycheck-check-syntax-automatically nil))))
 
 ;; (use-package helm-rtags)
@@ -536,9 +538,10 @@ WARN-TYPE can be a name of package that requres PACKAGE-LIST. If PYTHON is not n
 
 ;; TODO: use (or create) something more generic.
 (defun my-cpp-git-compile ()
-  "Compiles current git project in the \"build\" directory.
+  "Compile current git project in the \"build\" directory.
 
-Also checks if there is \"compile_commands.json\" file in the project root directory. If not, links to the one in \"build\".
+Also checks if there is \"compile_commands.json\" file in the project 
+root directory. If not, links to the one in \"build\".
 
 TEMPORARY FUNCTION"
   (interactive)
@@ -606,7 +609,8 @@ TEMPORARY FUNCTION"
 (global-set-key (kbd "C-(") 'my-wrap-round)
 
 (defun my-kill-hybrid-sexp ()
-  "Kill a line respecting delimiters. Used second time kills the delimiter and everything up to the next delimiter."
+  "Kill a line respecting delimiters.
+Used second time kills the delimiter and everything up to the next delimiter."
   (interactive)
   (if (member (char-to-string (char-after))
 	      (loop for (left . right) in sp-pair-list
@@ -762,9 +766,5 @@ TEMPORARY FUNCTION"
 ;;   (add-hook 'rust-mode-hook #'lsp-rust-enable)
 ;;   (add-hook 'rust-mode-hook #'flycheck-mode))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(provide 'init)
+;;; init.el ends here
