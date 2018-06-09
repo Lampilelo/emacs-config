@@ -295,11 +295,12 @@ If PYTHON is not nil it checks also for python packages."
 
 ;; MOTD
 (defun my-create-motd-buffer ()
-  "Creates *MOTD* buffer and switches to it."
+  "Create *MOTD* buffer and switch to it."
   (switch-to-buffer (generate-new-buffer "*MOTD*")))
 
 (defun sudo-find-file (file-name)
-  "Like find file, but opens the file as root."
+  "Like find file, but open the file as root.
+FILE-NAME is path to the file."
   (interactive "FSudo Find File: ")
   (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
     (find-file tramp-file-name)))
