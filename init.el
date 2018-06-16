@@ -37,7 +37,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(global-hl-line-mode)
+;; (global-hl-line-mode) ;; slows down next-line nad previous-line
 (setq inhibit-startup-screen t)
 (setq scroll-conservatively 100)
 (setq sentence-end-double-space nil)
