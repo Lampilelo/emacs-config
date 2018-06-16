@@ -1,12 +1,12 @@
 (defun my-lyrics ()
-  (interactive)
   "Gets lyrics for a song playing in MOC player. Requires lyrics package."
+  (interactive)
   ;; check if mocp is running
   (if (file-exists-p (concat (getenv "HOME")"/.moc/pid"))
       ;; check if mocp is playing
       (if (string-equal (shell-command-to-string "mocp -Q %file") "\n")
 	  (message "MOC is not playing anything.")
-	(let* ((artist (string-remove-suffix "\n" (shell-command-to-string "mocp -Q %artist")))
+	(let ((artist (string-remove-suffix "\n" (shell-command-to-string "mocp -Q %artist")))
 	       (song (string-remove-suffix "\n" (shell-command-to-string "mocp -Q %song"))))
 	  ;; if both artist and song are not empty
 	  (if (not (or (string-empty-p artist)
