@@ -1,3 +1,6 @@
+;; THIS FILE SHOULD NOT BE EVALUATED
+;; It stores non-used functions as examples and reference
+
 (defun my-tablify ()
     (interactive)
   (goto-char (region-end))
