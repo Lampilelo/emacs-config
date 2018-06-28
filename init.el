@@ -563,35 +563,121 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 	company-lsp-async t
 	company-lsp-cache-candidates nil))
 
-;; TODO: use (or create) something more generic.
-(defun my-cpp-git-compile ()
-  "Compile current git project in the \"build\" directory.
+;; Obsolete
+;; (defun my-cpp-git-compile ()
+;;   "Compile current git project in the \"build\" directory.
 
-Also checks if there is \"compile_commands.json\" file in the project 
-root directory. If not, links to the one in \"build\".
+;; Also checks if there is \"compile_commands.json\" file in the project
+;; root directory. If not, links to the one in \"build\".
 
-TEMPORARY FUNCTION"
+;; TEMPORARY FUNCTION"
+;;   (interactive)
+;;   (when (eq major-mode 'c++-mode)	;check if in c++-mode
+;;     (let* ((project-dir (vc-find-root buffer-file-name ".git")))
+;;       ;; make build directory if it doesn't exist
+;;       (when (not (file-exists-p (concat project-dir "build")))
+;; 	(make-directory (concat project-dir "build")))
+;;       ;; run cmake and make from inside build dir
+;;       (compile (concat "cd " project-dir "build && "
+;; 		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
+;; 		       "make"))
+;;       ;; check if cquery is active and if compile_commands.json exists
+;;       ;; if both conditions aren't met, create link to compile_commands.json
+;;       ;;    and try to enable cquery afterwards
+;;       (when (not (or lsp--cur-workspace
+;; 		     (file-exists-p (concat project-dir
+;; 					    "compile_commands.json"))))
+;; 	(async-shell-command (concat "ln -s "
+;; 			       project-dir "build/compile_commands.json "
+;; 			       project-dir "compile_commands.json"))
+;; 	(lsp-cquery-enable)))))
+
+
+;; C++ compile functions
+(defvar my/c++-build-systems-alist
+  '(("meson.build" . my/c++-meson-compile)
+   ("CMakeLists.txt" . my/c++-cmake-compile))
+  "List of filenames that determine which build-system is used with
+corresponding function symbols to call when compiling with this system.")
+
+
+(defun my/c++-create-compile-commands-link (project-root build-dir)
+  "Create symbolic link to compile_commands.json from BUILD-DIR to
+PROJECT-ROOT.
+
+BUILD-DIR is just a name of directory in PROJECT-ROOT, not whole path.
+
+For internal use only!"
+  (when (not (file-exists-p (concat project-root "compile_commands.json")))
+    (message "compile_commands doesn't exist")
+      (make-symbolic-link
+       (concat project-root build-dir "/compile_commands.json")
+       (concat project-root "compile_commands.json")
+       t)))
+
+
+(defun my/c++-meson-compile (project-root)
+  "Compile C++ project using Meson build system.
+
+PROJECT-ROOT is the root directory of the project you want to compile.
+
+Function uses PROJECT-ROOT/builddir for its build directory and ninja as
+a backend for compilation."
+  ;; if builddir directory doesn't exist, create it
+  (when (not (file-exists-p (concat project-root "builddir")))
+    (shell-command "meson builddir"))
+  ;; create symbolic link to compile_commands.json in the project root dir
+  ;; if it doesn't already exist
+  (my/c++-create-compile-commands-link project-root "builddir")
+  ;; compile using ninja
+  (compile (concat "cd " project-root "builddir && " "ninja")))
+
+
+(defun my/c++-cmake-compile (project-root)
+  "Compile C++ project using CMake build system.
+
+PROJECT-ROOT is the root directory of the project you want to compile.
+
+Function uses PROJECT-ROOT/build for its build directory."
+  ;; if build directory doesn't exist, create it
+  (when (not (file-exists-p (concat project-root "build")))
+    (make-directory (concat project-root "build")))
+  ;; create symbolic link to compile_commands.json in the project root dir
+  ;; if it doesn't already exist
+  (my/c++-create-compile-commands-link project-root "build")
+  ;; run cmake and make from inside build directory
+  (compile (concat "cd " project-root "build && "
+		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
+		       "make")))
+
+
+;; (assoc-default "CMakeLists.txt" my/c++-build-systems-alist)
+;; TODO: When compile_commands.json is a broken symbolic link in the project
+;;       root, function doesn't work (cquery--get-root returns error).
+;;       Maybe ask to initialize a project?
+(defun my/c++-compile ()
+  "Compile current C++ project using detected build system."
   (interactive)
   (when (eq major-mode 'c++-mode)	;check if in c++-mode
-    (let* ((project-dir (vc-find-root buffer-file-name ".git")))
-      ;; make build directory if it doesn't exist
-      (when (not (file-exists-p (concat project-dir "build")))
-	(make-directory (concat project-dir "build")))
-      ;; run cmake and make from inside build dir
-      (compile (concat "cd " project-dir "build && "
-		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
-		       "make"))
-      ;; check if cquery is active and if compile_commands.json exists
-      ;; if both conditions aren't met, create link to compile_commands.json
-      ;;    and try to enable cquery afterwards
-      (when (not (or lsp--cur-workspace
-		     (file-exists-p (concat project-dir
-					    "compile_commands.json"))))
-	(async-shell-command (concat "ln -s "
-			       project-dir "build/compile_commands.json "
-			       project-dir "compile_commands.json"))
-	(lsp-cquery-enable)))))
-(define-key c++-mode-map (kbd "C-c C-c") 'my-cpp-git-compile)
+    (let ((project-root
+	   ;; check if cquery found root dir, return nil if not
+	   (or (condition-case nil (cquery--get-root) (error nil))
+	       ;; if cquery didn't find root, find it by git
+	       (vc-git-root buffer-file-name))))
+      (if project-root			;if project-root not found, var is nil
+	  (progn
+	    ;; check list of build systems and call appropriate compile func
+	    (dolist (element my/c++-build-systems-alist)
+	      (when (file-exists-p (concat project-root (car element)))
+		(funcall (cdr element) project-root)))
+	    (lsp-cquery-enable))
+	;; else (when project root directory was not found)
+	(message "Project's root directory not found. \
+Please initialize version control or build-system project.")))))
+
+;; End of C++ compile functions
+
+(define-key c++-mode-map (kbd "C-c C-c") 'my/c++-compile)
 (define-key c++-mode-map (kbd "C-.") 'xref-find-definitions-other-window)
 (define-key c++-mode-map (kbd "M-i") 'counsel-imenu)
 
