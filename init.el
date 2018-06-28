@@ -650,6 +650,17 @@ Function uses PROJECT-ROOT/build for its build directory."
 		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
 		       "make")))
 
+(defun my/c++-find-project-root ()
+  "Find project root.
+
+Returns string of absolute path to project root directory or nil if not found."
+  (condition-case nil
+      (file-truename (or
+		      ;; check if cquery found root dir, return nil if not
+		      (condition-case nil (cquery--get-root) (error nil))
+		      ;; if cquery didn't find root, find it by git
+		      (vc-git-root buffer-file-name)))
+    (error nil)))
 
 ;; (assoc-default "CMakeLists.txt" my/c++-build-systems-alist)
 ;; TODO: When compile_commands.json is a broken symbolic link in the project
@@ -659,11 +670,7 @@ Function uses PROJECT-ROOT/build for its build directory."
   "Compile current C++ project using detected build system."
   (interactive)
   (when (eq major-mode 'c++-mode)	;check if in c++-mode
-    (let ((project-root
-	   ;; check if cquery found root dir, return nil if not
-	   (or (condition-case nil (cquery--get-root) (error nil))
-	       ;; if cquery didn't find root, find it by git
-	       (vc-git-root buffer-file-name))))
+    (let ((project-root (my/c++-find-project-root)))
       (if project-root			;if project-root not found, var is nil
 	  (progn
 	    ;; check list of build systems and call appropriate compile func
