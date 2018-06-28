@@ -654,13 +654,12 @@ Function uses PROJECT-ROOT/build for its build directory."
   "Find project root.
 
 Returns string of absolute path to project root directory or nil if not found."
-  (condition-case nil
-      (file-truename (or
-		      ;; check if cquery found root dir, return nil if not
-		      (condition-case nil (cquery--get-root) (error nil))
-		      ;; if cquery didn't find root, find it by git
-		      (vc-git-root buffer-file-name)))
-    (error nil)))
+  (ignore-errors
+    (file-truename (or
+		    ;; check if cquery found root dir, return nil if not
+		    (ignore-errors (cquery--get-root))
+		    ;; if cquery didn't find root, find it by git
+		    (vc-git-root buffer-file-name)))))
 
 ;; (assoc-default "CMakeLists.txt" my/c++-build-systems-alist)
 ;; TODO: When compile_commands.json is a broken symbolic link in the project
