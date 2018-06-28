@@ -1,3 +1,4 @@
+;; TODO: save lyrics to a song file with mid3v2 (check ~/Notes/mid3v2.org)
 (defun my-lyrics ()
   "Gets lyrics for a song playing in MOC player. Requires lyrics package."
   (interactive)
