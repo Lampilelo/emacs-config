@@ -714,7 +714,7 @@ Please initialize version control or build-system project.")))))
 
   (global-set-key (kbd "C-M-t") 'sp-transpose-sexp)
   ;; (global-set-key (kbd "M-r") 'sp-raise-sexp) ;replaces parent with the child
-  (global-set-key (kbd "M-'") 'sp-rewrap-sexp))
+  (global-set-key (kbd "M-(") 'sp-rewrap-sexp))
 
 (defun my-wrap-round ()
   "Wrap the following sexp in parentheses."
