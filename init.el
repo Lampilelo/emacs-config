@@ -808,7 +808,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; Ace jump mode for jumping to char
 (use-package ace-jump-mode
-  :bind (("C-;" . ace-jump-char-mode)))
+  :bind (("C-;" . ace-jump-char-mode)
+	 ("C-:" . ace-jump-word-mode)
+	 ("C-M-;" . ace-jump-line-mode)))
 
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
