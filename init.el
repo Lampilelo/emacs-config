@@ -325,18 +325,18 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 	(pop-to-buffer (concat "*" term-name "*"))
       (switch-to-buffer (concat "*" term-name "*")))))
 
-  ;; ==================== PACKAGES ====================
+;; ==================== PACKAGES ====================
 
-  ;; TODO: customize company theming for tangotango and remove monokai
-  ;; or customize coloring in monokai
-  ;; (use-package monokai-theme
-  ;;   :config
-  ;;   (load-theme 'monokai t)
-  ;;   (set-face-attribute 'default nil :height 120))
+;; TODO: customize company theming for tangotango and remove monokai
+;; or customize coloring in monokai
+;; (use-package monokai-theme
+;;   :config
+;;   (load-theme 'monokai t)
+;;   (set-face-attribute 'default nil :height 120))
 
-  ;; (use-package tangotango-theme
-  ;;   :config
-  ;;   (load-theme 'tangotango t))
+;; (use-package tangotango-theme
+;;   :config
+;;   (load-theme 'tangotango t))
 
 (load-theme 'leuven t)
 (set-face-attribute 'default nil :height 120)
