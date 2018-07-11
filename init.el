@@ -596,13 +596,13 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 
 ;; C++ compile functions
 (defvar my/c++-build-systems-alist
-  '(("meson.build" . my/c++-meson-compile)
-    ("CMakeLists.txt" . my/c++-cmake-compile))
+  '(("meson.build" . my/c++--meson-compile)
+    ("CMakeLists.txt" . my/c++--cmake-compile))
   "List of filenames that determine which build-system is used with
 corresponding function symbols to call when compiling with this system.")
 
 
-(defun my/c++-create-compile-commands-link (project-root build-dir)
+(defun my/c++--create-compile-commands-link (project-root build-dir)
   "Create symbolic link to compile_commands.json from BUILD-DIR to
 PROJECT-ROOT.
 
@@ -617,7 +617,7 @@ For internal use only!"
      t)))
 
 
-(defun my/c++-meson-compile (project-root)
+(defun my/c++--meson-compile (project-root)
   "Compile C++ project using Meson build system.
 
 PROJECT-ROOT is the root directory of the project you want to compile.
@@ -629,12 +629,12 @@ a backend for compilation."
     (shell-command "meson builddir"))
   ;; create symbolic link to compile_commands.json in the project root dir
   ;; if it doesn't already exist
-  (my/c++-create-compile-commands-link project-root "builddir")
+  (my/c++--create-compile-commands-link project-root "builddir")
   ;; compile using ninja
   (compile (concat "cd " project-root "builddir && " "ninja")))
 
 
-(defun my/c++-cmake-compile (project-root)
+(defun my/c++--cmake-compile (project-root)
   "Compile C++ project using CMake build system.
 
 PROJECT-ROOT is the root directory of the project you want to compile.
@@ -645,13 +645,13 @@ Function uses PROJECT-ROOT/build for its build directory."
     (make-directory (concat project-root "build")))
   ;; create symbolic link to compile_commands.json in the project root dir
   ;; if it doesn't already exist
-  (my/c++-create-compile-commands-link project-root "build")
+  (my/c++--create-compile-commands-link project-root "build")
   ;; run cmake and make from inside build directory
   (compile (concat "cd " project-root "build && "
 		   "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
 		   "make")))
 
-(defun my/c++-find-project-root ()
+(defun my/c++--find-project-root ()
   "Find project root.
 
 Returns string of absolute path to project root directory or nil if not found."
@@ -670,7 +670,7 @@ Returns string of absolute path to project root directory or nil if not found."
   "Compile current C++ project using detected build system."
   (interactive)
   (when (eq major-mode 'c++-mode)	;check if in c++-mode
-    (let ((project-root (my/c++-find-project-root)))
+    (let ((project-root (my/c++--find-project-root)))
       (if project-root			;if project-root not found, var is nil
 	  (progn
 	    ;; check list of build systems and call appropriate compile func
