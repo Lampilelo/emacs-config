@@ -1,5 +1,5 @@
 # -*- mode: c++ -*-
-# name: New line endl
-# key: ne
+# name: new_line_quotes
+# key: nq
 # --
-"\n";
+"\n";$0
