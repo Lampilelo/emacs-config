@@ -413,14 +413,17 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
   :init
   (yas-global-mode 1)
   :config
+  (defun my-company-yasnippet (command &optional arg &rest ignore)
+    (interactive (list 'interactive))
+    "In company-search-mode company-active-map is used.
+We need to exit that mode to call company-yasnippet."
+    (company-abort)
+    (company-yasnippet command arg ignore))
   :bind
   ;; In company-search-mode company-active-map is used
   ;; We need to exit that mode to call company-yasnippet
   ;; Also we pass all needed args to it
-  ("C-'" . (lambda (command &optional arg &rest ignore)
-	     (interactive (list 'interactive))
-	     (company-abort)
-	     (company-yasnippet command arg ignore))))
+  ("C-'" . 'my-company-yasnippet))
 (use-package yasnippet-snippets)
 
 ;; ========================= DEPRECATED =========================
