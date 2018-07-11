@@ -305,6 +305,7 @@ FILE-NAME is path to the file."
   (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
     (find-file tramp-file-name)))
 
+;; TERM
 (defun my-term-command (command &optional term-name pop-buffer)
   "Run COMMAND in term-mode in the default shell.
 
