@@ -704,10 +704,10 @@ Please initialize version control or build-system project.")))))
   :config
   (require 'smartparens-config)
   (show-smartparens-global-mode +1)
-  (smartparens-global-mode 1)
+  ;; (smartparens-global-mode 1)
   ;; smartparens-strict-mode changes kill commands to omit parens
   ;; TODO: add keybindings for manipulating sexpressions in elisp mode
-  (add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
+  ;; (add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
   (sp-with-modes '(c-mode c++-mode)
     (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET")))
     (sp-local-pair "/*" "*/" :post-handlers '((" | " "SPC")
@@ -716,6 +716,8 @@ Please initialize version control or build-system project.")))))
   (global-set-key (kbd "C-M-t") 'sp-transpose-sexp)
   ;; (global-set-key (kbd "M-r") 'sp-raise-sexp) ;replaces parent with the child
   (global-set-key (kbd "M-(") 'sp-rewrap-sexp))
+
+(electric-pair-mode)
 
 (defun my-wrap-round ()
   "Wrap the following sexp in parentheses."
