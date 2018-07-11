@@ -597,7 +597,7 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 ;; C++ compile functions
 (defvar my/c++-build-systems-alist
   '(("meson.build" . my/c++-meson-compile)
-   ("CMakeLists.txt" . my/c++-cmake-compile))
+    ("CMakeLists.txt" . my/c++-cmake-compile))
   "List of filenames that determine which build-system is used with
 corresponding function symbols to call when compiling with this system.")
 
@@ -867,8 +867,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
       (unless (use-region-p) (forward-line))))
   (defun my-elfeed-open-link () (interactive) (my-elfeed-open-yt-video))
   (define-key elfeed-search-mode-map (kbd "v") 'my-elfeed-open-link)
-  (load "~/.emacs.d/elfeed_settings.el") ;overrites my-elfeed-open-link
-)
+  (load "~/.emacs.d/elfeed_settings.el")) ;overrites my-elfeed-open-link
 
 ;; lyrics
 (use-package lyrics
