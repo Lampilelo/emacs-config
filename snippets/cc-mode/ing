@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# key: ing
+# --
+#ifndef ${1:project_file_h}
+#define $1
+
+$0
+
+#endif // $1
