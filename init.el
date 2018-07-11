@@ -125,7 +125,7 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
   (interactive "P")
   (catch 'placeholder ;because normal return sucks, TODO: refactor this!
     (when generic-info			;if universal prefix argument is used
-      (funcall 'helm-info)		;call helm-info and exit
+      (funcall #'helm-info)		;call helm-info and exit
       (throw 'placeholder "Defun called with a prefix argument"))
     (let ((defun-to-call
 	    (intern 		;call defun by name
@@ -146,16 +146,16 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
       ;; otherwise call generic helm-info
       (if (not (eq (symbol-function defun-to-call) nil))
 	  (funcall defun-to-call)
-	(funcall 'helm-info)))))
-(global-set-key (kbd "C-h h") 'my-contextual-helm-info)
+	(funcall #'helm-info)))))
+(global-set-key (kbd "C-h h") #'my-contextual-helm-info)
 
 ;; bind M-RET to open files externally with helm
 (eval-after-load "helm-files"
   '(progn
      (define-key helm-find-files-map (kbd "M-RET")
-       'helm-ff-run-open-file-with-default-tool)
+       #'helm-ff-run-open-file-with-default-tool)
      (define-key helm-generic-files-map (kbd "M-RET")
-       'helm-ff-run-open-file-with-default-tool)))
+       #'helm-ff-run-open-file-with-default-tool)))
 
 ;; bind M-RET to open files externally with dired
 (defun dired-open-file-with-default-tool ()
@@ -168,7 +168,7 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
 	      (eq system-type 'macos)) ;; Mac OS 9
 	  "open"))
    nil (dired-get-marked-files)))
-(define-key dired-mode-map (kbd "M-RET") 'dired-open-file-with-default-tool)
+(define-key dired-mode-map (kbd "M-RET") #'dired-open-file-with-default-tool)
 
 (column-number-mode 1)
 (setq split-width-threshold 140)
@@ -200,9 +200,9 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
       gdb-show-main t)
 
 ;; Custom global keybindings
-(global-set-key (kbd "M-o") 'other-window)
-(global-set-key (kbd "M-i") 'imenu)
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "M-o") #'other-window)
+(global-set-key (kbd "M-i") #'imenu)
+(global-set-key (kbd "C-x k") #'kill-this-buffer)
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
@@ -315,7 +315,7 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
   (interactive (let ((command (read-string "Command: ")))
 		 (list command)))
   (let ((term-name (or term-name "term"))) ;default value for TERM-NAME
-    (set-buffer (apply 'make-term term-name
+    (set-buffer (apply #'make-term term-name
   		       (getenv "SHELL")
   		       nil
   		       (list "-c" command)))
@@ -687,9 +687,9 @@ Please initialize version control or build-system project.")))))
 
 ;; End of C++ compile functions
 
-(define-key c++-mode-map (kbd "C-c C-c") 'my/c++-compile)
-(define-key c++-mode-map (kbd "C-.") 'xref-find-definitions-other-window)
-(define-key c++-mode-map (kbd "M-i") 'counsel-imenu)
+(define-key c++-mode-map (kbd "C-c C-c") #'my/c++-compile)
+(define-key c++-mode-map (kbd "C-.") #'xref-find-definitions-other-window)
+(define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
 
 (use-package meson-mode
   :config
@@ -716,9 +716,9 @@ Please initialize version control or build-system project.")))))
     (sp-local-pair "/*" "*/" :post-handlers '((" | " "SPC")
 					      ("* ||\n[i]" "RET"))))
 
-  (global-set-key (kbd "C-M-t") 'sp-transpose-sexp)
-  ;; (global-set-key (kbd "M-r") 'sp-raise-sexp) ;replaces parent with the child
-  (global-set-key (kbd "M-(") 'sp-rewrap-sexp))
+  (global-set-key (kbd "C-M-t") #'sp-transpose-sexp)
+  ;; (global-set-key (kbd "M-r") #'sp-raise-sexp) ;replaces parent with the child
+  (global-set-key (kbd "M-(") #'sp-rewrap-sexp))
 
 (electric-pair-mode)
 
@@ -731,7 +731,7 @@ Please initialize version control or build-system project.")))))
     (insert ")"))
   (indent-sexp)
   (forward-char))
-(global-set-key (kbd "C-(") 'my-wrap-round)
+(global-set-key (kbd "C-(") #'my-wrap-round)
 
 (defun my-kill-hybrid-sexp ()
   "Kill a line respecting delimiters.
@@ -744,7 +744,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 	     (unless (looking-at "\n")
 	       (sp-kill-hybrid-sexp (point))))
     (sp-kill-hybrid-sexp (point))))
-(define-key c-mode-base-map (kbd "C-k") 'my-kill-hybrid-sexp)
+(define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp)
 
 (use-package magit
   :init
@@ -892,7 +892,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
       (mapc #'elfeed-search-update-entry entries)
       (unless (use-region-p) (forward-line))))
   (defun my-elfeed-open-link () (interactive) (my-elfeed-open-yt-video))
-  (define-key elfeed-search-mode-map (kbd "v") 'my-elfeed-open-link)
+  (define-key elfeed-search-mode-map (kbd "v") #'my-elfeed-open-link)
   (load "~/.emacs.d/elfeed_settings.el")) ;overrites my-elfeed-open-link
 
 ;; lyrics
