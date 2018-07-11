@@ -118,10 +118,10 @@
 ;;   helm-default-info-index-list, helm-info-search-index
 (defun my-contextual-helm-info (&optional generic-info)
   "If there is known defun for helm-info-<MODE> for current major mode, call it.
-Otherwise call helm-info.
-If GENERIC-INFO is non-nil, call generic helm-info.
+Otherwise call ‘helm-info’.
+If GENERIC-INFO is non-nil, call generic ‘helm-info’.
 
-With a prefix argument \\[universal-argument], just call generic helm-info."
+With a prefix argument \\[universal-argument], just call generic ‘helm-info’."
   (interactive "P")
   (catch 'placeholder ;because normal return sucks, TODO: refactor this!
     (when generic-info			;if universal prefix argument is used
@@ -307,7 +307,7 @@ FILE-NAME is path to the file."
 
 ;; TERM
 (defun my-term-command (command &optional term-name pop-buffer)
-  "Run COMMAND in term-mode in the default shell.
+  "Run COMMAND in ‘term-mode’ in the default shell.
 
 TERM-NAME will be the buffer name, if nil it defaults to *term*.
 
@@ -490,7 +490,7 @@ We need to exit that mode to call company-yasnippet."
 ;; 	     (expand-file-name "server"
 ;; 			       (file-name-directory
 ;; 				(find-library-name "irony")))))
-;; 	(shell-quote-argument irony-cmake-executable))))  
+;; 	(shell-quote-argument irony-cmake-executable))))
 ;;   (add-hook 'c-mode-common-hook 'irony-mode)
 ;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 ;;   :bind (:map irony-mode-map
@@ -601,13 +601,11 @@ We need to exit that mode to call company-yasnippet."
 (defvar my/c++-build-systems-alist
   '(("meson.build" . #'my/c++--meson-compile)
     ("CMakeLists.txt" . #'my/c++--cmake-compile))
-  "List of filenames that determine which build-system is used with
-corresponding function symbols to call when compiling with this system.")
+  "List of filenames that determine which build-system is used with corresponding function symbols to call when compiling with this system.")
 
 
 (defun my/c++--create-compile-commands-link (project-root build-dir)
-  "Create symbolic link to compile_commands.json from BUILD-DIR to
-PROJECT-ROOT.
+  "Create symbolic link to compile_commands.json from BUILD-DIR to PROJECT-ROOT.
 
 BUILD-DIR is just a name of directory in PROJECT-ROOT, not whole path.
 
