@@ -816,6 +816,26 @@ Used second time kills the delimiter and everything up to the next delimiter."
 	 ("C-:" . ace-jump-word-mode)
 	 ("C-M-;" . ace-jump-line-mode)))
 
+(defun my/jump-to-next-char (query-char)
+  "Jump forward to the closest QUERY-CHAR."
+  (interactive (list (read-char "Query Char:")))
+  (forward-char)			;omit char at point
+  (unless (search-forward (char-to-string query-char) nil t)
+    (message "Occurence not found."))
+  (backward-char))
+
+(defun my/jump-to-next-word (query-char)
+  "Jump forward to the closest word starting with QUERY-CHAR."
+  (interactive (list (read-char "Query Char:")))
+  (forward-char)
+  (unless (search-forward-regexp
+	   (concat "\\<" (char-to-string query-char)) nil t)
+    (message "Occurence not found."))
+  (backward-char))
+;; DONE: check the difference between char-to-string and make-string
+;; char-to-string makes a string from one byte char,
+;; make-string checks the length first, so kinda more overhead
+
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
 (use-package multiple-cursors
