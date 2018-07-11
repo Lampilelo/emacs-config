@@ -770,20 +770,20 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 (use-package dockerfile-mode)
 
-;; TODO: Rethink if this is necessary
+;; TODO: Rethink if this is necessary. Kinda never used it...
 ;; OCTAVE
 ;; for info check http://wiki.octave.org/Emacs
 ;; set octave-mode for all .m files
-(autoload 'octave-mode "octave-mod" nil t)
-(setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
-;; turn on the abbrevs, auto-fill and font-lock features automatically
-(add-hook 'octave-mode-hook
-          (lambda ()
-            (abbrev-mode 1)
-            (auto-fill-mode 1)
-            (if (eq window-system 'x)
-                (font-lock-mode 1))))
+;; (autoload 'octave-mode "octave-mod" nil t)
+;; (setq auto-mode-alist
+;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
+;; ;; turn on the abbrevs, auto-fill and font-lock features automatically
+;; (add-hook 'octave-mode-hook
+;;           (lambda ()
+;;             (abbrev-mode 1)
+;;             (auto-fill-mode 1)
+;;             (if (eq window-system 'x)
+;;                 (font-lock-mode 1))))
 
 ;; ERC
 (load "~/.emacs.d/erc-init.el")
