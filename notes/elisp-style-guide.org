@@ -1,3 +1,8 @@
+#+AUTHOR: bbatsov
+#+DATE: <2018-07-11 śro>
+#+TITLE: The Emacs Lisp Style Guide
+#+DESCRIPTION: Source: https://github.com/bbatsov/emacs-lisp-style-guide
+
 * The Emacs Lisp Style Guide
   :PROPERTIES:
   :CUSTOM_ID: the-emacs-lisp-style-guide
