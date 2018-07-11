@@ -242,7 +242,7 @@ Returns path on success, nil on failure."
 	  (shell-command-to-string (concat "which " name))
 	  0 -1)))	;substring because shell-command returns \n sign at the end
     ;; Return nil if not found and command output if found
-    (when (not (string-equal cmd-output (concat name " not found")))
+    (unless (string-equal cmd-output (concat name " not found"))
       cmd-output)))
 
 (defun my-find-python-package (name)
@@ -255,7 +255,7 @@ Returns path on success, nil of failure."
 	   (concat
 	    "find /usr/lib/$(basename $(readlink /usr/bin/python))*/site-packages -maxdepth 1 -name "
 	    name)))))
-    (when (not (string-equal result ""))
+    (unless (string-equal result "")
       result)))
 
 (defun my-check-missing-packages-on-host (package-list &optional python)
@@ -265,12 +265,12 @@ python packages.
 Returns list of missing packages or nil if didn't found any missing."
   (let ((result (list)))
     (dolist (item package-list)
-      (when (not
-	     (if (not python)
-		 (my-find-package-on-host item)
-	       ;; if python
-	       (or (my-find-package-on-host item)
-		   (my-find-python-package item)))) ;if package wasn't found
+      (unless
+	  (if (not python)
+	      (my-find-package-on-host item)
+	    ;; if python
+	    (or (my-find-package-on-host item)
+		(my-find-python-package item))) ;if package wasn't found
 	(add-to-list 'result item)))
     result))
 
@@ -608,12 +608,12 @@ PROJECT-ROOT.
 BUILD-DIR is just a name of directory in PROJECT-ROOT, not whole path.
 
 For internal use only!"
-  (when (not (file-exists-p (concat project-root "compile_commands.json")))
+  (unless (file-exists-p (concat project-root "compile_commands.json"))
     (message "compile_commands doesn't exist")
-      (make-symbolic-link
-       (concat project-root build-dir "/compile_commands.json")
-       (concat project-root "compile_commands.json")
-       t)))
+    (make-symbolic-link
+     (concat project-root build-dir "/compile_commands.json")
+     (concat project-root "compile_commands.json")
+     t)))
 
 
 (defun my/c++-meson-compile (project-root)
@@ -624,7 +624,7 @@ PROJECT-ROOT is the root directory of the project you want to compile.
 Function uses PROJECT-ROOT/builddir for its build directory and ninja as
 a backend for compilation."
   ;; if builddir directory doesn't exist, create it
-  (when (not (file-exists-p (concat project-root "builddir")))
+  (unless (file-exists-p (concat project-root "builddir"))
     (shell-command "meson builddir"))
   ;; create symbolic link to compile_commands.json in the project root dir
   ;; if it doesn't already exist
@@ -640,15 +640,15 @@ PROJECT-ROOT is the root directory of the project you want to compile.
 
 Function uses PROJECT-ROOT/build for its build directory."
   ;; if build directory doesn't exist, create it
-  (when (not (file-exists-p (concat project-root "build")))
+  (unless (file-exists-p (concat project-root "build"))
     (make-directory (concat project-root "build")))
   ;; create symbolic link to compile_commands.json in the project root dir
   ;; if it doesn't already exist
   (my/c++-create-compile-commands-link project-root "build")
   ;; run cmake and make from inside build directory
   (compile (concat "cd " project-root "build && "
-		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
-		       "make")))
+		   "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
+		   "make")))
 
 (defun my/c++-find-project-root ()
   "Find project root.
@@ -735,7 +735,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 	      (loop for (left . right) in sp-pair-list
 		    collect right))
       (progn (delete-char 1)
-	     (when (not (looking-at "\n"))
+	     (unless (looking-at "\n")
 	       (sp-kill-hybrid-sexp (point))))
     (sp-kill-hybrid-sexp (point))))
 (define-key c-mode-base-map (kbd "C-k") 'my-kill-hybrid-sexp)
