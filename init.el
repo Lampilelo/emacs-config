@@ -68,8 +68,8 @@
 	("WAITING" . "gold2")))
 ;; Enable changing width of an image in org with #+ATTR_ORG: :width <width>
 (setq org-image-actual-width nil)
-(add-hook 'org-mode-hook 'org-display-inline-images)
-(add-hook 'org-mode-hook 'visual-line-mode)
+(add-hook 'org-mode-hook #'org-display-inline-images)
+(add-hook 'org-mode-hook #'visual-line-mode)
 ;; (setq org-ellipsis " ↴")
 
 ;; org-mode source coloring
@@ -110,7 +110,7 @@
 
 (use-package org-bullets
   :config
-  (add-hook 'org-mode-hook 'org-bullets-mode))
+  (add-hook 'org-mode-hook #'org-bullets-mode))
 
 
 ;; TODO: Check if we can convert current mode name to helm-info function
@@ -187,7 +187,7 @@ With a prefix argument \\[universal-argument], just call generic helm-info."
       my-autosave-directory)
 
 ;; Set default browser for opening links
-(setq browse-url-browser-function 'browse-url-generic
+(setq browse-url-browser-function #'browse-url-generic
       browse-url-generic-program "vivaldi")
 
 ;; C++ default options
@@ -284,7 +284,7 @@ If PYTHON is not nil it checks also for python packages."
     (when missing-packages
       (display-warning
        (concat "Missing host packages - " warn-type)
-       (mapconcat 'identity missing-packages ", ")
+       (mapconcat #'identity missing-packages ", ")
        :emergency))))
 
 (defmacro measure-time (&rest body)
@@ -356,33 +356,33 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
   :init
   ;; use fuzzy regex for everything but swiper
   (setq ivy-re-builders-alist
-	'((t . ivy--regex-fuzzy)
-	  (swiper . ivy--regex-plus)
-	  (counsel-git . ivy--regex-plus)
-	  (counsel-git-grep . ivy--regex-plus)))
+	'((t . #'ivy--regex-fuzzy)
+	  (swiper . #'ivy--regex-plus)
+	  (counsel-git . #'ivy--regex-plus)
+	  (counsel-git-grep . #'ivy--regex-plus)))
   :config
   (ivy-mode t)
   :bind (:map ivy-minibuffer-map
-	      ("C-s" . 'ivy-toggle-fuzzy)))
+	      ("C-s" . #'ivy-toggle-fuzzy)))
 
 (use-package swiper
   :bind
-  (("C-s" . swiper)
-   ("M-s M-s" . isearch-forward)))
+  (("C-s" . #'swiper)
+   ("M-s M-s" . #'isearch-forward)))
 (use-package counsel
   :bind
-  (("M-x" . counsel-M-x)
-   ;; ("C-x C-f" . counsel-find-file) ;; switched to helm
-   ("<f1> f" . counsel-describe-function)
-   ("<f1> v" . counsel-describe-variable)
-   ("<f1> l" . counsel-find-library)
-   ("<f1> s" . counsel-info-lookup-symbol)
-   ("<f1> S" . describe-syntax) ;; switched from "<f1> s"
-   ("<f1> u" . counsel-unicode-char)
+  (("M-x" . #'counsel-M-x)
+   ;; ("C-x C-f" . #'counsel-find-file) ;; switched to helm
+   ("<f1> f" . #'counsel-describe-function)
+   ("<f1> v" . #'counsel-describe-variable)
+   ("<f1> l" . #'counsel-find-library)
+   ("<f1> s" . #'counsel-info-lookup-symbol)
+   ("<f1> S" . #'describe-syntax) ;; switched from "<f1> s"
+   ("<f1> u" . #'counsel-unicode-char)
    ;; Attention: C-c bindings for git (may interfere with other modes)
-   ("C-c g" . counsel-git)
-   ("C-c j" . counsel-git-grep)
-   ("C-c k" . counsel-ag)))
+   ("C-c g" . #'counsel-git)
+   ("C-c j" . #'counsel-git-grep)
+   ("C-c k" . #'counsel-ag)))
 
 (use-package helm
   :config
@@ -390,24 +390,24 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
   ;; It's necessary to load helm-buffers so that helm-buffer-map is loaded
   (require 'helm-buffers)
   :bind
-  (("C-x f" . helm-for-files)
-   ("C-x C-f" . helm-find-files)
-   ("C-x b" . helm-buffers-list)
-   ("C-x C-b" . helm-buffers-list)
+  (("C-x f" . #'helm-for-files)
+   ("C-x C-f" . #'helm-find-files)
+   ("C-x b" . #'helm-buffers-list)
+   ("C-x C-b" . #'helm-buffers-list)
    :map helm-buffer-map
-   ("C-k" . helm-buffer-run-kill-persistent)
-   ("C-M-k" . helm-buffer-run-kill-buffers)))
+   ("C-k" . #'helm-buffer-run-kill-persistent)
+   ("C-M-k" . #'helm-buffer-run-kill-buffers)))
 
 (use-package flycheck
   :config
-  (add-hook 'c-mode-common-hook 'flycheck-mode)
-  (add-hook 'python-mode-hook 'flycheck-mode))
+  (add-hook 'c-mode-common-hook #'flycheck-mode)
+  (add-hook 'python-mode-hook #'flycheck-mode))
 
 (use-package company
   :config
-  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'after-init-hook #'global-company-mode)
   :bind
-  ("C-\"" . company-complete))
+  ("C-\"" . #'company-complete))
 
 (use-package yasnippet
   :init
@@ -423,7 +423,7 @@ We need to exit that mode to call company-yasnippet."
   ;; In company-search-mode company-active-map is used
   ;; We need to exit that mode to call company-yasnippet
   ;; Also we pass all needed args to it
-  ("C-'" . 'my-company-yasnippet))
+  ("C-'" . #'my-company-yasnippet))
 (use-package yasnippet-snippets)
 
 ;; ========================= DEPRECATED =========================
@@ -546,19 +546,19 @@ We need to exit that mode to call company-yasnippet."
   (require 'lsp-mode)
   :bind
   (:map c++-mode-map
-	("C-c r" . 'lsp-rename)))
+	("C-c r" . #'lsp-rename)))
 
 (use-package lsp-ui
   :config
   (require 'lsp-ui)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  (add-hook 'lsp-mode-hook #'lsp-ui-mode))
 
 (use-package cquery
   :init
   (setq cquery-executable "/usr/bin/cquery")
   (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
   :config
-  (add-hook 'c-mode-common-hook 'lsp-cquery-enable))
+  (add-hook 'c-mode-common-hook #'lsp-cquery-enable))
 
 (use-package company-lsp
   :config
@@ -599,8 +599,8 @@ We need to exit that mode to call company-yasnippet."
 
 ;; C++ compile functions
 (defvar my/c++-build-systems-alist
-  '(("meson.build" . my/c++--meson-compile)
-    ("CMakeLists.txt" . my/c++--cmake-compile))
+  '(("meson.build" . #'my/c++--meson-compile)
+    ("CMakeLists.txt" . #'my/c++--cmake-compile))
   "List of filenames that determine which build-system is used with
 corresponding function symbols to call when compiling with this system.")
 
@@ -697,7 +697,7 @@ Please initialize version control or build-system project.")))))
 
 (use-package helm-xref
   :config
-  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+  (setq xref-show-xrefs-function #'helm-xref-show-xrefs))
 
 (use-package highlight-parentheses
   :config
@@ -754,7 +754,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 	  (concat
 	   (getenv "XDG_RUNTIME_DIR")
 	   "/ssh-agent.socket"))
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . #'magit-status))
 
 (use-package which-key
   ;; According to documentation this should be :config, but it seems
@@ -763,13 +763,13 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :init
   (which-key-mode 1)
   (global-unset-key (kbd "C-h C-h"))	;unbind conflicting key binding
-  :bind ("C-*" . which-key-show-top-level))
+  :bind ("C-*" . #'which-key-show-top-level))
 
 (use-package whole-line-or-region
   :config
   ;; When pressing C-w this will check if there is an active region
   ;; if there's not, it will kill current line (including newline sign)
-  (add-hook 'after-init-hook 'whole-line-or-region-mode))
+  (add-hook 'after-init-hook #'whole-line-or-region-mode))
 
 (use-package dockerfile-mode)
 
@@ -807,7 +807,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :pin melpa
   :config
   (latex-preview-pane-enable)
-  (add-hook 'LaTeX-mode-hook 'latex-preview-pane-mode)
+  (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
   (setq shell-escape-mode "-shell-escape"))
 
 ;; emacs' notifications.el
@@ -815,9 +815,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; Ace jump mode for jumping to char
 (use-package ace-jump-mode
-  :bind (("C-;" . ace-jump-char-mode)
-	 ("C-:" . ace-jump-word-mode)
-	 ("C-M-;" . ace-jump-line-mode)))
+  :bind (("C-;" . #'ace-jump-char-mode)
+	 ("C-:" . #'ace-jump-word-mode)
+	 ("C-M-;" . #'ace-jump-line-mode)))
 
 (defun my/jump-to-next-char (query-char)
   "Jump forward to the closest QUERY-CHAR."
@@ -842,10 +842,10 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
 (use-package multiple-cursors
-  :bind (("C-S-c C-S-c" . mc/edit-lines)
-	 ("C->" . mc/mark-next-like-this)
-	 ("C-<" . mc/mark-previous-like-this)
-	 ("C-c C-<" . mc/mark-all-like-this)))
+  :bind (("C-S-c C-S-c" . #'mc/edit-lines)
+	 ("C->" . #'mc/mark-next-like-this)
+	 ("C-<" . #'mc/mark-previous-like-this)
+	 ("C-c C-<" . #'mc/mark-all-like-this)))
 
 ;; Undo tree
 ;; C-x u - undo-tree-visualize
