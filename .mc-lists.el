@@ -16,6 +16,7 @@
 	swiper
 	wdired-next-line
 	wdired-previous-line
+	wdired-upcase-word
 	whole-line-or-region-kill-region
 	whole-line-or-region-kill-ring-save
 	whole-line-or-region-yank
@@ -23,6 +24,8 @@
 
 (setq mc/cmds-to-run-once
       '(
+	dired-previous-line
 	end-of-buffer
 	sp-backward-delete-char
+	wdired-finish-edit
 	))
