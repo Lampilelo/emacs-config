@@ -804,7 +804,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :pin melpa
   :config
   (latex-preview-pane-enable)
-  (add-hook 'LaTeX-mode-hook 'latex-preview-pane-mode))
+  (add-hook 'LaTeX-mode-hook 'latex-preview-pane-mode)
+  (setq shell-escape-mode "-shell-escape"))
 
 ;; emacs' notifications.el
 (use-package notifications)
