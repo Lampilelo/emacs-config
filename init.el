@@ -356,10 +356,10 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
   :init
   ;; use fuzzy regex for everything but swiper
   (setq ivy-re-builders-alist
-	'((t . #'ivy--regex-fuzzy)
-	  (swiper . #'ivy--regex-plus)
-	  (counsel-git . #'ivy--regex-plus)
-	  (counsel-git-grep . #'ivy--regex-plus)))
+	'((t . ivy--regex-fuzzy)
+	  (swiper . ivy--regex-plus)
+	  (counsel-git . ivy--regex-plus)
+	  (counsel-git-grep . ivy--regex-plus)))
   :config
   (ivy-mode t)
   :bind (:map ivy-minibuffer-map
@@ -599,8 +599,8 @@ We need to exit that mode to call company-yasnippet."
 
 ;; C++ compile functions
 (defvar my/c++-build-systems-alist
-  '(("meson.build" . #'my/c++--meson-compile)
-    ("CMakeLists.txt" . #'my/c++--cmake-compile))
+  '(("meson.build" . my/c++--meson-compile)
+    ("CMakeLists.txt" . my/c++--cmake-compile))
   "List of filenames that determine which build-system is used with corresponding function symbols to call when compiling with this system.")
 
 
