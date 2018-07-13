@@ -1,0 +1,48 @@
+* Info
+- [[info:elisp#Advising%20Functions][Advising Functions]] :: Info section about advising
+- [[info:elisp#Advice%20combinators][Advice combinators]] :: :around, :after-until and so on...
+
+* advice-add
+#+BEGIN_SRC elisp
+  (defun my/fun-to-advice ()
+    (interactive)
+    "function returns a string, but doesn't print it")
+
+  (defun my/advice (orig-fun)
+    (message (concat "Advice: "(funcall orig-fun))))
+
+  (advice-add 'my/fun-to-advice :around #'my/advice)
+
+  (my/fun-to-advice)
+#+END_SRC
+
+#+RESULTS:
+: Advice: function returns a string, but doesn’t print it
+
+#+BEGIN_SRC elisp
+  (advice-remove #'my/fun-to-advice #'my/advice)
+#+END_SRC
+
+* define-advice
+#+BEGIN_SRC elisp
+  (defun my/fun-to-advice (str &rest args)
+    (interactive)
+    (if (= 0 (% (random 10) 2))      ;random chance of not returning nil
+        (concat "function: " str (mapconcat 'identity args " "))
+      nil))
+
+  (define-advice my/fun-to-advice (:after-until (str &rest args))
+    (concat "advice: " str (mapconcat 'identity args " ")))
+
+  (let (result)
+    (dotimes (var 4 result)
+      (setq result (cons (my/fun-to-advice "foo" "bar") result))))
+#+END_SRC
+
+#+RESULTS:
+| advice: foobar | function: foobar | function: foobar | advice: foobar |
+
+#+BEGIN_SRC elisp
+  (advice-remove #'my/fun-to-advice nil)
+#+END_SRC
+
