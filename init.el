@@ -42,7 +42,12 @@
 (setq scroll-conservatively 100)
 (setq sentence-end-double-space nil)
 
-;; ido mode
+(let ((src-dir "~/emacs/src/"))
+  (if (f-exists-p src-dir)
+      (setq source-directory src-dir)
+    (message (concat "Emacs source not found in: " src-dir))))
+
+;; IDO mode
 ;; TODO: check out https://masteringemacs.org/article/introduction-to-ido-mode
 ;; (setq ido-enable-flex-matching t)
 ;; (setq ido-everywhere t)
