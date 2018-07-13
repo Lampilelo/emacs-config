@@ -43,7 +43,7 @@
 (setq sentence-end-double-space nil)
 
 (let ((src-dir "~/emacs/src/"))
-  (if (f-exists-p src-dir)
+  (if (file-exists-p src-dir)
       (setq source-directory src-dir)
     (message (concat "Emacs source not found in: " src-dir))))
 
