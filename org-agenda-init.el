@@ -21,13 +21,14 @@
 (setq org-agenda-files (list org-index-file))
 
 ;; Rebind org-archive-subtree to also mark an item as DONE
-(defun hrs/mark-done-and-archive ()
+(defun hrs/org-todo-mark-done-and-archive ()
   "Mark the state of an org-mode item as DONE and archive it."
   (interactive)
   (org-todo 'done)
   (org-archive-subtree))
 
-(define-key org-mode-map (kbd "C-c C-x C-s") 'hrs/mark-done-and-archive)
+(define-key org-mode-map (kbd "C-c C-x C-s")
+  'hrs/org-todo-mark-done-and-archive)
 
 ;; Record the time that a todo was archived.
 (setq org-log-done 'time)
