@@ -827,11 +827,18 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; emacs' notifications.el
 (use-package notifications)
 
-;; Ace jump mode for jumping to char
-(use-package ace-jump-mode
-  :bind (("C-;" . #'ace-jump-char-mode)
-	 ("C-:" . #'ace-jump-word-mode)
-	 ("C-M-;" . #'ace-jump-line-mode)))
+;; Avy for jumping to char
+(use-package avy
+  :config
+  (setq avy-background t)
+  (custom-set-faces
+   '(avy-lead-face   ((t (:background "#294552" :foreground "white"))))
+   '(avy-lead-face-0 ((t (:background "#597884" :foreground "white"))))
+   '(avy-lead-face-2 ((t (:background "#294552" :foreground "white"))))
+   '(avy-lead-face-1 ((t (:background "#597884" :foreground "white")))))
+  :bind (("C-;" . #'avy-goto-word-or-subword-1)
+	 ("C-:" . #'avy-goto-char-in-line)
+	 ("C-M-;" . #'avy-goto-char)))
 
 (defun my/jump-to-next-char (query-char)
   "Jump forward to the closest QUERY-CHAR."
