@@ -15,3 +15,5 @@ url/
 doxymacs-1.8.0/
 eshell/
 tramp
+*.bak
+/eww-bookmarks
