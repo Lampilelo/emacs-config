@@ -3,6 +3,7 @@
 - [[info:elisp#Advice%20combinators][Advice combinators]] :: :around, :after-until and so on...
 
 * advice-add
+** Without args
 #+BEGIN_SRC elisp
   (defun my/fun-to-advice ()
     (interactive)
@@ -19,6 +20,23 @@
 #+RESULTS:
 : Advice: function returns a string, but doesn’t print it
 
+** With args
+#+BEGIN_SRC elisp
+(defun my/fun-to-advice (str) (interactive)
+       str)
+
+(defun my/advice (orig-fun str-adv)
+  (message (concat "Advice: " (funcall orig-fun str-adv))))
+
+(advice-add 'my/fun-to-advice :around #'my/advice)
+
+(my/fun-to-advice "fun-to-advice")
+#+END_SRC
+
+#+RESULTS:
+: Advice: fun-to-advice
+
+** advice-remove
 #+BEGIN_SRC elisp
   (advice-remove #'my/fun-to-advice #'my/advice)
 #+END_SRC
