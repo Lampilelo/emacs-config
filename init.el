@@ -89,23 +89,6 @@ slowly still persists. If not, delete this check from init.el."))
       '(("IN-PROGRESS" . "yellow1")
 	("WAITING" . "gold2")))
 
-;; NOTE: it was created for leuven theme, so if I change it, I should also
-;;       edit this
-(if (member 'leuven custom-enabled-themes)
-  (setq org-todo-keyword-faces
-      '(("TODO" .
-	 (t (:box (:line-width 1 :color "#ec9e14") :weight bold
-		  :background "#f2e3ca" :foreground "#ec9e14")))
-	("IN-PROGRESS" .
-	 ((t (:box (:line-width 1 :color "#00a2e4")
-		   :background "#bcd6e0" :foreground "#00a2e4"))))
-	("WAITING" .
-	 ((t (:box (:line-width 1 :color "#c96332") :weight bold
-		   :background "#eed2c5" :foreground "#c96332"))))))
-  (display-warning "theme changed" "Check if you need this check inside \
-init.el. The code snippet changes faces for TODO entries."))
-
-
 ;; Enable changing width of an image in org with #+ATTR_ORG: :width <width>
 (setq org-image-actual-width nil)
 (add-hook 'org-mode-hook #'org-display-inline-images)
@@ -381,11 +364,23 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 (load-theme 'leuven t)
 (set-face-attribute 'default nil :height 120)
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(default ((t (:background "#FFFFF7")))))
+
+;; NOTE: it was created for leuven theme, so if I change it, I should also
+;;       edit this
+(if (member 'leuven custom-enabled-themes)
+  (setq org-todo-keyword-faces
+      '(("TODO" .
+	 (t (:box (:line-width 1 :color "#ec9e14") :weight bold
+		  :background "#f2e3ca" :foreground "#ec9e14")))
+	("IN-PROGRESS" .
+	 ((t (:box (:line-width 1 :color "#00a2e4")
+		   :background "#bcd6e0" :foreground "#00a2e4"))))
+	("WAITING" .
+	 ((t (:box (:line-width 1 :color "#c96332") :weight bold
+		   :background "#eed2c5" :foreground "#c96332"))))))
+  (display-warning "theme changed" "Check if you need this check inside \
+init.el. The code snippet changes faces for TODO entries."))
 
 (use-package auto-complete)
 
