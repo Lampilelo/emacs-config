@@ -71,6 +71,24 @@
 (setq org-todo-keyword-faces
       '(("IN-PROGRESS" . "yellow1")
 	("WAITING" . "gold2")))
+
+;; NOTE: it was created for leuven theme, so if I change it, I should also
+;;       edit this
+(if (member 'leuven custom-enabled-themes)
+  (setq org-todo-keyword-faces
+      '(("TODO" .
+	 (t (:box (:line-width 1 :color "#ec9e14") :weight bold
+		  :background "#f2e3ca" :foreground "#ec9e14")))
+	("IN-PROGRESS" .
+	 ((t (:box (:line-width 1 :color "#00a2e4")
+		   :background "#bcd6e0" :foreground "#00a2e4"))))
+	("WAITING" .
+	 ((t (:box (:line-width 1 :color "#c96332") :weight bold
+		   :background "#eed2c5" :foreground "#c96332"))))))
+  (display-warning "theme changed" "Check if you need this check inside \
+init.el. The code snippet changes faces for TODO entries."))
+
+
 ;; Enable changing width of an image in org with #+ATTR_ORG: :width <width>
 (setq org-image-actual-width nil)
 (add-hook 'org-mode-hook #'org-display-inline-images)
