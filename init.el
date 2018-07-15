@@ -42,6 +42,12 @@
 (setq scroll-conservatively 100)
 (setq sentence-end-double-space nil)
 
+;; Temporary fix for helm buffers showing slowly
+(if (string-prefix-p "26" emacs-version)
+    (setq x-wait-for-event-timeout nil)
+  (display-warning "version changed" "Check if problem with with helm opening \
+slowly still persists. If not, delete this check from init.el."))
+
 (let ((src-dir "~/emacs/src/"))
   (if (file-exists-p src-dir)
       (setq source-directory src-dir)
