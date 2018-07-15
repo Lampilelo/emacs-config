@@ -42,6 +42,17 @@
 (setq scroll-conservatively 100)
 (setq sentence-end-double-space nil)
 
+;; NOTE: Probably temporary. I added it because of abnoxious ding when on
+;;       battery power. Maybe it would be better to call 'ignore instead.
+(setq ring-bell-function
+      (lambda ()
+        (let ((orig-bg (face-background 'mode-line)))
+          (set-face-background 'mode-line "black")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (bg)
+				 (set-face-background 'mode-line bg))
+                               orig-bg))))
+
 ;; Temporary fix for helm buffers showing slowly
 (if (string-prefix-p "26" emacs-version)
     (setq x-wait-for-event-timeout nil)
