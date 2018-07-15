@@ -5,6 +5,7 @@
       '(
 	ace-jump-char-mode
 	ace-jump-move
+	c-electric-delete-forward
 	counsel-M-x
 	electric-newline-and-maybe-indent
 	indent-for-tab-command
@@ -24,8 +25,10 @@
 
 (setq mc/cmds-to-run-once
       '(
+	beginning-of-buffer
 	dired-previous-line
 	end-of-buffer
+	helm-buffers-list
 	sp-backward-delete-char
 	wdired-finish-edit
 	))
