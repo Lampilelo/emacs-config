@@ -780,6 +780,7 @@ Please initialize version control or build-system project.")))))
   (forward-char))
 (global-set-key (kbd "C-(") #'my-wrap-round)
 
+(require 'smartparens)
 (defun my-kill-hybrid-sexp ()
   "Kill a line respecting delimiters.
 Used second time kills the delimiter and everything up to the next delimiter."
