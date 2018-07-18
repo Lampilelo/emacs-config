@@ -6,6 +6,9 @@
 	ace-jump-char-mode
 	ace-jump-move
 	c-electric-delete-forward
+	c-electric-lt-gt
+	c-electric-paren
+	c-electric-semi&comma
 	counsel-M-x
 	electric-newline-and-maybe-indent
 	indent-for-tab-command
