@@ -214,8 +214,11 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
       browse-url-generic-program "vivaldi")
 
 ;; C++ default options
-(setq c-default-style "linux"
-      c-basic-offset 4)
+(use-package google-c-style
+  :init
+  (add-hook 'c-mode-common-hook #'google-set-c-style))
+;; (setq c-default-style "linux"
+;;       c-basic-offset 4)
 
 ;; GDB
 (setq gdb-many-windows t
