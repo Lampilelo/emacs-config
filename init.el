@@ -418,7 +418,7 @@ init.el. The code snippet changes faces for TODO entries."))
    ("<f1> S" . #'describe-syntax) ;; switched from "<f1> s"
    ("<f1> u" . #'counsel-unicode-char)
    ;; Attention: C-c bindings for git (may interfere with other modes)
-   ("C-c g" . #'counsel-git)
+   ("C-c f" . #'counsel-git)
    ("C-c j" . #'counsel-git-grep)
    ("C-c k" . #'counsel-ag)))
 
