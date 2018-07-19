@@ -763,7 +763,9 @@ Please initialize version control or build-system project.")))))
 (electric-pair-mode)
 
 (show-paren-mode)
+
 ;; FIXME: Doesn't work so flawlessly inside of a comment.
+;; TODO: single quotes
 ;; if show-paren--categorize-paren returns nil, process pos with following:
 (define-advice show-paren--categorize-paren (:after-until (pos))
   (when (and (eq (syntax-class (syntax-after pos)) 7)
