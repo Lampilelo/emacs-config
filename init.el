@@ -263,9 +263,8 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   "Check host system for package NAME.
 Returns path on success, nil on failure."
   (let ((cmd-output
-	 (substring
-	  (shell-command-to-string (concat "which " name))
-	  0 -1)))	;substring because shell-command returns \n sign at the end
+	 (s-chomp			; remove trailing '\n'
+	  (shell-command-to-string (concat "which " name)))))
     ;; Return nil if not found and command output if found
     (unless (string-equal cmd-output (concat name " not found"))
       cmd-output)))
