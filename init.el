@@ -726,9 +726,21 @@ Please initialize version control or build-system project.")))))
 
 ;; End of C++ compile functions
 
+(defun my-grep-references ()
+  "Find references of a symbol at point with grep."
+  (interactive)
+  (counsel-git-grep nil (find-tag-default-as-symbol-regexp)))
+(defun my-find-references ()
+  "Find references of a symbol at point with xref."
+  (interactive)
+  (xref-find-references (find-tag-default)))
+
 (define-key c++-mode-map (kbd "C-c C-c") #'my/c++-compile)
 (define-key c++-mode-map (kbd "C-.") #'xref-find-definitions-other-window)
+(define-key c++-mode-map (kbd "C-,") #'my-find-references)
+(define-key c++-mode-map (kbd "M-,") #'my-grep-references)
 (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
+(define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
 
 (use-package meson-mode
   :config
