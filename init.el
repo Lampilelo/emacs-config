@@ -726,6 +726,38 @@ Please initialize version control or build-system project.")))))
 
 ;; End of C++ compile functions
 
+(defvar cppreference-path "/usr/share/doc/cppreference/en"
+  "Path to cppreference (HTML book).")
+(if (file-exists-p cppreference-path)
+    (progn
+      (defun my-cpp-doc-at-point ()
+	"Find documentation for a C++ symbol at point."
+	(interactive)
+	(let ((default-directory cppreference-path))
+	  (helm :sources `((name . "Find")
+			   (action . (lambda (candidate)
+				       (eww (concat "file:" candidate))))
+			   (persistent-action
+			    . helm-ff-kill-or-find-buffer-fname)
+			   (requires-pattern . 3)
+			   (filtered-candidate-transformer
+			    helm-findutils-transformer
+			    helm-fuzzy-highlight-matches)
+			   (action-transformer . helm-transform-file-load-el)
+			   (candidate-number-limit . 9999)
+			   (redisplay . identity)
+			   (group . helm)
+			   (candidates-process . helm-find-shell-command-fn))
+		:buffer "*cppreference*"
+		:prompt "Symbol: "
+		:ff-transformer-show-only-basename nil
+		:input (find-tag-default))))
+
+      (define-key c++-mode-map (kbd "C-c d") #'my-cpp-doc-at-point))
+  (display-warning "cppreference"
+		   (concat "cppreference not found in " cppreference-path))
+  (setq cppreference-path nil))
+
 (defun my-grep-references ()
   "Find references of a symbol at point with grep."
   (interactive)
