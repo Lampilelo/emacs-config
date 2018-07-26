@@ -42,12 +42,24 @@
 	 "* TODO %?\nCREATED: %u\n")
 	("p" "Programming note"
 	 entry
-	 (file+headline (org-file-path "Notes.org") "Programming")
+	 (file+headline "Notes.org" "Programming")
 	 "* %?\n---\nCREATED: %u\n")
 	("n" "Note"
 	 entry
-	 (file+headline (org-file-path "Notes.org") "Other")
-	 "* %?\n---\nCREATED: %u\n")))
+	 (file+headline "Notes.org" "Other")
+	 "* %?\n---\nCREATED: %u\n")
+	("c" "Contact"
+	 entry
+	 (file "Contacts.org")
+	 "* %(org-contacts-template-name)
+:PROPERTIES:
+:EMAIL: %(org-contacts-template-email)
+:PHONE:
+:PHONE1:
+:ADDRESS:
+:BIRTHDAY:
+:NOTE:
+:END:")))
 
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
