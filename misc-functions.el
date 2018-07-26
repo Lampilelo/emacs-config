@@ -43,5 +43,10 @@
 		      finally return var)))
 
 
+(defun open-file-temporary ()
+  (with-temp-buffer
+    (insert-file-contents fPath)
+    (do-stuff)))
+
 ;; IN-PROGRESS
 
