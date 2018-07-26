@@ -53,13 +53,15 @@
 	 (file "Contacts.org")
 	 "* %(org-contacts-template-name)
 :PROPERTIES:
-:EMAIL: %(org-contacts-template-email)
-:PHONE:
+:PHONE: %^{PHONE}p
 :PHONE1:
+:EMAIL: %(org-contacts-template-email)
 :ADDRESS:
 :BIRTHDAY:
-:NOTE:
-:END:")))
+:NOTE: %?
+:END:
+---
+CREATED: %u\n")))
 
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
