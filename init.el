@@ -59,7 +59,7 @@
     (setq x-wait-for-event-timeout nil)
   (display-warning "version changed" "Check if problem with with helm opening slowly still persists. If not, delete this check from init.el."))
 
-(let ((src-dir "~/emacs/src/"))
+(let ((src-dir "~/emacs/"))
   (if (file-exists-p src-dir)
       (setq source-directory src-dir)
     (message (concat "Emacs source not found in: " src-dir))))
