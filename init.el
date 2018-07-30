@@ -981,6 +981,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; MAIL
 (load "~/.emacs.d/mu4e-init.el")
+;; TODO: check out gnus and gwene (for reading feeds through nntp)
+;;       (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
 ;; password-store
 ;; https://git.zx2c4.com/password-store/tree/contrib/emacs/README.md
