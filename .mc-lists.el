@@ -9,12 +9,19 @@
 	c-electric-lt-gt
 	c-electric-paren
 	c-electric-semi&comma
+	c-electric-star
 	counsel-M-x
 	electric-newline-and-maybe-indent
 	indent-for-tab-command
 	isearch-forward-regexp
 	isearch-printing-char
+	kill-sentence
+	kill-sexp
 	mark-sexp
+	my-wrap-round
+	org-delete-char
+	org-end-of-line
+	org-force-self-insert
 	sp-delete-char
 	sp-kill-word
 	swiper
@@ -31,6 +38,7 @@
 	beginning-of-buffer
 	dired-previous-line
 	end-of-buffer
+	eval-last-sexp
 	helm-buffers-list
 	sp-backward-delete-char
 	wdired-finish-edit
