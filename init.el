@@ -808,6 +808,11 @@ Please initialize version control or build-system project.")))))
 
 (show-paren-mode)
 
+(use-package lispy
+  :config
+  (dolist (mode-map (list emacs-lisp-mode-map lisp-interaction-mode-map))
+    (define-key mode-map (kbd "M-k") #'lispy-raise-sexp)))
+
 ;; FIXME: Doesn't work so flawlessly inside of a comment.
 ;; TODO: single quotes
 ;; if show-paren--categorize-paren returns nil, process pos with following:
