@@ -409,7 +409,8 @@ init.el. The code snippet changes faces for TODO entries."))
 (use-package swiper
   :bind
   (("C-s" . #'swiper)
-   ("M-s M-s" . #'isearch-forward)))
+   ("M-s M-s" . #'isearch-forward)
+   ("M-s M-r" . #'isearch-backward)))
 (use-package counsel
   :bind
   (("M-x" . #'counsel-M-x)
