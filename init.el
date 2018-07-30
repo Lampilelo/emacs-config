@@ -41,6 +41,7 @@
 (setq inhibit-startup-screen t)
 (setq scroll-conservatively 100)
 (setq sentence-end-double-space nil)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
 ;; NOTE: Probably temporary. I added it because of abnoxious ding when on
 ;;       battery power. Maybe it would be better to call 'ignore instead.
