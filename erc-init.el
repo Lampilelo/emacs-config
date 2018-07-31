@@ -78,7 +78,7 @@
    (start-process-shell-command
  "new-message"
  nil
- "ffplay2.8 -vn -nodisp -t 0.4 -autoexit /usr/share/sounds/freedesktop/stereo/message-new-instant.oga")
+ "ffplay -vn -nodisp -t 0.5 -autoexit /usr/share/sounds/freedesktop/stereo/message-new-instant.oga")
    (x-urgent)))
 
 (defun erc-my-privmsg-sound (proc parsed)
