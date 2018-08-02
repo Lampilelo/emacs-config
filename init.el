@@ -235,6 +235,8 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
 
+(type-break-mode 1)
+
 ;; ==================== FUNCTIONS ===================
 
 ;; Got it from here: http://www.draketo.de/light/english/emacs/babcore
