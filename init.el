@@ -412,7 +412,7 @@ init.el. The code snippet changes faces for TODO entries."))
 
 (use-package swiper
   :bind
-  (("C-s" . #'swiper)
+  (("C-s" . #'counsel-grep-or-swiper)
    ("M-s M-s" . #'isearch-forward)
    ("M-s M-r" . #'isearch-backward)))
 (use-package counsel
