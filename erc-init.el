@@ -61,6 +61,8 @@
       (erc-autojoin-channels erc-session-server (erc-current-nick))
       nil)))
 
+(add-hook 'erc-server-NOTICE-functions 'erc-server-PRIVMSG)
+
 ;; misc options
 ;; Kill buffers for channels after /part
 (setq erc-kill-buffer-on-part t)
@@ -112,6 +114,6 @@
 	 (first (erc-buffer-list)))
       ;; do nothing if isn't CTCP
       )))
-;; (add-hook 'erc-server-PRIVMSG-functions 'test-check-ctcp)
+(add-hook 'erc-server-PRIVMSG-functions 'erc-ctcp-notice)
 
 ;; =============================================
