@@ -1009,7 +1009,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
       (unless (use-region-p) (forward-line))))
   (defun my-elfeed-open-link () (interactive) (my-elfeed-open-yt-video))
   (define-key elfeed-search-mode-map (kbd "v") #'my-elfeed-open-link)
-  (load "~/.emacs.d/elfeed-settings.el")) ;overrites my-elfeed-open-link
+  (load "~/.emacs.d/elfeed-settings.el") ;overrites my-elfeed-open-link
+  (elfeed-search-fetch))
 
 ;; lyrics
 (use-package lyrics
