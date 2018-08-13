@@ -3,6 +3,8 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	TeX-insert-backslash
+	TeX-insert-sub-or-superscript
 	ace-jump-char-mode
 	ace-jump-move
 	c-electric-delete-forward
@@ -19,9 +21,12 @@
 	kill-sexp
 	mark-sexp
 	my-wrap-round
+	org-beginning-of-line
+	org-cycle
 	org-delete-char
 	org-end-of-line
 	org-force-self-insert
+	org-self-insert-command
 	sp-delete-char
 	sp-kill-word
 	swiper
