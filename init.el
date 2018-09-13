@@ -735,6 +735,7 @@ Please initialize version control or build-system project.")))))
   "Path to cppreference (HTML book).")
 (if (file-exists-p cppreference-path)
     (progn
+      (require 'helm-find)
       (defun my-cpp-doc-at-point ()
 	"Find documentation for a C++ symbol at point."
 	(interactive)
