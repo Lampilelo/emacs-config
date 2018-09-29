@@ -7,13 +7,18 @@
 	TeX-insert-sub-or-superscript
 	ace-jump-char-mode
 	ace-jump-move
+	backward-sexp
+	c-electric-brace
+	c-electric-colon
 	c-electric-delete-forward
 	c-electric-lt-gt
 	c-electric-paren
 	c-electric-semi&comma
 	c-electric-star
 	counsel-M-x
+	delete-horizontal-space
 	electric-newline-and-maybe-indent
+	electric-pair-delete-pair
 	indent-for-tab-command
 	isearch-forward-regexp
 	isearch-printing-char
@@ -36,6 +41,7 @@
 	whole-line-or-region-kill-region
 	whole-line-or-region-kill-ring-save
 	whole-line-or-region-yank
+	yas-expand
 	))
 
 (setq mc/cmds-to-run-once
