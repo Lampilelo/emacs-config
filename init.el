@@ -453,6 +453,8 @@ init.el. The code snippet changes faces for TODO entries."))
   :config
   (add-hook 'c-mode-common-hook #'flycheck-mode)
   (add-hook 'python-mode-hook #'flycheck-mode))
+;; TODO: Set flycheck-clang-language-standard inside of a cpp buffer to
+;;       current standard inside compile_commands.json
 
 (use-package company
   :config
