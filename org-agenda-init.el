@@ -44,6 +44,10 @@
 	 entry
 	 (file+headline "Notes.org" "Programming")
 	 "* %?\n---\nCREATED: %u\n")
+	("C" "C++ note"
+	 entry
+	 (file+headline "Notes.org" "C++")
+	 "* %?\n---\nCREATED: %u\n")
 	("n" "Note"
 	 entry
 	 (file+headline "Notes.org" "Other")
