@@ -113,6 +113,11 @@
 ;; to uninstall you have to call (pdf-tools-uninstall)
 
 (load "~/.emacs.d/org-agenda-init.el")
+(use-package helm-org-rifle
+  :config
+  (require 'helm-org-rifle)
+  :bind
+  ("C-c r" . #'helm-org-rifle-org-directory))
 
 ;; Polish quotation marks
 (push
