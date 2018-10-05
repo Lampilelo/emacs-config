@@ -599,7 +599,7 @@ We need to exit that mode to call company-yasnippet."
   (require 'lsp-mode)
   :bind
   (:map c++-mode-map
-	("C-c r" . #'lsp-rename)))
+	("C-c C-r" . #'lsp-rename)))
 
 (use-package lsp-ui
   :config
