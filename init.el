@@ -611,7 +611,14 @@ We need to exit that mode to call company-yasnippet."
   (setq cquery-executable "/usr/bin/cquery")
   (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
   :config
-  (add-hook 'c-mode-common-hook #'lsp-cquery-enable))
+  (add-hook 'c-mode-hook #'lsp-cquery-enable))
+
+(use-package ccls
+  :init
+  (setq ccls-executable "/usr/bin/ccls")
+  :config
+  (add-to-list 'ccls-project-root-matchers 'my/c++--find-project-root)
+  (add-hook 'c++-mode-hook #'lsp-ccls-enable))
 
 (use-package company-lsp
   :config
