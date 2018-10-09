@@ -176,6 +176,10 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 	  (funcall defun-to-call)
 	(funcall #'helm-info)))))
 (global-set-key (kbd "C-h h") #'my-contextual-helm-info)
+(define-key Info-mode-map (kbd "<up>") #'scroll-down-line)
+(define-key Info-mode-map (kbd "<down>") #'scroll-up-line)
+(define-key Info-mode-map (kbd "<right>") (kbd "]"))
+(define-key Info-mode-map (kbd "<left>") (kbd "["))
 
 ;; bind M-RET to open files externally with helm
 (eval-after-load "helm-files"
