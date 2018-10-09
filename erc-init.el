@@ -1,30 +1,83 @@
 ;; ==================== ERC ====================
 ;; ident
 (setq
- erc-nick "Oxon"
- erc-server "irc.rizon.net"
+ ;; erc-nick "Oxon"
+ ;; erc-server "irc.rizon.net"
  erc-prompt-for-password nil
  erc-prompt-for-nickserv-password nil)
 ;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
 (add-hook 'erc-mode-hook 'erc-nickserv-mode)
 (add-hook 'erc-mode-hook 'erc-track-mode)
 
-(defun start-irc()
-  "Connect to IRC."
-  (interactive)
-  (erc-tls :server erc-server :port 6697
-	   :nick erc-nick))
+;; (defun start-irc()
+;;   "Connect to IRC."
+;;   (interactive)
+;;   (erc-tls :server erc-server :port 6697
+;; 	   :nick erc-nick))
+
+(defvar my-erc-server-info nil
+  "Info on how to connect and identify on a specific server.
+
+This has a format of '((server-name
+                        :server server-host
+                        :nick user-name
+                        :channels (\"channel1\" \"channel2\" ...))
+                       (server-2-name
+                        ...))
+
+server-name - server name as in `erc-server-alist'
+:server - i.e. \"irc.freenode.net\"
+:nick - nick to use on the server
+Optional:
+:port - port to use for connection, if not specified - use 6697
+:channels - list of channels to join after ident
+
+To get specific property from the list, use `my-erc-server-get'")
+
+(defun my-erc-server-get (server prop)
+  "Get the PROP of SERVER name from `my-erc-server-info' list."
+  (plist-get (cdr (assoc server my-erc-server-info)) prop))
+
+(setq my-erc-server-info
+      '(("Rizon"
+	 :server "irc.rizon.net"
+	 :nick "Oxon"
+	 :channels ("#krasnale" "#test"))
+	("freenode"
+	 :server "irc.freenode.net"
+	 :nick "lampilelo"
+	 :channels ("#emacs"))))
+
+(defmacro my-erc--define-connect-function (server-name)
+  "Create an interactive function for connecting to a specific server.
+I.e. \"irc-freenode\"
+
+Uses `my-erc-server-info' to get the information about server settings."
+  (when (assoc server-name my-erc-server-info)
+    (let ((fun-name (intern (concat "irc-" server-name))))
+      `(defun ,fun-name ()
+	 (interactive)
+	 (erc-tls :server (my-erc-server-get ,server-name :server)
+		   :port (or (my-erc-server-get ,server-name :port) 6697)
+		   :nick (my-erc-server-get ,server-name :nick))))))
+
+(dolist (serv '("Rizon" "freenode"))
+  (eval `(my-erc--define-connect-function ,serv)))
 
 (setq erc-fill-column 76)
 
-(if (file-exists-p "~/.erc/passwords")
-    ;; then
-    (progn
-      (load "~/.erc/passwords")
-      (setq erc-nickserv-passwords
-	    `((Rizon (("Oxon" . ,rizon-oxon-pass))))))
-  ;; else
-  (message "ERC config: file ~/.etc/passwords NOT FOUND"))
+;; Add passwords to erc-nickserv-passwords
+;; Gets password from command "pass server/nick"
+;;   where server is :server and nick is :nick from `my-erc-server-info'
+(dolist (server-info my-erc-server-info)
+    (let ((plist (cdr server-info)))
+      (push `(,(intern (car server-info)) ((,(plist-get plist :nick) .
+				   ,(s-chomp
+				     (shell-command-to-string
+				      (format "pass %s/%s"
+					      (plist-get plist :server)
+					      (plist-get plist :nick)))))))
+	    erc-nickserv-passwords)))
 
 ;; logs
 ;; (require 'erc-log)
@@ -51,7 +104,8 @@
 ;; auto-join channels
 (add-hook 'erc-mode-hook 'erc-autojoin-mode)
 (setq erc-autojoin-channels-alist
-      '((".*rizon.*" "#krasnale")))
+      '((".*rizon.*" "#krasnale")
+	(".*freenode.*" "#emacs")))
 (add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
 (defun my-post-vhost-autojoin (proc parsed)
   "Autojoin when NickServ tells us to."
