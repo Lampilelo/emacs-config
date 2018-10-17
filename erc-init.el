@@ -66,18 +66,36 @@ Uses `my-erc-server-info' to get the information about server settings."
 
 (setq erc-fill-column 76)
 
+(require 'erc-services)
 ;; Add passwords to erc-nickserv-passwords
 ;; Gets password from command "pass server/nick"
 ;;   where server is :server and nick is :nick from `my-erc-server-info'
-(dolist (server-info my-erc-server-info)
-    (let ((plist (cdr server-info)))
-      (push `(,(intern (car server-info)) ((,(plist-get plist :nick) .
-				   ,(s-chomp
-				     (shell-command-to-string
-				      (format "pass %s/%s"
-					      (plist-get plist :server)
-					      (plist-get plist :nick)))))))
-	    erc-nickserv-passwords)))
+(defun my-erc-refresh-passwords ()
+  "Reload passwords using \"pass\" command and `my-erc-server-info'."
+  (interactive)
+  (setq erc-nickserv-passwords nil)
+  (dolist (server-info my-erc-server-info)
+    (condition-case pass-err
+	(let ((plist (cdr server-info)))
+	  (push `(,(intern (car server-info))
+		  ((,(plist-get plist :nick) .
+		    ,(s-chomp
+		      (with-temp-buffer
+			(let ((pass-name (format "%s/%s"
+						 (plist-get plist :server)
+						 (plist-get plist :nick))))
+			  (if (eq 0 (call-process "/usr/bin/pass"
+						  nil
+						  (current-buffer)
+						  nil
+						  pass-name))
+			      (buffer-string)
+			    (error (format "No password for %s"
+					   pass-name)))))))))
+		erc-nickserv-passwords))
+      (error (display-warning "erc-init.el"
+			      (error-message-string pass-err))))))
+(my-erc-refresh-passwords)
 
 ;; logs
 ;; (require 'erc-log)
