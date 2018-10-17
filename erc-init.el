@@ -144,6 +144,9 @@ Uses `my-erc-server-info' to get the information about server settings."
 (setq erc-kill-server-buffer-on-quit t)
  ;; Interpret mIRC-style color commands in IRC chats
 (setq erc-interpret-mirc-color t)
+;; Ignore certain type of messages when showing on the modeline
+(dolist (item '("JOIN" "PART" "QUIT"))
+  (add-to-list 'erc-track-exclude-types item))
 
 ;; sound notifications
 (defun erc-my-play-new-message-sound ()
