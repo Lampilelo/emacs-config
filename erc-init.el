@@ -7,6 +7,7 @@
  erc-prompt-for-nickserv-password nil)
 ;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
 (add-hook 'erc-mode-hook 'erc-nickserv-mode)
+(require 'erc-track)
 (add-hook 'erc-mode-hook 'erc-track-mode)
 
 ;; (defun start-irc()
