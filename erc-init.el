@@ -6,7 +6,6 @@
  erc-prompt-for-password nil
  erc-prompt-for-nickserv-password nil)
 ;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
-(add-hook 'erc-mode-hook 'erc-nickserv-mode)
 (require 'erc-track)
 (add-hook 'erc-mode-hook 'erc-track-mode)
 
@@ -26,12 +25,13 @@ This has a format of '((server-name
                        (server-2-name
                         ...))
 
-server-name - server name as in `erc-server-alist'
+server-name - server name as in `erc-server-alist' (case-sensitive)
 :server - i.e. \"irc.freenode.net\"
 :nick - nick to use on the server
 Optional:
 :port - port to use for connection, if not specified - use 6697
 :channels - list of channels to join after ident
+:no-tls - if not nil, use `erc' instead of `erc-tls'
 
 To get specific property from the list, use `my-erc-server-get'")
 
@@ -47,7 +47,12 @@ To get specific property from the list, use `my-erc-server-get'")
 	("freenode"
 	 :server "irc.freenode.net"
 	 :nick "lampilelo"
-	 :channels ("#emacs"))))
+	 :channels ("#emacs"))
+	("BitlBee"
+	 :server "localhost"
+	 :nick "Oxon"
+	 :port 6667
+	 :no-tls t)))
 
 (defmacro my-erc--define-connect-function (server-name)
   "Create an interactive function for connecting to a specific server.
@@ -58,16 +63,34 @@ Uses `my-erc-server-info' to get the information about server settings."
     (let ((fun-name (intern (concat "irc-" server-name))))
       `(defun ,fun-name ()
 	 (interactive)
-	 (erc-tls :server (my-erc-server-get ,server-name :server)
-		   :port (or (my-erc-server-get ,server-name :port) 6697)
-		   :nick (my-erc-server-get ,server-name :nick))))))
+	 (,(if (my-erc-server-get server-name :no-tls) 'erc 'erc-tls)
+	  :server (my-erc-server-get ,server-name :server)
+	  :port (or (my-erc-server-get ,server-name :port) 6697)
+	  :nick (my-erc-server-get ,server-name :nick))))))
 
-(dolist (serv '("Rizon" "freenode"))
+(dolist (serv '("Rizon" "freenode" "BitlBee"))
   (eval `(my-erc--define-connect-function ,serv)))
 
 (setq erc-fill-column 76)
 
 (require 'erc-services)
+(add-hook 'erc-mode-hook 'erc-nickserv-mode)
+
+(defvar my-erc-password-store-names nil
+  "Alist of password names corresponding to entries from `my-erc-server-info'.
+
+Names are stored in cdr of an entry and are supposed to be used with \"pass\"
+ulitily on Linux: \"pass password-name\".
+
+Example:
+  ((\"Rizon\" . \"rizon/My_nick\")
+   (\"freenode\" . \"freenode/My_nick\"))")
+
+(setq my-erc-password-store-names
+      '(("Rizon" . "irc.rizon.net/Oxon")
+	("freenode" . "irc.freenode.net/lampilelo")
+	("BitlBee" . "bitlbee/Oxon")))
+
 ;; Add passwords to erc-nickserv-passwords
 ;; Gets password from command "pass server/nick"
 ;;   where server is :server and nick is :nick from `my-erc-server-info'
@@ -75,27 +98,33 @@ Uses `my-erc-server-info' to get the information about server settings."
   "Reload passwords using \"pass\" command and `my-erc-server-info'."
   (interactive)
   (setq erc-nickserv-passwords nil)
-  (dolist (server-info my-erc-server-info)
-    (condition-case pass-err
-	(let ((plist (cdr server-info)))
-	  (push `(,(intern (car server-info))
-		  ((,(plist-get plist :nick) .
-		    ,(s-chomp
-		      (with-temp-buffer
-			(let ((pass-name (format "%s/%s"
-						 (plist-get plist :server)
-						 (plist-get plist :nick))))
-			  (if (eq 0 (call-process "/usr/bin/pass"
-						  nil
-						  (current-buffer)
-						  nil
-						  pass-name))
+  (let ((ret t))
+    (dolist (server-info my-erc-server-info ret)
+      (condition-case pass-err
+	  (let ((plist (cdr server-info)))
+	    (push `(,(intern (car server-info))
+		    ((,(plist-get plist :nick) .
+		      ,(s-chomp
+			(with-temp-buffer
+			  (if (eq 0 (call-process
+				     "/usr/bin/pass"
+				     nil
+				     (current-buffer)
+				     nil
+				     (assoc-default
+				      (car server-info)
+				      my-erc-password-store-names)))
 			      (buffer-string)
 			    (error (format "No password for %s"
-					   pass-name)))))))))
-		erc-nickserv-passwords))
-      (error (display-warning "erc-init.el"
-			      (error-message-string pass-err))))))
+					   pass-name))))))))
+		  erc-nickserv-passwords))
+	(wrong-type-argument
+	 (display-warning "erc-init.el"
+			  (format
+			   "Couldn't retrieve password from %s profile from `my-erc-password-store-names'"
+			   (car server-info))))
+	(error (display-warning "erc-init.el" (error-message-string pass-err))
+	       (setq ret nil))))))
 (my-erc-refresh-passwords)
 
 ;; logs
@@ -122,17 +151,22 @@ Uses `my-erc-server-info' to get the information about server settings."
 
 ;; auto-join channels
 (add-hook 'erc-mode-hook 'erc-autojoin-mode)
+
 (setq erc-autojoin-channels-alist
       '((".*rizon.*" "#krasnale")
 	(".*freenode.*" "#emacs")))
-(add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
-(defun my-post-vhost-autojoin (proc parsed)
-  "Autojoin when NickServ tells us to."
-  (with-current-buffer (process-buffer proc)
-    (when (string-match ".*Password accepted.*"
-                             (erc-response.contents parsed))
-      (erc-autojoin-channels erc-session-server (erc-current-nick))
-      nil)))
+
+;; (defun my-post-vhost-autojoin (proc parsed)
+;;   "Autojoin when NickServ tells us to."
+;;   (with-current-buffer (process-buffer proc)
+;;     (when (string-match ".*Password accepted.*"
+;;                              (erc-response.contents parsed))
+;;       (erc-autojoin-channels erc-session-server (erc-current-nick))
+;;       nil)))
+;; (add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
+
+(setq erc-autojoin-timing 'ident)
+;; end of auto-join
 
 (add-hook 'erc-server-NOTICE-functions 'erc-server-PRIVMSG)
 
@@ -168,8 +202,8 @@ Uses `my-erc-server-info' to get the information about server settings."
        nil)))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-my-privmsg-sound)
 
-(add-hook 'erc-insert-post-hook 
-	  (lambda () (goto-char (point-min)) 
+(add-hook 'erc-insert-post-hook
+	  (lambda () (goto-char (point-min))
 	    (when (re-search-forward
 		   (regexp-quote  (erc-current-nick)) nil t)
 	      (erc-my-play-new-message-sound))))
