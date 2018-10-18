@@ -1,4 +1,4 @@
-;; ==================== ERC ====================
+;;; erc-init.el --- Initialization file for erc -*- lexical-binding: t; -*-
 ;; ident
 (setq
  ;; erc-nick "Oxon"
