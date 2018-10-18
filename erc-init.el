@@ -111,18 +111,18 @@ Example:
 				     nil
 				     (current-buffer)
 				     nil
-				     (assoc-default
-				      (car server-info)
-				      my-erc-password-store-names)))
+				     (or (assoc-default
+					  (car server-info)
+					  my-erc-password-store-names)
+					 (error (format
+						 "Couldn't retrieve password from %s profile from `my-erc-password-store-names'"
+							(car server-info))))))
 			      (buffer-string)
 			    (error (format "No password for %s"
 					   pass-name))))))))
 		  erc-nickserv-passwords))
 	(wrong-type-argument
-	 (display-warning "erc-init.el"
-			  (format
-			   "Couldn't retrieve password from %s profile from `my-erc-password-store-names'"
-			   (car server-info))))
+	 (display-warning "erc-init.el"))
 	(error (display-warning "erc-init.el" (error-message-string pass-err))
 	       (setq ret nil))))))
 (my-erc-refresh-passwords)
