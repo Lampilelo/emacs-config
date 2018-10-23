@@ -128,15 +128,13 @@ Example:
 (my-erc-refresh-passwords)
 
 ;; logs
-;; (require 'erc-log)
-;; (add-hook 'erc-mode-hook 'erc-log-mode)
-;; (erc-log-enable)
-(add-hook 'erc-mode-hook '(lambda ()
-			    (erc-log-mode)
-			    (erc-log-enable)))
+(require 'erc-log)
+(add-hook 'erc-mode-hook 'erc-log-mode)
+(add-hook 'erc-mode-hook 'erc-log-enable)
 (setq erc-log-channels-directory "~/.erc/logs/")
-(setq erc-save-buffer-on-part t)
-(setq erc-log-insert-log-on-open t)
+(setq erc-save-buffer-on-part t
+      erc-save-queries-on-quit t)
+;; (setq erc-log-insert-log-on-open t)
 ;; load modules
 ;; (require 'erc-services)
 (add-hook 'erc-mode-hook '(lambda ()
