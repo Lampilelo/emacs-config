@@ -278,17 +278,18 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
 
 (defun my-find-package-on-host (name)
   "Check host system for package NAME.
-Returns path on success, nil on failure."
-  (let ((cmd-output
-	 (s-chomp			; remove trailing '\n'
-	  (shell-command-to-string (concat "which " name)))))
-    ;; Return nil if not found and command output if found
-    (unless (string-equal cmd-output (concat name " not found"))
-      cmd-output)))
+
+Return nil if not found, 'exe if found an executable, 'lib if found a library."
+  (cond
+   ((eq 0 (call-process "which" nil nil nil name))
+    'exe)
+   ((eq 0 (call-process "pkg-config" nil nil nil "--exists" name))
+    'lib)))
 
 (defun my-find-python-package (name)
   "Check host system for python package NAME.
-Returns path on success, nil of failure."
+
+Return path on success, nil of failure."
   (let ((result
 	 (replace-regexp-in-string
 	  "\n" ""
@@ -301,25 +302,28 @@ Returns path on success, nil of failure."
 
 (defun my-check-missing-packages-on-host (package-list &optional python)
   "Check host system for packages.
-PACKAGE-LIST is a list of strings. If PYTHON is not nil it checks also for
-python packages.
-Returns list of missing packages or nil if didn't found any missing."
+
+PACKAGE-LIST is a list of strings.
+If PYTHON is not nil check also for python packages.
+
+Return a list of missing packages or nil if didn't found any missing."
   (let ((result (list)))
     (dolist (item package-list)
       (unless
-	  (if (not python)
-	      (my-find-package-on-host item)
-	    ;; if python
-	    (or (my-find-package-on-host item)
-		(my-find-python-package item))) ;if package wasn't found
+	  (or (my-find-package-on-host item)
+	      (and python (my-find-python-package item)))
 	(add-to-list 'result item)))
     result))
 
 (defun my-print-missing-packages-as-warnings
-    (warn-type package-list &optional python) ;args
+    (warn-type package-list &optional python)
   "Check list of packages and display warning if found any missing.
-WARN-TYPE can be a name of package that requres PACKAGE-LIST.
-If PYTHON is not nil it checks also for python packages."
+
+WARN-TYPE can be a name of package that requires PACKAGE-LIST.
+PACKAGE-LIST should be a list of package names as a list of strings.
+If PYTHON is not nil check also for python packages.
+
+Return t if any of the packages are missing, nil otherwise."
   (let ((missing-packages
 	 (my-check-missing-packages-on-host package-list python)))
     (when missing-packages
