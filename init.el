@@ -830,9 +830,7 @@ Please initialize version control or build-system project.")))))
 (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
 (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
 
-(let ((file "~/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el"))
-  (when (file-exists-p file)
-    (load file)))
+(load "~/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el" t)
 
 (use-package meson-mode
   :config
@@ -1067,7 +1065,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
       (unless (use-region-p) (forward-line))))
   (defun my-elfeed-open-link () (interactive) (my-elfeed-open-yt-video))
   (define-key elfeed-search-mode-map (kbd "v") #'my-elfeed-open-link)
-  (load "~/.emacs.d/elfeed-settings.el") ;overrites my-elfeed-open-link
+
+  (load "~/.emacs.d/elfeed-settings.el" t) ;overrites my-elfeed-open-link
   (elfeed-search-fetch nil))
 
 ;; lyrics
@@ -1079,9 +1078,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 (use-package eww
   :config
-  (let ((config-file "~/.emacs.d/eww-init.el"))
-    (when (file-exists-p config-file)
-	(load config-file))))
+  (load "~/.emacs.d/eww-init.el" t))
 
 ;; RUST
 ;; (use-package lsp-rust
