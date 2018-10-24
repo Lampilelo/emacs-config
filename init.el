@@ -189,6 +189,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
      (define-key helm-generic-files-map (kbd "M-RET")
        #'helm-ff-run-open-file-with-default-tool)))
 
+(require 'dired)
 ;; bind M-RET to open files externally with dired
 (defun dired-open-file-with-default-tool ()
   "Open FILE with the default tool on this platform."
