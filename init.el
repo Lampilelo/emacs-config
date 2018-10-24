@@ -57,7 +57,8 @@
                                orig-bg))))
 
 ;; Temporary fix for helm buffers showing slowly
-(if (string-prefix-p "26" emacs-version)
+(if (not (or (> emacs-major-version 26)
+	     (and (eq emacs-major-version 26) (> emacs-minor-version 1))))
     (setq x-wait-for-event-timeout nil)
   (display-warning "version changed" "Check if problem with with helm opening slowly still persists. If not, delete this check from init.el."))
 
