@@ -274,15 +274,32 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   (let (frame (selected-frame))
     (x-urgency-hint frame (not arg))))
 
+(defvar pkg-config-present
+  (with-temp-buffer
+    (call-process "whereis" nil (current-buffer) nil "-b" "pkg-config")
+    (goto-char 0)
+    (when (search-forward ": " nil t) t))
+  "t if pkg-config is present on the system, nil if not")
+
 (defun my-find-package-on-host (name)
   "Check host system for package NAME.
 
-Return nil if not found, 'exe if found an executable, 'lib if found a library."
-  (cond
-   ((eq 0 (call-process "which" nil nil nil name))
-    'exe)
-   ((eq 0 (call-process "pkg-config" nil nil nil "--exists" name))
-    'lib)))
+If pkg-config is present on the system, the result is more precise:
+Return nil if not found, 'exe if found an executable, 'lib if found a library.
+
+If pkg-config is not present on the host system this function internally
+uses whereis linux command:
+Return nil if not found, t if found."
+  (if pkg-config-present
+      (cond
+       ((eq 0 (call-process "which" nil nil nil name))
+	'exe)
+       ((eq 0 (call-process "pkg-config" nil nil nil "--exists" name))
+	'lib))
+    (with-temp-buffer
+      (call-process "whereis" nil (current-buffer) nil "-b" name)
+      (goto-char 0)
+      (when (search-forward ": " nil t) t))))
 
 (defun my-find-python-package (name)
   "Check host system for python package NAME.
@@ -1073,7 +1090,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; Use pdf-tools instead of doc-view
 (unless (my-print-missing-packages-as-warnings
 	 "pdf-tools"
-	 '("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler-glib"))
+	 '("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler"))
   (use-package pdf-tools
     :config
     (pdf-tools-install t)))
