@@ -365,6 +365,14 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 	(pop-to-buffer (concat "*" term-name "*"))
       (switch-to-buffer (concat "*" term-name "*")))))
 
+(defun my-swap-windows ()
+  "Swap positions of current window and `next-window'."
+  (interactive)
+  (let ((current-buffer (current-buffer)))
+    (switch-to-buffer (window-buffer (next-window)))
+    (switch-to-buffer-other-window current-buffer)))
+(global-set-key (kbd "M-O") #'my-swap-windows)
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
