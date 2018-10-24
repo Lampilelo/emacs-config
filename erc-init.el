@@ -94,38 +94,40 @@ Example:
 ;; Add passwords to erc-nickserv-passwords
 ;; Gets password from command "pass server/nick"
 ;;   where server is :server and nick is :nick from `my-erc-server-info'
-(defun my-erc-refresh-passwords ()
-  "Reload passwords using \"pass\" command and `my-erc-server-info'."
-  (interactive)
-  (setq erc-nickserv-passwords nil)
-  (let ((ret t))
-    (dolist (server-info my-erc-server-info ret)
-      (condition-case pass-err
-	  (let ((plist (cdr server-info)))
-	    (push `(,(intern (car server-info))
-		    ((,(plist-get plist :nick) .
-		      ,(s-chomp
-			(with-temp-buffer
-			  (if (eq 0 (call-process
-				     "/usr/bin/pass"
-				     nil
-				     (current-buffer)
-				     nil
-				     (or (assoc-default
-					  (car server-info)
-					  my-erc-password-store-names)
-					 (error (format
-						 "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
-							(car server-info))))))
-			      (buffer-string)
-			    (error (format "No password for %s"
-					   (car server-info)))))))))
-		  erc-nickserv-passwords))
-	(wrong-type-argument
-	 (display-warning "erc-init.el"))
-	(error (display-warning "erc-init.el" (error-message-string pass-err))
-	       (setq ret nil))))))
-(my-erc-refresh-passwords)
+(unless (my-print-missing-packages-as-warnings "my-erc-passwords" '("pass"))
+  (defun my-erc-refresh-passwords ()
+    "Reload passwords using \"pass\" command and `my-erc-server-info'."
+    (interactive)
+    (setq erc-nickserv-passwords nil)
+    (let ((ret t))
+      (dolist (server-info my-erc-server-info ret)
+	(condition-case pass-err
+	    (let ((plist (cdr server-info)))
+	      (push `(,(intern (car server-info))
+		      ((,(plist-get plist :nick) .
+			,(s-chomp
+			  (with-temp-buffer
+			    (if (eq 0 (call-process
+				       "/usr/bin/pass"
+				       nil
+				       (current-buffer)
+				       nil
+				       (or (assoc-default
+					    (car server-info)
+					    my-erc-password-store-names)
+					   (error (format
+						   "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
+						   (car server-info))))))
+				(buffer-string)
+			      (error (format "No password for %s"
+					     (car server-info)))))))))
+		    erc-nickserv-passwords))
+	  (wrong-type-argument
+	   (display-warning "erc-init.el"))
+	  (error (display-warning "erc-init.el"
+				  (error-message-string pass-err))
+		 (setq ret nil))))))
+  (my-erc-refresh-passwords))
 
 ;; logs
 (require 'erc-log)
