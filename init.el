@@ -13,18 +13,20 @@
 ;; Privacy and security while downloading packages
 ;; it needs gnutls(-bin) and python-certifi packages to work
 (require 'tls)
-(let ((trustfile
-       (replace-regexp-in-string
-        "\\\\" "/"
-        (replace-regexp-in-string
-         "\n" ""
-         (shell-command-to-string "python -m certifi")))))
-  (setq tls-program
-        (list
-         (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-                 (if (eq window-system 'w32) ".exe" "") trustfile)))
-  (setq gnutls-verify-error t)
-  (setq gnutls-trustfiles (list trustfile)))
+;; (let ((trustfile
+;;        (replace-regexp-in-string
+;;         "\\\\" "/"
+;;         (replace-regexp-in-string
+;;          "\n" ""
+;;          (shell-command-to-string "python -m certifi")))))
+;;   (setq tls-program
+;;         (list
+;;          (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+;;                  (if (eq window-system 'w32) ".exe" "") trustfile)))
+;;   (setq gnutls-verify-error t)
+;;   (setq gnutls-trustfiles (list trustfile)))
+(setq gnutls-verify-error t)
+
 
 ;; USE-PACKAGE
 (if (not (package-installed-p 'use-package))
