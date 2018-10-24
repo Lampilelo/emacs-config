@@ -631,12 +631,13 @@ We need to exit that mode to call company-yasnippet."
   :config
   (add-hook 'c-mode-hook #'lsp-cquery-enable))
 
-(use-package ccls
-  :init
-  (setq ccls-executable "/usr/bin/ccls")
-  :config
-  (add-to-list 'ccls-project-root-matchers 'my/c++--find-project-root)
-  (add-hook 'c++-mode-hook #'lsp-ccls-enable))
+(unless (my-print-missing-packages-as-warnings "ccls" '("ccls"))
+  (use-package ccls
+    :init
+    (setq ccls-executable "/usr/bin/ccls")
+    :config
+    (add-to-list 'ccls-project-root-matchers 'my/c++--find-project-root)
+    (add-hook 'c++-mode-hook #'lsp-ccls-enable)))
 
 (use-package company-lsp
   :config
@@ -811,6 +812,10 @@ Please initialize version control or build-system project.")))))
 (define-key c++-mode-map (kbd "M-,") #'my-grep-references)
 (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
 (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
+
+(let ((file "~/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el"))
+  (when (file-exists-p file)
+    (load file)))
 
 (use-package meson-mode
   :config
@@ -1017,7 +1022,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
   (elpy-enable))
 
 ;; MAIL
-(load "~/.emacs.d/mu4e-init.el")
+(unless (my-print-missing-packages-as-warnings "MU4E" '("mu"))
+  (load "~/.emacs.d/mu4e-init.el"))
 ;; TODO: check out gnus and gwene (for reading feeds through nntp)
 ;;       (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
