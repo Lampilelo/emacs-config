@@ -1091,7 +1091,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; Use pdf-tools instead of doc-view
 (unless (my-print-missing-packages-as-warnings
 	 "pdf-tools"
-	 '("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler"))
+	 '("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler"
+	   "g++" "pkg-config"))
   (use-package pdf-tools
     :config
     (pdf-tools-install t)))
