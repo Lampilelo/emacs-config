@@ -244,7 +244,10 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
 
+;; Type break config
 (type-break-mode 1)
+(setq type-break-demo-functions '(type-break-demo-boring))
+(setq type-break-query-function 'y-or-n-p)
 
 ;; ==================== FUNCTIONS ===================
 
