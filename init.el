@@ -106,12 +106,6 @@
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-;; Use pdf-tools instead of doc-view
-(use-package pdf-tools
-  :config
-  (pdf-tools-install))
-;; to uninstall you have to call (pdf-tools-uninstall)
-
 (load "~/.emacs.d/org-agenda-init.el")
 (use-package helm-org-rifle
   :config
@@ -1057,5 +1051,14 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;;   (add-hook 'rust-mode-hook #'lsp-rust-enable)
 ;;   (add-hook 'rust-mode-hook #'flycheck-mode))
 
+;; PDF-TOOLS
+;; Use pdf-tools instead of doc-view
+(unless (my-print-missing-packages-as-warnings
+	 "pdf-tools"
+	 '("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler-glib"))
+  (use-package pdf-tools
+    :config
+    (pdf-tools-install t)))
+;; to uninstall you have to call (pdf-tools-uninstall)
 (provide 'init)
 ;;; init.el ends here
