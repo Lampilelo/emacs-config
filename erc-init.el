@@ -115,11 +115,11 @@ Example:
 					  (car server-info)
 					  my-erc-password-store-names)
 					 (error (format
-						 "Couldn't retrieve password from %s profile from `my-erc-password-store-names'"
+						 "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
 							(car server-info))))))
 			      (buffer-string)
 			    (error (format "No password for %s"
-					   pass-name))))))))
+					   (car server-info)))))))))
 		  erc-nickserv-passwords))
 	(wrong-type-argument
 	 (display-warning "erc-init.el"))
