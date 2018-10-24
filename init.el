@@ -1079,7 +1079,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 (use-package eww
   :config
-  (load "~/.emacs.d/eww-init.el"))
+  (let ((config-file "~/.emacs.d/eww-init.el"))
+    (when (file-exists-p config-file)
+	(load config-file))))
 
 ;; RUST
 ;; (use-package lsp-rust
