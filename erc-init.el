@@ -63,6 +63,12 @@ Uses `my-erc-server-info' to get the information about server settings."
     (let ((fun-name (intern (concat "irc-" server-name))))
       `(defun ,fun-name ()
 	 (interactive)
+	 ,(when (fboundp #'my-erc-refresh-passwords)
+	    `(unless (assoc ',(intern server-name) erc-nickserv-passwords)
+	       (if (assoc ,server-name my-erc-password-store-names)
+		   (my-erc-refresh-passwords)
+		 (message "Warning: no password found for server %s"
+			  ,server-name))))
 	 (,(if (my-erc-server-get server-name :no-tls) 'erc 'erc-tls)
 	  :server (my-erc-server-get ,server-name :server)
 	  :port (or (my-erc-server-get ,server-name :port) 6697)
@@ -126,8 +132,7 @@ Example:
 	   (display-warning "erc-init.el"))
 	  (error (display-warning "erc-init.el"
 				  (error-message-string pass-err))
-		 (setq ret nil))))))
-  (my-erc-refresh-passwords))
+		 (setq ret nil)))))))
 
 ;; logs
 (require 'erc-log)
