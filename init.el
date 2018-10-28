@@ -55,6 +55,16 @@
 (setq scroll-conservatively 101)
 (setq sentence-end-double-space nil)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
+(defun my-Man-open-in-same-buffer ()
+  "Open new man buffer in place of the current."
+  (interactive)
+  (let ((old-buffer (current-buffer))
+	(Man-notify-method 'pushy))
+    (call-interactively #'man)
+    (when (string-prefix-p "*Man" (buffer-name old-buffer))
+      (kill-buffer old-buffer))))
+(require 'man)
+(define-key Man-mode-map (kbd "M") #'my-Man-open-in-same-buffer)
 
 ;; NOTE: Probably temporary. I added it because of abnoxious ding when on
 ;;       battery power. Maybe it would be better to call 'ignore instead.
