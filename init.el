@@ -670,7 +670,8 @@ We need to exit that mode to call company-yasnippet."
   (setq cquery-executable "/usr/bin/cquery")
   (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
   :config
-  (add-hook 'c-mode-hook #'lsp-cquery-enable))
+  ;; (add-hook 'c-mode-hook #'lsp-cquery-enable)
+  )
 
 (unless (my-print-missing-packages-as-warnings "ccls" '("ccls"))
   (use-package ccls
