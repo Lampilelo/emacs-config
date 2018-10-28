@@ -71,3 +71,35 @@
 		 (list class-name)))
   (let ((project-root (my/c++-find-project-root)))
     ))
+
+
+;; TODO: if process finished before setting a sentinel, just run BODY
+(defmacro my-eval-after-process (proc &rest body)
+  "Evaluate BODY after PROC finished.
+
+Doesn't block the main process.
+
+PROC must be a process."
+  (let ((process (cond ((processp proc) proc)
+		       ((consp proc) (eval proc)))))
+    (unless (processp process)
+      (signal 'wrong-type-argument '("PROC must be a process")))
+    (set-process-sentinel
+     process
+     `(lambda (proc msg)
+	;; pass to original sentinel
+	(funcall #',(process-sentinel process) proc msg)
+	(when (string-equal msg "finished\n")
+	  ,@body))))
+  nil)
+;; (defun my-wait-for-process (process)
+;;   "Wait for asynchronous process to finish."
+;;   (assert (processp process))
+;;   (set-process-sentinel
+;;    process
+;;    `(lambda (proc msg)
+;;       ;; pass to original sentinel
+;;       (funcall #',(process-sentinel process) proc msg)
+;;       (when (string-equal msg "finished\n")
+;; 	(message "fin"))))
+;;   nil)
