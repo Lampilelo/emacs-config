@@ -25,7 +25,18 @@
 ;;                  (if (eq window-system 'w32) ".exe" "") trustfile)))
 ;;   (setq gnutls-verify-error t)
 ;;   (setq gnutls-trustfiles (list trustfile)))
+
+;; this is from: https://github.com/antifuchs/safe-tls-defaults-mode/blob/master/safe-tls-defaults.el
+;; reddit topic: https://old.reddit.com/r/emacs/comments/8sykl1/emacs_tls_defaults_are_downright_dangerous/
+(defun safe-tls-disable-gnutls (&rest args) nil)
+(advice-add 'gnutls-available-p :override 'safe-tls-disable-gnutls)
+(setq tls-program
+      '("gnutls-cli -p %p --dh-bits=2048 --ocsp --x509cafile=%t \
+--priority='SECURE192:+SECURE128:-VERS-ALL:+VERS-TLS1.2:%%PROFILE_MEDIUM' %h"))
 (setq gnutls-verify-error t)
+(setq tls-checktrust t)
+(setq network-security-level 'high)
+;; (setq nsm-save-host-names t)
 
 
 ;; USE-PACKAGE
