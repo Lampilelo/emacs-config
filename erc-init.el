@@ -109,27 +109,23 @@ Example:
       (dolist (server-info my-erc-server-info ret)
 	(condition-case pass-err
 	    (let ((plist (cdr server-info)))
-	      (push `(,(intern (car server-info))
-		      ((,(plist-get plist :nick) .
-			,(s-chomp
-			  (with-temp-buffer
-			    (if (eq 0 (call-process
-				       "/usr/bin/pass"
-				       nil
-				       (current-buffer)
-				       nil
-				       (or (assoc-default
-					    (car server-info)
-					    my-erc-password-store-names)
-					   (error (format
-						   "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
-						   (car server-info))))))
-				(buffer-string)
-			      (error (format "No password for %s"
-					     (car server-info)))))))))
+	      (push
+	       `(,(intern (car server-info)) ; server name as symbol
+		 ((,(plist-get plist :nick) .
+		   ,(with-temp-buffer
+		      (if (eq 0 (call-process
+				 "/usr/bin/pass" nil (current-buffer) nil
+				 ;; get arg from my-erc-password-store-names
+				 (or (assoc-default
+				      (car server-info)
+				      my-erc-password-store-names)
+				     (error (format
+  "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
+					     (car server-info))))))
+			  (s-chomp (buffer-string))
+			(error (format "No password for %s"
+				       (car server-info))))))))
 		    erc-nickserv-passwords))
-	  (wrong-type-argument
-	   (display-warning "erc-init.el"))
 	  (error (display-warning "erc-init.el"
 				  (error-message-string pass-err))
 		 (setq ret nil)))))))
