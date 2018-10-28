@@ -55,6 +55,8 @@
 (setq scroll-conservatively 101)
 (setq sentence-end-double-space nil)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
+(setq custom-file (concat user-emacs-directory "custom.el"))
+
 (defun my-Man-open-in-same-buffer ()
   "Open new man buffer in place of the current."
   (interactive)
