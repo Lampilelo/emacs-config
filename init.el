@@ -470,6 +470,7 @@ init.el. The code snippet changes faces for TODO entries.")))
 	  (counsel-git-grep . ivy--regex-plus)))
   :config
   (ivy-mode t)
+  (diminish 'ivy-mode)
   :bind (:map ivy-minibuffer-map
 	      ("C-s" . #'ivy-toggle-fuzzy)))
 
@@ -865,7 +866,8 @@ Please initialize version control or build-system project.")))))
 
 (use-package highlight-parentheses
   :config
-  (global-highlight-parentheses-mode))
+  (global-highlight-parentheses-mode)
+  (diminish 'highlight-parentheses-mode))
 
 ;; (use-package smartparens
 ;;   :config
@@ -947,6 +949,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
   ;; How do you load mode before package is loaded?
   :init
   (which-key-mode 1)
+  (diminish 'which-key-mode)
   (global-unset-key (kbd "C-h C-h"))	;unbind conflicting key binding
   :bind ("C-*" . #'which-key-show-top-level))
 
@@ -954,7 +957,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :config
   ;; When pressing C-w this will check if there is an active region
   ;; if there's not, it will kill current line (including newline sign)
-  (add-hook 'after-init-hook #'whole-line-or-region-mode))
+  (add-hook 'after-init-hook #'whole-line-or-region-mode)
+  (diminish 'whole-line-or-region-local-mode))
 
 (use-package dockerfile-mode)
 
@@ -1044,7 +1048,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; C-?   - undo-tree-redo
 (use-package undo-tree
   :config
-  (global-undo-tree-mode 1))
+  (global-undo-tree-mode 1)
+  (diminish 'undo-tree-mode))
 
 ;; PYTHON
 ;; (use-package company-jedi
