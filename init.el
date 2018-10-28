@@ -52,7 +52,7 @@
 (scroll-bar-mode -1)
 ;; (global-hl-line-mode) ;; slows down next-line nad previous-line
 (setq inhibit-startup-screen t)
-(setq scroll-conservatively 100)
+(setq scroll-conservatively 101)
 (setq sentence-end-double-space nil)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
