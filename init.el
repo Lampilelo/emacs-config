@@ -934,6 +934,31 @@ Used second time kills the delimiter and everything up to the next delimiter."
     (sp-kill-hybrid-sexp (point))))
 (define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp)
 
+;; IN PROGRESS
+;; TODO: This could be written easier for certain!
+;; TODO: Check if looking at closing paren
+;; (defun my-kill-hybrid-sexp ()
+;;   "Kill a line respecting delimiters.
+;; Used second time kills the delimiter and everything up to the next delimiter."
+;;   (interactive)
+;;   (let* ((line-end (line-end-position))
+;; 	 (stats (syntax-ppss))
+;; 	 (string-char (nth 3 stats))
+;; 	 (paren-char (nth 1 stats)))
+;;     (cond (string-char	 ; if in string delete to end of line or end of string
+;; 	   (let ((closing-char
+;; 		  (save-excursion (1- (search-forward
+;; 				    (char-to-string string-char))))))
+;; 	     (if (> closing-char line-end)
+;; 		(kill-line)
+;; 	      (kill-region (point) closing-char))))
+;; 	  (paren-char	 ; if in parens delete to end of line or closing paren
+;; 	   (let ((closing-char (1- (scan-sexps paren-char 1))))
+;; 	     (if (> closing-char line-end)
+;; 		(kill-line)
+;; 	       (kill-region (point) closing-char))))
+;; 	  (t (kill-line)))))
+
 (use-package magit
   :init
   (my-print-missing-packages-as-warnings "MAGIT" '("git"))
