@@ -184,6 +184,8 @@ Example:
 ;; Ignore certain type of messages when showing on the modeline
 (dolist (item '("JOIN" "PART" "QUIT"))
   (add-to-list 'erc-track-exclude-types item))
+(setq erc-track-exclude-server-buffer t)
+(push "&bitlbee" erc-track-exclude)
 
 ;; sound notifications
 (defun erc-my-play-new-message-sound ()
