@@ -128,7 +128,8 @@ Example:
 		    erc-nickserv-passwords))
 	  (error (display-warning "erc-init.el"
 				  (error-message-string pass-err))
-		 (setq ret nil)))))))
+		 (setq ret nil)))))
+    "Loading passwords finished."))
 
 ;; logs
 (require 'erc-log)
