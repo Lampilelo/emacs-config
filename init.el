@@ -169,35 +169,32 @@
 ;; Relevant symbols:
 ;;   helm-default-info-index-list, helm-info-search-index
 (defun my-contextual-helm-info (&optional generic-info)
-  "If there is known defun for helm-info-<MODE> for current major mode, call it.
-Otherwise call ‘helm-info’.
+  "If there is known function for helm-info-<MODE> for current major mode,
+call it. Otherwise call ‘helm-info’.
+
 If GENERIC-INFO is non-nil, call generic ‘helm-info’.
 
 With a prefix argument \\[universal-argument], just call generic ‘helm-info’."
   (interactive "P")
-  (catch 'placeholder ;because normal return sucks, TODO: refactor this!
-    (when generic-info			;if universal prefix argument is used
-      (funcall #'helm-info)		;call helm-info and exit
-      (throw 'placeholder "Defun called with a prefix argument"))
-    (let ((defun-to-call
-	    (intern 		;call defun by name
-	     (let ((current-mode 	;get mode name that matches helm-info
-		    (downcase (replace-regexp-in-string
-			       "-mode" "" (symbol-name major-mode)))))
-
-	       ;; Get defun name, e.g. helm-info-cpp
-	       ;; Some modes are called differently in helm, so we need
-	       ;; to rename them before evaluating
-	       (concat "helm-info-"	;
-		       (cond ((equal current-mode "c++") "cpp")
-			     ((equal current-mode "emacs-lisp") "elisp")
-			     ((equal current-mode "lisp-interaction") "elisp")
-			     (t current-mode)))))))
-
+  (if generic-info		 ;if universal prefix argument is used
+      (funcall #'helm-info)	 ;call helm-info and exit
+    (let ((fun-to-call
+	   (intern		   ;call function by name
+	    (let ((current-mode ;get mode name that matches helm-info
+		   (downcase (replace-regexp-in-string
+			      "-mode" "" (symbol-name major-mode)))))
+	      ;; Get function name, e.g. helm-info-cpp
+	      ;; Some modes are called differently in info, so we need
+	      ;; to rename them before evaluating
+	      (concat "helm-info-"
+		      (cond ((equal current-mode "c++") "cpp")
+			    ((equal current-mode "emacs-lisp") "elisp")
+			    ((equal current-mode "lisp-interaction") "elisp")
+			    (t current-mode)))))))
       ;; check if helm-info-CURRENT_MODE exists, if so - call it
       ;; otherwise call generic helm-info
-      (if (not (eq (symbol-function defun-to-call) nil))
-	  (funcall defun-to-call)
+      (if (not (eq (fboundp fun-to-call) nil))
+	  (funcall fun-to-call)
 	(funcall #'helm-info)))))
 (global-set-key (kbd "C-h h") #'my-contextual-helm-info)
 (define-key Info-mode-map (kbd "<up>") #'scroll-down-line)
