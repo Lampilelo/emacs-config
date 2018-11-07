@@ -611,7 +611,7 @@ We need to exit that mode to call company-yasnippet."
     :init
     (setq ccls-executable "/usr/bin/ccls")
     :config
-    (add-to-list 'ccls-project-root-matchers 'my/c++--find-project-root)
+    (advice-add 'ccls--get-root :after-until #'my/c++--find-project-root)
     (add-hook 'c++-mode-hook #'lsp-ccls-enable)))
 
 (use-package company-lsp
