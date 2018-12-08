@@ -596,7 +596,11 @@ We need to exit that mode to call company-yasnippet."
 (use-package lsp-ui
   :config
   (require 'lsp-ui)
-  (add-hook 'lsp-mode-hook #'lsp-ui-mode))
+  (add-hook 'lsp-mode-hook #'lsp-ui-mode)
+  ;; TODO: check if lsp-ui checker still sucks (or find out why)
+  (setq lsp-ui-flycheck-enable nil)
+  (add-hook 'c++-mode-hook (lambda () (setq-local flycheck-checker
+  						  'c/c++-clang))))
 
 (use-package cquery
   :init
