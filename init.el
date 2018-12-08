@@ -794,6 +794,63 @@ Please initialize version control or build-system project.")))))
 (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
 (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
 
+;; TODO: Check if I could use LSP to give me the type of the variable
+;; TODO: Add "public:" keyword before accessor functions and "private:"
+;;       before a variable or create accessors at the bottom of class
+;;       Maybe add a variable (or prefix argument) to set the behavior.
+(defun my-cpp-create-accessors ()
+  "Create accessors to the variable declared on a current line.
+
+By default accessors use constant references.
+If the variable is a pointer or a reference, only \"const\" qualifier is added."
+  (interactive)
+  (save-excursion
+    (beginning-of-line-text)
+    ;; FIXME: fundamental type variables should be passed by value
+    (condition-case error
+	(save-match-data
+	  (re-search-forward "\\<\\(?1:[[:word:]-_<>: ]*\\)\
+\\(?:\s+\\(?2:[*&]+\\)?\\|\\(?2:[*&]+\\)\s+\\)\
+\\(?3:[[:word:]-_:]+\\)"
+			     (line-end-position))
+	  (let* ((type (match-string 1))
+		 (name (match-string 3))
+		 ;; m_foo, _foo, foo_ => foo ; TODO: mFoo
+		 (setter-name (s-replace-regexp "\\(^m?_+\\)\\|\\(_+$\\)"
+						""
+						name))
+		 (pointer-or-ref (match-string 2)))
+	    (princ-list type "\n" name "\n" setter-name "\n" pointer-or-ref)
+	    (end-of-line)
+	    (newline)
+	    (insert "inline const " type
+		    (format "%s " (or pointer-or-ref "&"))
+		    (s-upper-camel-case name)
+    		    "() const {\n"
+    		    "return " name ";\n}\n")
+	    (c-indent-defun)
+	    (insert "inline void Set" (s-upper-camel-case name) "(const "
+    		    type (format "%s " (or pointer-or-ref "&"))
+		    setter-name ") {\n" name " = " setter-name ";\n}\n")
+	    (c-indent-defun)))
+      (search-failed (message "Couldn't find a variable declaration.")))))
+;; TEST CASES THAT PASSED :
+;; char** foo;
+;; char **foo;
+;; char *foo;
+;; char * foo;
+;; std::string& foo;
+;; std::string &foo;
+;; const std::string& foo;
+;; int foo = 5;
+;; std::string foo = "blabla";
+;; std::string foo("blabla");
+;; std::string bla = foo;
+;; std::string bla{"foo"};
+;; thread-local int foo;
+;; const int bla::foo = 5;
+;; std::string id_;
+
 (load "~/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el" t)
 
 (use-package meson-mode
