@@ -260,6 +260,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (global-set-key (kbd "M-o") #'other-window)
 (global-set-key (kbd "M-i") #'imenu)
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
+(global-set-key (kbd "C-c i") #'iedit-mode)
 
 ;; TODO: rebind those to C-h, M-h and rebind help to C-z
 (global-set-key (kbd "C-z") (kbd "DEL"))   ; backward-delete-char
