@@ -54,34 +54,6 @@ To get specific property from the list, use `my-erc-server-get'")
 	 :port 6667
 	 :no-tls t)))
 
-(defmacro my-erc--define-connect-function (server-name)
-  "Create an interactive function for connecting to a specific server.
-I.e. \"irc-freenode\"
-
-Uses `my-erc-server-info' to get the information about server settings."
-  (when (assoc server-name my-erc-server-info)
-    (let ((fun-name (intern (concat "irc-" server-name))))
-      `(defun ,fun-name ()
-	 (interactive)
-	 ,(when (fboundp #'my-erc-refresh-passwords)
-	    `(unless (assoc ',(intern server-name) erc-nickserv-passwords)
-	       (if (assoc ,server-name my-erc-password-store-names)
-		   (my-erc-refresh-passwords)
-		 (message "Warning: no password found for server %s"
-			  ,server-name))))
-	 (,(if (my-erc-server-get server-name :no-tls) 'erc 'erc-tls)
-	  :server (my-erc-server-get ,server-name :server)
-	  :port (or (my-erc-server-get ,server-name :port) 6697)
-	  :nick (my-erc-server-get ,server-name :nick))))))
-
-(dolist (serv '("Rizon" "freenode" "BitlBee"))
-  (eval `(my-erc--define-connect-function ,serv)))
-
-(setq erc-fill-column 76)
-
-(require 'erc-services)
-(add-hook 'erc-mode-hook 'erc-nickserv-mode)
-
 (defvar my-erc-password-store-names nil
   "Alist of password names corresponding to entries from `my-erc-server-info'.
 
@@ -130,6 +102,34 @@ Example:
 				  (error-message-string pass-err))
 		 (setq ret nil)))))
     "Loading passwords finished."))
+
+(defmacro my-erc--define-connect-function (server-name)
+  "Create an interactive function for connecting to a specific server.
+I.e. \"irc-freenode\"
+
+Uses `my-erc-server-info' to get the information about server settings."
+  (when (assoc server-name my-erc-server-info)
+    (let ((fun-name (intern (concat "irc-" server-name))))
+      `(defun ,fun-name ()
+	 (interactive)
+	 ,(when (fboundp #'my-erc-refresh-passwords)
+	    `(unless (assoc ',(intern server-name) erc-nickserv-passwords)
+	       (if (assoc ,server-name my-erc-password-store-names)
+		   (my-erc-refresh-passwords)
+		 (message "Warning: no password found for server %s"
+			  ,server-name))))
+	 (,(if (my-erc-server-get server-name :no-tls) 'erc 'erc-tls)
+	  :server (my-erc-server-get ,server-name :server)
+	  :port (or (my-erc-server-get ,server-name :port) 6697)
+	  :nick (my-erc-server-get ,server-name :nick))))))
+
+(dolist (serv '("Rizon" "freenode" "BitlBee"))
+  (eval `(my-erc--define-connect-function ,serv)))
+
+(setq erc-fill-column 76)
+
+(require 'erc-services)
+(add-hook 'erc-mode-hook 'erc-nickserv-mode)
 
 ;; logs
 (require 'erc-log)
