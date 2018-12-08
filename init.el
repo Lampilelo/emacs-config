@@ -262,9 +262,9 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
 (global-set-key (kbd "C-c i") #'iedit-mode)
 
-;; TODO: rebind those to C-h, M-h and rebind help to C-z
-(global-set-key (kbd "C-z") (kbd "DEL"))   ; backward-delete-char
-(global-set-key (kbd "M-z") (kbd "M-DEL")) ; backward-kill-word
+(define-key global-map (kbd "C-z") 'help-command)
+(define-key global-map (kbd "C-h") (kbd "DEL"))
+(define-key global-map (kbd "M-h") (kbd "M-DEL"))
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
