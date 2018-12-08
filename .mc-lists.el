@@ -8,6 +8,7 @@
 	ace-jump-char-mode
 	ace-jump-move
 	backward-sexp
+	backward-up-list
 	c-electric-brace
 	c-electric-colon
 	c-electric-delete-forward
@@ -19,11 +20,13 @@
 	delete-horizontal-space
 	electric-newline-and-maybe-indent
 	electric-pair-delete-pair
+	forward-sexp
 	indent-for-tab-command
 	isearch-forward-regexp
 	isearch-printing-char
 	kill-sentence
 	kill-sexp
+	lispy-raise-sexp
 	mark-sexp
 	my-wrap-round
 	org-beginning-of-line
@@ -35,9 +38,11 @@
 	sp-delete-char
 	sp-kill-word
 	swiper
+	transpose-sexps
 	wdired-next-line
 	wdired-previous-line
 	wdired-upcase-word
+	wgrep-finish-edit
 	whole-line-or-region-kill-region
 	whole-line-or-region-kill-ring-save
 	whole-line-or-region-yank
@@ -46,6 +51,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+	avy-goto-word-or-subword-1
 	beginning-of-buffer
 	dired-previous-line
 	end-of-buffer
