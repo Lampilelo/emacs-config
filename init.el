@@ -625,6 +625,8 @@ We need to exit that mode to call company-yasnippet."
 	company-lsp-async t
 	company-lsp-cache-candidates nil))
 
+(use-package rmsbolt)
+
 ;; Obsolete
 ;; (defun my-cpp-git-compile ()
 ;;   "Compile current git project in the \"build\" directory.
