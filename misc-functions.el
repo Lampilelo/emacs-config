@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; THIS FILE SHOULD NOT BE EVALUATED
 ;; It stores non-used functions as examples and reference
 
