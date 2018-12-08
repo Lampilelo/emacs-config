@@ -889,7 +889,10 @@ If the variable is a pointer or a reference, only \"const\" qualifier is added."
 
 (use-package lispy
   :config
-  (dolist (mode-map (list emacs-lisp-mode-map lisp-interaction-mode-map))
+  (require 'scheme)
+  (dolist (mode-map (list emacs-lisp-mode-map
+			  lisp-interaction-mode-map
+			  scheme-mode-map))
     (define-key mode-map (kbd "M-k") #'lispy-raise-sexp)))
 
 ;; FIXME: Doesn't work so flawlessly inside of a comment.
