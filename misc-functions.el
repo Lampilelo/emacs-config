@@ -103,3 +103,54 @@ PROC must be a process."
 ;;       (when (string-equal msg "finished\n")
 ;; 	(message "fin"))))
 ;;   nil)
+
+
+(let* ((xml (car '((api nil (query-continue nil (allpages ((apcontinue . c/string/multibyte/char16_t)))) (query nil (allpages nil (p ((pageid . 6047) (ns . 0) (title . c/string/byte/toupper))) (p ((pageid . 5758) (ns . 0) (title . c/string/multibyte))) (p ((pageid . 6111) (ns . 0) (title . c/string/multibyte/btowc))) (p ((pageid . 9392) (ns . 0) (title . c/string/multibyte/c16rtomb))) (p ((pageid . 9393) (ns . 0) (title . c/string/multibyte/c32rtomb)))))))))
+       (continue (xml-get-attribute
+		  (xml-query '(query-continue allpages) xml)
+		  'apcontinue))
+       (query (xml-query '(query) xml)))
+  (pop-to-buffer (get-buffer-create "*xml-shenanigans*"))
+  (erase-buffer)
+  (dolist (page (xml-query-all '(query allpages p) xml))
+    (insert (symbol-name (xml-get-attribute page 'title)) ?\n)))
+
+(defun my-get-cppreference ()
+  (let ((url-template "https://en.cppreference.com/mwiki/api.php?action=query&list=allpages&aplimit=500&apcontinue&format=xml&apfrom=%s")
+       (apfrom "")
+       (buf (get-buffer-create "*page-list*")))
+    (loop
+     for url = (format url-template apfrom)
+     for xml = (car (with-current-buffer (url-retrieve-synchronously url)
+		      (xml-parse-region)))
+     do
+     (setq apfrom (xml-get-attribute
+		   (xml-query '(query-continue allpages) xml)
+		   'apcontinue))
+     (with-current-buffer buf
+       (dolist (page (xml-query-all '(query allpages p) xml))
+	 (insert (format "%s\n" (xml-get-attribute page 'title)))))
+     until (string= "" apfrom))))
+(my-get-cppreference)
+
+(xml-get-attribute (xml-query '(query-continue allpages) (car (with-current-buffer (url-retrieve-synchronously "https://en.cppreference.com/mwiki/api.php?action=query&list=allpages&aplimit=500&apcontinue&format=xml&apfrom=old/wiki/string/c/strtok") (xml-parse-region))))
+'apcontinue)
+
+
+;; REGEX for variables:
+;; "\\<\\(?1:[[:word:]-_<>: ]*\\)\
+;; \\(?:\s+\\(?2:[*&]+\\)?\\|\\(?2:[*&]+\\)\s+\\)\
+;; \\(?3:[[:word:]-_]+\\)\
+;; \s?[=(]?"
+
+;; TEST CASES:
+;; unsigned int foo_;
+;; std::vector<unsigned int> bar;
+;; char* foo;
+;; char *foo;
+;; std::string& foo;
+;; const std::string& foo;
+
+;; int foo = 5;
+;; std::string foo = "blabla";
+;; std::string foo("blabla");
