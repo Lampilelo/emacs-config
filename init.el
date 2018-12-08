@@ -360,31 +360,33 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 ;;   :config
 ;;   (load-theme 'tangotango t))
 
-(when (or (daemonp) (display-graphic-p))
-  (load-theme 'leuven t)
-  (set-face-attribute 'default nil :height 120)
+(if (or (daemonp) (display-graphic-p))
+    (progn
+      (load-theme 'leuven t)
+      (set-face-attribute 'default nil :height 120)
 
-  ;; NOTE: it was created for leuven theme, so if I change it, I should also
-  ;;       edit this
-  (if (member 'leuven custom-enabled-themes)
-      (progn
-	(setq org-todo-keyword-faces
-	      '(("TODO" .
-		 (t (:box (:line-width 1 :color "#ec9e14") :weight bold
-			  :background "#f2e3ca" :foreground "#ec9e14")))
-		("IN-PROGRESS" .
-		 ((t (:box (:line-width 1 :color "#00a2e4")
-			   :background "#bcd6e0" :foreground "#00a2e4"))))
-		("WAITING" .
-		 ((t (:box (:line-width 1 :color "#c96332") :weight bold
-			   :background "#eed2c5" :foreground "#c96332"))))))
-	(custom-set-faces
-	 '(default ((t (:background "#fffff7"))))
-	 '(Man-overstrike ((t (:foreground "#82481e" :weight bold))))
-	 '(Man-underline ((t (:foreground "lime green" :weight bold))))
-	 '(Info-quoted ((t (:foreground "dark slate blue" :weight bold))))))
-    (display-warning "theme changed" "Check if you need this check inside \
+      ;; NOTE: it was created for leuven theme, so if I change it, I should also
+      ;;       edit this
+      (if (member 'leuven custom-enabled-themes)
+	  (progn
+	    (setq org-todo-keyword-faces
+		  '(("TODO" .
+		     (t (:box (:line-width 1 :color "#ec9e14") :weight bold
+			      :background "#f2e3ca" :foreground "#ec9e14")))
+		    ("IN-PROGRESS" .
+		     ((t (:box (:line-width 1 :color "#00a2e4")
+			       :background "#bcd6e0" :foreground "#00a2e4"))))
+		    ("WAITING" .
+		     ((t (:box (:line-width 1 :color "#c96332") :weight bold
+			       :background "#eed2c5" :foreground "#c96332"))))))
+	    (custom-set-faces
+	     '(default ((t (:background "#fffff7"))))
+	     '(Man-overstrike ((t (:foreground "#82481e" :weight bold))))
+	     '(Man-underline ((t (:foreground "lime green" :weight bold))))
+	     '(Info-quoted ((t (:foreground "dark slate blue" :weight bold))))))
+	(display-warning "theme changed" "Check if you need this check inside \
 init.el. The code snippet changes faces for TODO entries.")))
+  (load-theme 'wombat t))
 
 (use-package auto-complete)
 
