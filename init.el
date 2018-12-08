@@ -1165,5 +1165,25 @@ Used second time kills the delimiter and everything up to the next delimiter."
 (setq gnus-select-method '(nntp "news.aioe.org"))
 (setq gnus-read-active-file nil)
 
+;; INFO-LOOKMORE
+;; ftp://download.tuxfamily.org/user42/info-lookmore.el
+(let ((file "~/.emacs.d/info-lookmore.el"))
+  (when (file-exists-p file)
+    (load "~/.emacs.d/info-lookmore.el")
+    ;; Add Scheme manual to lookmore
+    ;; I could also add (guile ...) manuals to this
+    ;; (info-lookmore-add-doc
+    ;;  'symbol 'scheme-mode
+    ;;  '("(r5rs) Index" nil nil nil))
+    (info-lookmore-add-doc
+     'symbol 'scheme-mode
+     '("(guile) Procedure Index" nil nil nil))
+    (info-lookmore-add-doc
+     'symbol 'scheme-mode
+     '("(guile) Variable Index" nil nil nil))
+    (info-lookmore-add-doc
+     'symbol 'scheme-mode
+     '("(guile) R5RS Index" nil nil nil))))
+
 (provide 'init)
 ;;; init.el ends here
