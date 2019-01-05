@@ -1,7 +1,6 @@
 ;;; init.el --- Initialization file for Emacs -*- lexical-binding: t; -*-
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
-(require 'package)
 (package-initialize)
 (setq package-archives
       '(
@@ -44,7 +43,6 @@
     (progn
       (package-refresh-contents)
       (package-install 'use-package)))
-(require 'use-package)
 (setq use-package-always-ensure t)
 
 (tool-bar-mode -1)
@@ -65,8 +63,8 @@
     (call-interactively #'man)
     (when (string-prefix-p "*Man" (buffer-name old-buffer))
       (kill-buffer old-buffer))))
-(require 'man)
-(define-key Man-mode-map (kbd "M") #'my-Man-open-in-same-buffer)
+(eval-after-load 'man
+  '(define-key Man-mode-map (kbd "M") #'my-Man-open-in-same-buffer))
 
 ;; NOTE: Probably temporary. I added it because of abnoxious ding when on
 ;;       battery power. Maybe it would be better to call 'ignore instead.
@@ -103,10 +101,6 @@
 (use-package org
   :ensure org-plus-contrib
   :pin org)
-(require 'org)
-(require 'org-agenda)
-(require 'ox-latex)
-(require 'ox-beamer)
 (setq org-edit-src-content-indentation 2)
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
@@ -138,24 +132,23 @@
 
 (load "~/.emacs.d/org-agenda-init.el")
 (use-package helm-org-rifle
-  :config
-  (require 'helm-org-rifle)
   :bind
   ("C-c r" . #'helm-org-rifle-org-directory))
 
 ;; Polish quotation marks
-(push
- '("pl"
-   (opening-double-quote :utf-8 "„"  :html "&bdquo;"
-			 :latex ",," :texinfo "@quotedblbase{}")
-   (closing-double-quote :utf-8 "”"  :html "&rdquo;"
-			 :latex "''" :texinfo "@quotedblright{}")
-   (opening-single-quote :utf-8 "‚"  :html "&sbquo;"
-			 :latex "," :texinfo "@quotesinglbase{}")
-   (closing-single-quote :utf-8 "’"  :html "&rsquo;"
-			 :latex "'" :texinfo "@quoteright{}")
-   (apostrophe :utf-8 "’" :html "&rsquo;"))
- org-export-smart-quotes-alist)
+(eval-after-load 'ox
+  '(push
+   '("pl"
+     (opening-double-quote :utf-8 "„"  :html "&bdquo;"
+			   :latex ",," :texinfo "@quotedblbase{}")
+     (closing-double-quote :utf-8 "”"  :html "&rdquo;"
+			   :latex "''" :texinfo "@quotedblright{}")
+     (opening-single-quote :utf-8 "‚"  :html "&sbquo;"
+			   :latex "," :texinfo "@quotesinglbase{}")
+     (closing-single-quote :utf-8 "’"  :html "&rsquo;"
+			   :latex "'" :texinfo "@quoteright{}")
+     (apostrophe :utf-8 "’" :html "&rsquo;"))
+   org-export-smart-quotes-alist))
 ;; Default to polish language for export
 ;; To change language per document add i.e. '#+LANGUAGE: en' to the org file
 (setq org-export-default-language "pl")
@@ -203,26 +196,25 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (define-key Info-mode-map (kbd "<left>") (kbd "["))
 
 ;; bind M-RET to open files externally with helm
-(eval-after-load "helm-files"
-  '(progn
-     (define-key helm-find-files-map (kbd "M-RET")
-       #'helm-ff-run-open-file-with-default-tool)
-     (define-key helm-generic-files-map (kbd "M-RET")
-       #'helm-ff-run-open-file-with-default-tool)))
+(with-eval-after-load 'helm-files
+  (define-key helm-find-files-map (kbd "M-RET")
+    #'helm-ff-run-open-file-with-default-tool)
+  (define-key helm-generic-files-map (kbd "M-RET")
+    #'helm-ff-run-open-file-with-default-tool))
 
-(require 'dired)
 ;; bind M-RET to open files externally with dired
-(defun dired-open-file-with-default-tool ()
-  "Open FILE with the default tool on this platform."
-  (interactive)
-  (dired-do-shell-command
-   (cond ((eq system-type 'gnu/linux)
-	  "xdg-open")
-	 ((or (eq system-type 'darwin) ;; Mac OS X
-	      (eq system-type 'macos)) ;; Mac OS 9
-	  "open"))
-   nil (dired-get-marked-files)))
-(define-key dired-mode-map (kbd "M-RET") #'dired-open-file-with-default-tool)
+(with-eval-after-load 'dired
+  (defun dired-open-file-with-default-tool ()
+    "Open FILE with the default tool on this platform."
+    (interactive)
+    (dired-do-shell-command
+     (cond ((eq system-type 'gnu/linux)
+	    "xdg-open")
+	   ((or (eq system-type 'darwin) ;; Mac OS X
+		(eq system-type 'macos)) ;; Mac OS 9
+	    "open"))
+     nil (dired-get-marked-files)))
+  (define-key dired-mode-map (kbd "M-RET") #'dired-open-file-with-default-tool))
 
 (column-number-mode 1)
 (setq split-width-threshold 140)
@@ -339,6 +331,10 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 	(pop-to-buffer (concat "*" term-name "*"))
       (switch-to-buffer (concat "*" term-name "*")))))
 
+;; FIXME: this doesn't work, maybe there is another map for term?
+(eval-after-load 'term
+  '(define-key term-mode-map (kbd "M-o") #'other-window))
+
 (defun my-swap-windows ()
   "Swap positions of current window and `next-window'."
   (interactive)
@@ -429,17 +425,14 @@ init.el. The code snippet changes faces for TODO entries.")))
 
 (use-package helm
   :config
-  (require 'helm-config)
-  ;; It's necessary to load helm-buffers so that helm-buffer-map is loaded
-  (require 'helm-buffers)
+  (with-eval-after-load 'helm-buffers
+    (define-key helm-buffer-map (kbd "C-k") #'helm-buffer-run-kill-persistent)
+    (define-key helm-buffer-map (kbd "C-M-k") #'helm-buffer-run-kill-buffers))
   :bind
-  (("C-x f" . #'helm-for-files)
-   ("C-x C-f" . #'helm-find-files)
-   ("C-x b" . #'helm-buffers-list)
-   ("C-x C-b" . #'helm-buffers-list)
-   :map helm-buffer-map
-   ("C-k" . #'helm-buffer-run-kill-persistent)
-   ("C-M-k" . #'helm-buffer-run-kill-buffers)))
+  (("C-x f" . helm-for-files)
+   ("C-x C-f" . helm-find-files)
+   ("C-x b" . helm-buffers-list)
+   ("C-x C-b" . helm-buffers-list)))
 
 (use-package flycheck
   :config
@@ -582,20 +575,15 @@ We need to exit that mode to call company-yasnippet."
 ;; ============================================================
 
 ;; Load cc-mode so that c++-mode-map is not void.
-(require 'cc-mode)
+;; (require 'cc-mode)
 
 (use-package lsp-mode
   :config
-  ;; (require 'lsp-flycheck)
-  ;; (require 'lsp-mode)
-  (require 'lsp-mode)
-  :bind
-  (:map c++-mode-map
-	("C-c C-r" . #'lsp-rename)))
+  (eval-after-load 'cc-mode
+    '(define-key c++-mode-map (kbd "C-c C-r") #'lsp-rename)))
 
 (use-package lsp-ui
   :config
-  (require 'lsp-ui)
   (add-hook 'lsp-mode-hook #'lsp-ui-mode)
   ;; TODO: check if lsp-ui checker still sucks (or find out why)
   (setq lsp-ui-flycheck-enable nil)
@@ -616,7 +604,8 @@ We need to exit that mode to call company-yasnippet."
     (setq ccls-executable "/usr/bin/ccls")
     :config
     (advice-add 'ccls--get-root :after-until #'my/c++--find-project-root)
-    (add-hook 'c++-mode-hook #'lsp-ccls-enable)))
+    (eval-after-load 'lsp-clients
+      '(remhash 'clangd lsp-clients))
 
 (use-package company-lsp
   :config
@@ -749,7 +738,7 @@ Please initialize version control or build-system project.")))))
   "Path to cppreference (HTML book).")
 (if (file-exists-p cppreference-path)
     (progn
-      (require 'helm-find)
+      ;; (require 'helm-find)
       (defun my-cpp-doc-at-point ()
 	"Find documentation for a C++ symbol at point."
 	(interactive)
@@ -773,7 +762,8 @@ Please initialize version control or build-system project.")))))
 		:ff-transformer-show-only-basename nil
 		:input (find-tag-default))))
 
-      (define-key c++-mode-map (kbd "C-c d") #'my-cpp-doc-at-point))
+      (eval-after-load 'cc-mode
+	'(define-key c++-mode-map (kbd "C-c d") #'my-cpp-doc-at-point)))
   (display-warning "cppreference"
 		   (concat "cppreference not found in " cppreference-path))
   (setq cppreference-path nil))
@@ -787,12 +777,13 @@ Please initialize version control or build-system project.")))))
   (interactive)
   (xref-find-references (find-tag-default)))
 
-(define-key c++-mode-map (kbd "C-c C-c") #'my/c++-compile)
-(define-key c++-mode-map (kbd "C-.") #'xref-find-definitions-other-window)
-(define-key c++-mode-map (kbd "C-,") #'my-find-references)
-(define-key c++-mode-map (kbd "M-,") #'my-grep-references)
-(define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
-(define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
+(with-eval-after-load 'cc-mode
+  (define-key c++-mode-map (kbd "C-c C-c") #'my/c++-compile)
+  (define-key c++-mode-map (kbd "C-.") #'xref-find-definitions-other-window)
+  (define-key c++-mode-map (kbd "C-,") #'my-find-references)
+  (define-key c++-mode-map (kbd "M-,") #'my-grep-references)
+  (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
+  (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack))
 
 ;; TODO: Check if I could use LSP to give me the type of the variable
 ;; TODO: Add "public:" keyword before accessor functions and "private:"
@@ -889,11 +880,12 @@ If the variable is a pointer or a reference, only \"const\" qualifier is added."
 
 (use-package lispy
   :config
-  (require 'scheme)
   (dolist (mode-map (list emacs-lisp-mode-map
-			  lisp-interaction-mode-map
-			  scheme-mode-map))
+			  lisp-interaction-mode-map))
     (define-key mode-map (kbd "M-k") #'lispy-raise-sexp)))
+
+(eval-after-load 'scheme
+  '(define-key scheme-mode-map (kbd "M-k") #'lispy-raise-sexp))
 
 ;; FIXME: Doesn't work so flawlessly inside of a comment.
 ;; TODO: single quotes
@@ -917,21 +909,20 @@ If the variable is a pointer or a reference, only \"const\" qualifier is added."
   (forward-char))
 (global-set-key (kbd "C-(") #'my-wrap-round)
 
-(use-package smartparens
-  :config
-  (require 'smartparens))
-(defun my-kill-hybrid-sexp ()
-  "Kill a line respecting delimiters.
+(with-eval-after-load 'cc-mode
+  (use-package smartparens)
+  (defun my-kill-hybrid-sexp ()
+    "Kill a line respecting delimiters.
 Used second time kills the delimiter and everything up to the next delimiter."
-  (interactive)
-  (if (member (char-to-string (char-after))
-	      (loop for (left . right) in sp-pair-list
-		    collect right))
-      (progn (delete-char 1)
-	     (unless (looking-at "\n")
-	       (sp-kill-hybrid-sexp (point))))
-    (sp-kill-hybrid-sexp (point))))
-(define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp)
+    (interactive)
+    (if (member (char-to-string (char-after))
+		(cl-loop for (left . right) in sp-pair-list
+			 collect right))
+	(progn (delete-char 1)
+	       (unless (looking-at "\n")
+		 (sp-kill-hybrid-sexp (point))))
+      (sp-kill-hybrid-sexp (point))))
+  (define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp))
 
 ;; IN PROGRESS
 ;; TODO: This could be written easier for certain!
