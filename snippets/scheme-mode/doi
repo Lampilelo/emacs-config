@@ -1,0 +1,7 @@
+# -*- mode: scheme -*-
+# name: doi
+# key: doi
+# --
+(do ((i 0 (1+ i)))
+    ((>= i ${1:UNTIL}))
+  $0)

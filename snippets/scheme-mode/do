@@ -1,0 +1,7 @@
+# -*- mode: scheme -*-
+# name: do
+# key: do
+# --
+(do ((${1:VAR} ${2:START} (1+ $1)))
+    ((>= $1 ${3:UNTIL}))
+  $0)
