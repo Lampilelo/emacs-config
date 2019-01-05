@@ -590,15 +590,6 @@ We need to exit that mode to call company-yasnippet."
   (setq lsp-ui-flycheck-enable nil)
   (add-hook 'c++-mode-hook (lambda () (setq-local flycheck-checker
   						  'c/c++-clang))))
-
-(use-package cquery
-  :init
-  (setq cquery-executable "/usr/bin/cquery")
-  (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
-  :config
-  ;; (add-hook 'c-mode-hook #'lsp-cquery-enable)
-  )
-
 (unless (my-print-missing-packages-as-warnings "ccls" '("ccls"))
   (use-package ccls
     :init
