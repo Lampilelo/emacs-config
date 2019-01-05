@@ -22,6 +22,7 @@
 	electric-pair-delete-pair
 	forward-sexp
 	indent-for-tab-command
+	indent-region
 	isearch-forward-regexp
 	isearch-printing-char
 	kill-sentence
