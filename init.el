@@ -580,7 +580,8 @@ We need to exit that mode to call company-yasnippet."
 (use-package lsp-mode
   :config
   (eval-after-load 'cc-mode
-    '(define-key c++-mode-map (kbd "C-c C-r") #'lsp-rename)))
+    '(define-key c++-mode-map (kbd "C-c C-r") #'lsp-rename))
+  (setq lsp-auto-guess-root t))
 
 (use-package lsp-ui
   :config
@@ -603,9 +604,12 @@ We need to exit that mode to call company-yasnippet."
     :init
     (setq ccls-executable "/usr/bin/ccls")
     :config
-    (advice-add 'ccls--get-root :after-until #'my/c++--find-project-root)
     (eval-after-load 'lsp-clients
       '(remhash 'clangd lsp-clients))
+    (advice-add 'ccls--suggest-project-root
+		:after-until
+		#'my/c++--find-project-root)
+    (add-hook 'c++-mode-hook 'lsp)))
 
 (use-package company-lsp
   :config
