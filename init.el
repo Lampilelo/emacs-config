@@ -1078,15 +1078,6 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :config
   (elpy-enable))
 
-;; RUBY
-;; NOTE: Solargraph gem needs to be installed in /usr/lib/ruby/gems/...
-;;       install with: gem install --no-user-install solargraph
-(use-package lsp-ruby
-  :config
-  (require 'lsp-ruby)
-  (add-hook 'ruby-mode-hook #'lsp-ruby-enable)
-  (add-hook 'ruby-mode-hook #'flycheck-mode))
-
 ;; MAIL
 (unless (my-print-missing-packages-as-warnings "MU4E" '("mu"))
   (load "~/.emacs.d/mu4e-init.el"))
