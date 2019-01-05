@@ -189,7 +189,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
       (if (not (eq (fboundp fun-to-call) nil))
 	  (funcall fun-to-call)
 	(funcall #'helm-info)))))
-(global-set-key (kbd "C-h h") #'my-contextual-helm-info)
+(define-key help-map "h" #'my-contextual-helm-info)
 (define-key Info-mode-map (kbd "<up>") #'scroll-down-line)
 (define-key Info-mode-map (kbd "<down>") #'scroll-up-line)
 (define-key Info-mode-map (kbd "<right>") (kbd "]"))
@@ -966,7 +966,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :init
   (which-key-mode 1)
   (diminish 'which-key-mode)
-  (global-unset-key (kbd "C-h C-h"))	;unbind conflicting key binding
+  ;; (global-unset-key (kbd "C-h C-h"))	;unbind conflicting key binding
+  (substitute-key-definition 'help-for-help 'which-key-C-h-dispatch help-map)
   :bind ("C-*" . #'which-key-show-top-level))
 
 (use-package whole-line-or-region
