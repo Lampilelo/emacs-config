@@ -22,6 +22,7 @@ This has a format of '((server-name
                         :server server-host
                         :nick user-name
                         :channels (\"channel1\" \"channel2\" ...))
+                        :before-functions (my-function-name my-function-2)
                        (server-2-name
                         ...))
 
@@ -32,12 +33,19 @@ Optional:
 :port - port to use for connection, if not specified - use 6697
 :channels - list of channels to join after ident
 :no-tls - if not nil, use `erc' instead of `erc-tls'
+:before-functions - a list of functions to run before connecting to a server
 
 To get specific property from the list, use `my-erc-server-get'")
 
 (defun my-erc-server-get (server prop)
   "Get the PROP of SERVER name from `my-erc-server-info' list."
   (plist-get (cdr (assoc server my-erc-server-info)) prop))
+
+(defun my-erc-maybe-run-Bitlbee ()
+  (unless (eq 0 (call-process "pidof" nil nil nil "bitlbee"))
+    (call-process "sh" nil t nil
+		  (concat (getenv "HOME")
+			  "/.config/bitlbee/run-bitlbee.sh"))))
 
 (setq my-erc-server-info
       '(("Rizon"
@@ -52,7 +60,8 @@ To get specific property from the list, use `my-erc-server-get'")
 	 :server "localhost"
 	 :nick "Oxon"
 	 :port 6667
-	 :no-tls t)))
+	 :no-tls t
+	 :before-functions (my-erc-maybe-run-Bitlbee))))
 
 (defvar my-erc-password-store-names nil
   "Alist of password names corresponding to entries from `my-erc-server-info'.
@@ -105,12 +114,15 @@ Example:
 
 (defmacro my-erc--define-connect-function (server-name)
   "Create an interactive function for connecting to a specific server.
-I.e. \"irc-freenode\"
+I.e. \"irc-freenode\".
 
 Uses `my-erc-server-info' to get the information about server settings."
   (when (assoc server-name my-erc-server-info)
     (let ((fun-name (intern (concat "irc-" server-name))))
       `(defun ,fun-name ()
+	 ,(concat "Run erc on " server-name " server.
+
+Uses `my-erc-server-info' to get the information about server settings.")
 	 (interactive)
 	 ,(when (fboundp #'my-erc-refresh-passwords)
 	    `(unless (assoc ',(intern server-name) erc-nickserv-passwords)
@@ -118,6 +130,7 @@ Uses `my-erc-server-info' to get the information about server settings."
 		   (my-erc-refresh-passwords)
 		 (message "Warning: no password found for server %s"
 			  ,server-name))))
+	 (mapc #'funcall (my-erc-server-get ,server-name :before-functions))
 	 (,(if (my-erc-server-get server-name :no-tls) 'erc 'erc-tls)
 	  :server (my-erc-server-get ,server-name :server)
 	  :port (or (my-erc-server-get ,server-name :port) 6697)
