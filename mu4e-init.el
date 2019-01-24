@@ -98,6 +98,12 @@
   (start-process "i3blocks-update-mail" nil "pkill" "-RTMIN+2" "i3blocks")
   nil)
 (add-hook 'mu4e-message-changed-hook 'my-mu4e-update-i3blocks)
+
+;; Sending mail
+(setq send-mail-function 'smtpmail-send-it)
+;; FIXME: My gnutls command prevents from connecting to an smtp server,
+;;        it says that google's server's cert is untrusted.
+
 ;; I have my "default" parameters from Gmail
 (setq mu4e-sent-folder "/sent"
       ;; mu4e-sent-messages-behavior 'delete ;; Unsure how this should be configured
