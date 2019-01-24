@@ -719,7 +719,11 @@ Returns string of absolute path to project root directory or nil if not found."
   (ignore-errors
     (file-truename (or
 		    ;; check if cquery found root dir, return nil if not
-		    (ignore-errors (cquery--get-root))
+		    (ignore-errors
+		      (when-let (dir (locate-dominating-file
+				      default-directory
+				      "compile_commands.json"))
+			(expand-file-name dir)))
 		    ;; if cquery didn't find root, find it by git
 		    (vc-git-root buffer-file-name)))))
 
