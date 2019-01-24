@@ -1153,6 +1153,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;;   (add-hook 'rust-mode-hook #'lsp-rust-enable)
 ;;   (add-hook 'rust-mode-hook #'flycheck-mode))
 
+;; GUILE (SCHEME)
+(use-package geiser)
+
 ;; PDF-TOOLS
 ;; Use pdf-tools instead of doc-view
 (unless (my-print-missing-packages-as-warnings
