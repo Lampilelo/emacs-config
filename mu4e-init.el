@@ -1,7 +1,3 @@
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
-
-(global-set-key (kbd "C-x m") 'mu4e)
 (define-key message-mode-map (kbd "C-c C-a") 'mail-add-attachment)
 (define-key message-mode-map (kbd "C-c s") 'mml-secure-message-sign)
 (define-key message-mode-map (kbd "C-c e") 'mml-secure-message-sign-encrypt)
@@ -81,9 +77,6 @@
   :after mu4e
   :init
   (setq mu4e-alert-interesting-mail-query
-	;; (concat
-	;;  "flag:unread AND NOT flag:trashed "
-	;;  "AND NOT maildir:/gmail/[Gmail].Spam")
 	(concat
 	 "flag:unread maildir:/gmail/Inbox "
 	 "OR "
@@ -111,7 +104,7 @@
 ;; Strip mails from unnecessary data.
 (setq mu4e-user-agent-string nil)
 
-;; Now I set a list of 
+;; Now I set a list of
 (defvar my-mu4e-account-alist
   '(("gmail"
      (mu4e-sent-folder "/gmail/[Gmail].Sent\ Mail")
@@ -146,7 +139,7 @@
 
 (defun my-mu4e-set-account ()
   "Set the account for composing a message.
-   This function is taken from: 
+   This function is taken from:
      https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html"
   (let* ((account
     (if mu4e-compose-parent-message
@@ -178,7 +171,7 @@
 ;;        :char ("d" . "▼")
 ;;        :prompt "dtrash"
 ;;        :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
-;;        :action (lambda (docid msg target) 
+;;        :action (lambda (docid msg target)
 ;;                  (mu4e~proc-move docid
 ;;                     (mu4e~mark-check-target target) "-N"))))
 
@@ -198,4 +191,3 @@
 (setq mu4e-context-policy 'pick-first)
 ;; Don't ask to quit... why is this the default?
 (setq mu4e-confirm-quit nil)
-
