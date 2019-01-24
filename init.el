@@ -425,6 +425,7 @@ init.el. The code snippet changes faces for TODO entries.")))
 
 (use-package helm
   :config
+  (require 'helm-config)
   (with-eval-after-load 'helm-buffers
     (define-key helm-buffer-map (kbd "C-k") #'helm-buffer-run-kill-persistent)
     (define-key helm-buffer-map (kbd "C-M-k") #'helm-buffer-run-kill-buffers))
