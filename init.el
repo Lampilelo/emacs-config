@@ -1101,7 +1101,11 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; MAIL
 (unless (my-print-missing-packages-as-warnings "MU4E" '("mu"))
-  (load "~/.emacs.d/mu4e-init.el"))
+  (require 'mu4e)
+  ;; (autoload 'mu4e "mu4e")
+  (global-set-key (kbd "C-x m") 'mu4e)
+  (eval-after-load 'mu4e
+    '(load "~/.emacs.d/mu4e-init.el")))
 ;; TODO: check out gnus and gwene (for reading feeds through nntp)
 ;;       (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
