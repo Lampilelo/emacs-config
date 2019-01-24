@@ -578,37 +578,52 @@ We need to exit that mode to call company-yasnippet."
 ;; Load cc-mode so that c++-mode-map is not void.
 ;; (require 'cc-mode)
 
-(use-package lsp-mode
-  :config
-  (eval-after-load 'cc-mode
-    '(define-key c++-mode-map (kbd "C-c C-r") #'lsp-rename))
-  (setq lsp-auto-guess-root t))
+;; (use-package lsp-mode
+;;   :config
+;;   (eval-after-load 'cc-mode
+;;     '(define-key c++-mode-map (kbd "C-c C-r") #'lsp-rename))
+;;   (setq lsp-auto-guess-root t)
+;;   (add-hook 'c++-mode-hook 'lsp))
 
-(use-package lsp-ui
-  :config
-  (add-hook 'lsp-mode-hook #'lsp-ui-mode)
-  ;; TODO: check if lsp-ui checker still sucks (or find out why)
-  (setq lsp-ui-flycheck-enable nil)
-  (add-hook 'c++-mode-hook (lambda () (setq-local flycheck-checker
-  						  'c/c++-clang))))
+;; (use-package lsp-ui
+;;   :config
+;;   (add-hook 'lsp-mode-hook #'lsp-ui-mode)
+;;   ;; TODO: check if lsp-ui checker still sucks (or find out why)
+;;   ;; (setq lsp-ui-flycheck-enable nil)
+;;   (add-hook 'c++-mode-hook
+;; 	    (lambda ()
+;;   	      (setq-local flycheck-checker 'c/c++-clang)
+;; 	      (setq-local flycheck-clang-language-standard "c++17"))))
+
+;; (use-package company-lsp
+;;   :config
+;;   (push 'company-lsp company-backends)
+;;   (setq company-transformers nil
+;; 	company-lsp-async t
+;; 	company-lsp-cache-candidates nil))
+
 (unless (my-print-missing-packages-as-warnings "ccls" '("ccls"))
   (use-package ccls
     :init
     (setq ccls-executable "/usr/bin/ccls")
     :config
-    (eval-after-load 'lsp-clients
-      '(remhash 'clangd lsp-clients))
+    ;; (eval-after-load 'lsp-clients
+    ;;   '(remhash 'clangd lsp-clients))
+    (setq ccls-args '("-Wall" "-Wextra"))
     (advice-add 'ccls--suggest-project-root
 		:after-until
-		#'my/c++--find-project-root)
-    (add-hook 'c++-mode-hook 'lsp)))
+		#'my/c++--find-project-root)))
 
-(use-package company-lsp
+(use-package eglot
   :config
-  (push 'company-lsp company-backends)
-  (setq company-transformers nil
-	company-lsp-async t
-	company-lsp-cache-candidates nil))
+  ;; company-clang backend is higher on a list but when using ccls it's
+  ;; better to use company-capf backend
+  (setq company-clang-modes nil)
+  (add-hook 'c-mode-common-hook #'eglot))
+
+;; eglot uses flymake that doesn't show errors in the minibuffer, so:
+(load "~/.emacs.d/emacs-flymake-cursor/flymake-cursor.el")
+;; (add-hook 'flymake-mode-hook #'flymake-cursor)
 
 (use-package rmsbolt)
 
