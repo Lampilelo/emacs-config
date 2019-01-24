@@ -1116,6 +1116,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; elfeed - for rss feeds
 (use-package elfeed
+  :defer t
   :config
   (defun my-elfeed-open-yt-video ()
     (interactive)
