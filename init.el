@@ -1189,7 +1189,16 @@ Used second time kills the delimiter and everything up to the next delimiter."
      '("(guile) Variable Index" nil nil nil))
     (info-lookmore-add-doc
      'symbol 'scheme-mode
-     '("(guile) R5RS Index" nil nil nil))))
+     '("(guile) R5RS Index" nil nil nil))
+
+    ;; Python
+    (info-lookup-add-help :mode 'python-mode
+			  :regexp "[[:alnum:]_()<> )]+"
+			  :doc-spec
+			  '(("(python) Index" nil "")))
+    (info-lookmore-add-doc
+     'symbol 'python-mode
+     '("(python) Index" nil nil nil))))
 
 (provide 'init)
 ;;; init.el ends here
