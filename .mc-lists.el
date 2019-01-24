@@ -20,6 +20,7 @@
 	delete-horizontal-space
 	electric-newline-and-maybe-indent
 	electric-pair-delete-pair
+	end-of-visual-line
 	forward-sexp
 	indent-for-tab-command
 	indent-region
@@ -35,7 +36,14 @@
 	org-delete-char
 	org-end-of-line
 	org-force-self-insert
+	org-insert-link
+	org-insert-todo-heading
+	org-metaleft
+	org-metaright
+	org-return
 	org-self-insert-command
+	org-set-tags-command
+	org-shiftmetaright
 	sp-delete-char
 	sp-kill-word
 	swiper
