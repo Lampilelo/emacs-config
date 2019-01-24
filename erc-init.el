@@ -238,7 +238,7 @@ Uses `my-erc-server-info' to get the information about server settings.")
 		 ;; (format "%s" parsed)
 		 (replace-regexp-in-string "" "" msg)
 		 (erc-response.sender parsed))
-	 (first (erc-buffer-list)))
+	 (car (erc-buffer-list)))
       ;; do nothing if isn't CTCP
       )))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-ctcp-notice)
