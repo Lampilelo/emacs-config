@@ -757,6 +757,7 @@ Please initialize version control or build-system project.")))))
       (defun my-cpp-doc-at-point ()
 	"Find documentation for a C++ symbol at point."
 	(interactive)
+	(autoload 'helm-find-shell-command-fn "helm-find")
 	(let ((default-directory cppreference-path))
 	  (helm :sources `((name . "Find")
 			   (action . (lambda (candidate)
