@@ -234,7 +234,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 
 ;; Set default browser for opening links
 (setq browse-url-browser-function #'browse-url-generic
-      browse-url-generic-program "vivaldi")
+      browse-url-generic-program "vivaldi-stable")
 
 ;; C++ default options
 (use-package google-c-style
