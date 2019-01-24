@@ -1178,7 +1178,6 @@ Used second time kills the delimiter and everything up to the next delimiter."
   (when (file-exists-p file)
     (load "~/.emacs.d/info-lookmore.el")
     ;; Add Scheme manual to lookmore
-    ;; I could also add (guile ...) manuals to this
     ;; (info-lookmore-add-doc
     ;;  'symbol 'scheme-mode
     ;;  '("(r5rs) Index" nil nil nil))
