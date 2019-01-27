@@ -203,12 +203,11 @@ Uses `my-erc-server-info' to get the information about server settings.")
 ;; sound notifications
 (defun erc-my-play-new-message-sound ()
   "Play the freedesktop message-new-instant sound."
-  (and
-   (start-process-shell-command
- "new-message"
- nil
- "ffplay -vn -nodisp -t 0.5 -autoexit /usr/share/sounds/freedesktop/stereo/message-new-instant.oga")
-   (x-urgent)))
+  (start-process
+   "new-message" nil
+   "ffplay" "-vn" "-nodisp" "-t" "1" "-autoexit"
+   "/usr/share/sounds/freedesktop/stereo/message-new-instant.oga")
+  (x-urgent))
 
 (defun erc-my-privmsg-sound (proc parsed)
     (let* ((tgt (car (erc-response.command-args parsed)))
