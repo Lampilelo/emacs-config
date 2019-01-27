@@ -1176,8 +1176,8 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; to uninstall you have to call (pdf-tools-uninstall)
 
 ;; GNUS
-;; (setq gnus-select-method '(nntp "news.gwene.org"))
-(setq gnus-select-method '(nntp "news.aioe.org"))
+;; (setq gnus-select-method '(nntp "news.aioe.org"))
+(setq gnus-select-method '(nntp "news.gwene.org"))
 (setq gnus-read-active-file nil)
 
 ;; INFO-LOOKMORE
