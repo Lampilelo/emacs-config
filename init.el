@@ -362,7 +362,12 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 (if (or (daemonp) (display-graphic-p))
     (progn
       (load-theme 'leuven t)
-      (set-face-attribute 'default nil :height 120)
+      (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
+      ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
+      ;; If Symbola is not available, use SejaVu Sans (it's not as complete).
+      (if (member "Symbola" (font-family-list))
+	  (set-fontset-font t (cons #x1f030 #x1f644) "Symbola" nil 'prepend)
+	(set-fontset-font t (cons #x1f030 #x1f644) "DejaVu Sans" nil 'prepend))
 
       ;; NOTE: it was created for leuven theme, so if I change it, I should also
       ;;       edit this
