@@ -45,6 +45,9 @@
       (package-install 'use-package)))
 (setq use-package-always-ensure t)
 
+(use-package diminish
+  :ensure t)
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
