@@ -630,7 +630,7 @@ We need to exit that mode to call company-yasnippet."
   (add-hook 'c-mode-common-hook #'eglot))
 
 ;; eglot uses flymake that doesn't show errors in the minibuffer, so:
-(load "~/.emacs.d/emacs-flymake-cursor/flymake-cursor.el")
+(load "~/.emacs.d/emacs-flymake-cursor/flymake-cursor.el" t)
 ;; (add-hook 'flymake-mode-hook #'flymake-cursor)
 
 (use-package rmsbolt)
