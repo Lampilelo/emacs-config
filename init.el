@@ -1228,5 +1228,44 @@ Used second time kills the delimiter and everything up to the next delimiter."
      'symbol 'python-mode
      '("(python) Index" nil nil nil))))
 
+;; PTPB pastes (like pastebin)
+(defun my-upload-region (start end &optional show-delete-link)
+  "Upload contents of the region to ptpb.pw.
+Link to the paste is copied to a clipboard.
+
+With prefix argument \\[universal-argument] or non-nil SHOW-DELETE-LINK
+show the delete command in a newly created buffer.
+
+Return nil if not succeeded."
+  (interactive
+   (progn (unless (mark)
+	    (user-error "The mark is not set now, so there is no region"))
+	  (list (region-beginning) (region-end)
+		current-prefix-arg)))
+  (let* ((buffer (generate-new-buffer "*ptpb result*"))
+	 (result (call-process-region start end "curl" nil buffer nil
+				      "-s" "-F" "c=@-" "https://ptpb.pw")))
+    (if (eq 0 result)
+	(with-current-buffer buffer
+	  (progn
+	    (goto-char (point-min))
+	    (search-forward "url: ")
+	    (kill-region (point-min) (point))
+	    (when (search-forward "uuid: " nil t)
+	      (kill-region (line-beginning-position) (point))
+	      (insert
+	       "\ndelete command:\ncurl -s -X DELETE https://ptpb.pw/"))
+	    (goto-char (point-min))
+	    (clipboard-kill-ring-save (point) (line-end-position))
+	    (if show-delete-link
+		(switch-to-buffer buffer)
+	      (and (buffer-name buffer)
+	      	   (kill-buffer buffer)))
+	    (message
+	     "Link to the uploaded paste copied to the system clipboard...")))
+      (and (buffer-name buffer)
+	   (kill-buffer buffer)
+	   nil))))
+
 (provide 'init)
 ;;; init.el ends here
