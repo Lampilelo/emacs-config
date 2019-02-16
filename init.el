@@ -629,7 +629,7 @@ We need to exit that mode to call company-yasnippet."
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
   (setq company-clang-modes nil)
-  (add-hook 'c-mode-common-hook #'eglot))
+  (add-hook 'c++-mode-hook 'eglot))
 
 ;; eglot uses flymake that doesn't show errors in the minibuffer, so:
 (load "~/.emacs.d/emacs-flymake-cursor/flymake-cursor.el" t)
