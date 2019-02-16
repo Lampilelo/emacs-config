@@ -261,6 +261,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (define-key global-map (kbd "C-z") 'help-command)
 (define-key global-map (kbd "C-h") (kbd "DEL"))
 (define-key global-map (kbd "M-h") (kbd "M-DEL"))
+(define-key org-mode-map (kbd "M-h") (kbd "M-DEL"))
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
