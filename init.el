@@ -1001,6 +1001,10 @@ Used second time kills the delimiter and everything up to the next delimiter."
 	   "/ssh-agent.socket"))
   :bind ("C-x g" . #'magit-status))
 
+(use-package magit-todos
+  :config
+  (eval-after-load 'magit '(magit-todos-mode t)))
+
 (use-package which-key
   ;; According to documentation this should be :config, but it seems
   ;; like these options are reversed
