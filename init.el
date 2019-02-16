@@ -635,6 +635,22 @@ We need to exit that mode to call company-yasnippet."
 (load "~/.emacs.d/emacs-flymake-cursor/flymake-cursor.el" t)
 ;; (add-hook 'flymake-mode-hook #'flymake-cursor)
 
+;; DOXYMACS
+(let ((path (expand-file-name "~/.emacs.d/doxymacs-1.8.0/build/lisp")))
+  (when (file-exists-p path)
+    (add-to-list 'load-path path)
+    (setq doxymacs-doxygen-dirs
+	  '(("Programming/my-youtube-client/"
+	     "~/Programming/my-youtube-client/builddir/doc/tagfile.xml"
+	     "~/Programming/my-youtube-client/builddir/doc/html/")))
+    (setq doxymacs-browse-url-function
+	  (lambda (url)
+	    (funcall (if (package-installed-p 'w3m)
+			 #'w3m
+		       #'eww)
+		     (concat "file://" (expand-file-name url))))))
+  (with-eval-after-load 'cc-mode (require 'doxymacs)))
+
 (use-package rmsbolt)
 
 ;; Obsolete
