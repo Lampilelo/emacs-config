@@ -16,6 +16,7 @@
 	c-electric-paren
 	c-electric-semi&comma
 	c-electric-star
+	c-indent-line-or-region
 	counsel-M-x
 	delete-horizontal-space
 	electric-newline-and-maybe-indent
@@ -30,6 +31,7 @@
 	kill-sexp
 	lispy-raise-sexp
 	mark-sexp
+	my-kill-hybrid-sexp
 	my-wrap-round
 	org-beginning-of-line
 	org-cycle
