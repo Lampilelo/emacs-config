@@ -46,6 +46,7 @@
 	org-self-insert-command
 	org-set-tags-command
 	org-shiftmetaright
+	sh-assignment
 	sp-delete-char
 	sp-kill-word
 	swiper
@@ -67,7 +68,9 @@
 	dired-previous-line
 	end-of-buffer
 	eval-last-sexp
+	geiser-eval-definition
 	helm-buffers-list
 	sp-backward-delete-char
 	wdired-finish-edit
+	yank-rectangle
 	))
