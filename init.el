@@ -1231,44 +1231,47 @@ Used second time kills the delimiter and everything up to the next delimiter."
      'symbol 'python-mode
      '("(python) Index" nil nil nil))))
 
-;; PTPB pastes (like pastebin)
-(defun my-upload-region (start end &optional show-delete-link)
-  "Upload contents of the region to ptpb.pw.
+;; dpaste (like pastebin)
+;; TODO: Interactively get syntax info to font-lock the paste
+;;       It's done by adding '-F "syntax=scheme"' to the curl command
+;;       List of syntax choices: http://dpaste.com/api/v2/syntax-choices/
+;; TODO: When uploading plain text, modify the link to show raw text
+(defun my-upload-region (start end &optional expiry-days)
+  "Upload the contents of the region to dpaste.com.
 Link to the paste is copied to a clipboard.
 
-With prefix argument \\[universal-argument] or non-nil SHOW-DELETE-LINK
-show the delete command in a newly created buffer.
+EXPIRY-DAYS is the number of days after which the paste will expire.
 
 Return nil if not succeeded."
   (interactive
    (progn (unless (mark)
 	    (user-error "The mark is not set now, so there is no region"))
 	  (list (region-beginning) (region-end)
-		current-prefix-arg)))
-  (let* ((buffer (generate-new-buffer "*ptpb result*"))
+		(or expiry-days "3"))))
+  (let* ((buffer (generate-new-buffer "*dpaste result*"))
 	 (result (call-process-region start end "curl" nil buffer nil
-				      "-s" "-F" "c=@-" "https://ptpb.pw")))
+				      "-s"
+				      "-F" (concat "expiry_days=" expiry-days)
+				      "-F" "content=<-"
+				      "http://dpaste.com/api/v2/")))
     (if (eq 0 result)
 	(with-current-buffer buffer
 	  (progn
 	    (goto-char (point-min))
-	    (search-forward "url: ")
-	    (kill-region (point-min) (point))
-	    (when (search-forward "uuid: " nil t)
-	      (kill-region (line-beginning-position) (point))
-	      (insert
-	       "\ndelete command:\ncurl -s -X DELETE https://ptpb.pw/"))
-	    (goto-char (point-min))
 	    (clipboard-kill-ring-save (point) (line-end-position))
-	    (if show-delete-link
-		(switch-to-buffer buffer)
-	      (and (buffer-name buffer)
-	      	   (kill-buffer buffer)))
+	    (and (buffer-name buffer)
+	      	 (kill-buffer buffer))
 	    (message
 	     "Link to the uploaded paste copied to the system clipboard...")))
       (and (buffer-name buffer)
 	   (kill-buffer buffer)
 	   nil))))
+;; end of dpaste
+
+;; unkillable scratch
+(load "~/.emacs.d/unkillable-scratch.el")
+(unkillable-scratch t)
+;; end of unkillable scratch
 
 (provide 'init)
 ;;; init.el ends here
