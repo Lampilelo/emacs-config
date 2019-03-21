@@ -1143,7 +1143,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; password-store
 ;; https://git.zx2c4.com/password-store/tree/contrib/emacs/README.md
 ;; For smtp auth check defun smtpmail-try-auth-methods in smtpmail.el
-(use-package password-store)
+;; (use-package password-store)
 
 ;; elfeed - for rss feeds
 (use-package elfeed
