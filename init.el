@@ -259,9 +259,12 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (global-set-key (kbd "C-c i") #'iedit-mode)
 
 (define-key global-map (kbd "C-z") 'help-command)
+(setq help-char ?\C-z)
 (define-key global-map (kbd "C-h") (kbd "DEL"))
 (define-key global-map (kbd "M-h") (kbd "M-DEL"))
 (define-key org-mode-map (kbd "M-h") (kbd "M-DEL"))
+;; (define-key counsel-mode-map (kbd "M-h") (kbd "M-DEL"))
+(define-key helm-map (kbd "C-h") 'backward-delete-char)
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
