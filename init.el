@@ -218,7 +218,8 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 		(eq system-type 'macos)) ;; Mac OS 9
 	    "open"))
      nil (dired-get-marked-files)))
-  (define-key dired-mode-map (kbd "M-RET") #'dired-open-file-with-default-tool))
+  (define-key dired-mode-map (kbd "M-RET")
+    #'my-dired-open-file-with-default-tool))
 
 (column-number-mode 1)
 (setq split-width-threshold 140)
@@ -374,8 +375,8 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 	  (set-fontset-font t (cons #x1f030 #x1f644) "Symbola" nil 'prepend)
 	(set-fontset-font t (cons #x1f030 #x1f644) "DejaVu Sans" nil 'prepend))
 
-      ;; NOTE: it was created for leuven theme, so if I change it, I should also
-      ;;       edit this
+      ;; NOTE: it was created for leuven theme, so if I change it,
+      ;; I should also edit this
       (if (member 'leuven custom-enabled-themes)
 	  (progn
 	    (setq org-todo-keyword-faces
