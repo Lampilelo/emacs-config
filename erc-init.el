@@ -51,11 +51,11 @@ To get specific property from the list, use `my-erc-server-get'")
       '(("Rizon"
 	 :server "irc.rizon.net"
 	 :nick "Oxon"
-	 :channels ("#krasnale" "#test"))
+	 :channels ("#krasnale"))
 	("freenode"
 	 :server "irc.freenode.net"
 	 :nick "lampilelo"
-	 :channels ("#emacs"))
+	 :channels ("#emacs" "#guile"))
 	("BitlBee"
 	 :server "localhost"
 	 :nick "Oxon"
@@ -166,10 +166,15 @@ Uses `my-erc-server-info' to get the information about server settings.")
 
 ;; auto-join channels
 (add-hook 'erc-mode-hook 'erc-autojoin-mode)
-
 (setq erc-autojoin-channels-alist
-      '((".*rizon.*" "#krasnale")
-	(".*freenode.*" "#emacs")))
+      (mapcar (lambda (item)
+		(cons (plist-get (cdr item) :server)
+		      (plist-get (cdr item) :channels)))
+	      my-erc-server-info))
+
+;; (setq erc-autojoin-channels-alist
+;;       '((".*rizon.*" "#krasnale")
+;; 	(".*freenode.*" "#emacs")))
 
 ;; (defun my-post-vhost-autojoin (proc parsed)
 ;;   "Autojoin when NickServ tells us to."
