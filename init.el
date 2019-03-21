@@ -208,7 +208,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 
 ;; bind M-RET to open files externally with dired
 (with-eval-after-load 'dired
-  (defun dired-open-file-with-default-tool ()
+  (defun my-dired-open-file-with-default-tool ()
     "Open FILE with the default tool on this platform."
     (interactive)
     (dired-do-shell-command
