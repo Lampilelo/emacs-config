@@ -389,7 +389,8 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 		    ("WAITING" .
 		     ((t (:box (:line-width 1 :color "#c96332") :weight bold
 			       :background "#eed2c5" :foreground "#c96332"))))))
-	    (custom-set-faces
+	    (custom-theme-set-faces
+	     'leuven
 	     '(default ((t (:background "#fffff7"))))
 	     '(Man-overstrike ((t (:foreground "#82481e" :weight bold))))
 	     '(Man-underline ((t (:foreground "lime green" :weight bold))))
