@@ -1248,12 +1248,14 @@ Return nil if not succeeded."
   (interactive
    (progn (unless (mark)
 	    (user-error "The mark is not set now, so there is no region"))
-	  (list (region-beginning) (region-end)
-		(or expiry-days "3"))))
+	  (let ((expiry-days (read-number "Expiry days: " 3)))
+	    (list (region-beginning) (region-end) expiry-days))))
   (let* ((buffer (generate-new-buffer "*dpaste result*"))
 	 (result (call-process-region start end "curl" nil buffer nil
 				      "-s"
-				      "-F" (concat "expiry_days=" expiry-days)
+				      "-F" (concat "expiry_days="
+						   (number-to-string
+						    (or expiry-days 3)))
 				      "-F" "content=<-"
 				      "http://dpaste.com/api/v2/")))
     (if (eq 0 result)
