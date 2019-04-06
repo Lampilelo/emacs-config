@@ -223,28 +223,25 @@ Uses `my-erc-server-info' to get the information about server settings.")
        nil)))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-my-privmsg-sound)
 
-(add-hook 'erc-insert-post-hook
-	  (lambda () (goto-char (point-min))
-	    (when (re-search-forward
-		   (regexp-quote  (erc-current-nick)) nil t)
-	      (erc-my-play-new-message-sound))))
+(defun my-erc-play-sound-on-my-nick ()
+  (goto-char (point-min))
+  (when (re-search-forward
+	 (regexp-quote  (erc-current-nick)) nil t)
+    (erc-my-play-new-message-sound)))
+(add-hook 'erc-insert-post-hook 'my-erc-play-sound-on-my-nick)
 
-;; Something is broken here
 ;; Show message whenever ctcp request is issued.
 (defun erc-ctcp-notice (proc parsed)
   ;; (let ((mess (format "%s" parsed)))
   (let ((msg (erc-response.contents parsed)))
     ;; if message is CTCP
-    (if (erc-is-message-ctcp-and-not-action-p msg)
-	;; is CTCP
-	(erc-display-line
-	 (format "-CTCP- %s request from %s"
-		 ;; (format "%s" parsed)
-		 (replace-regexp-in-string "" "" msg)
-		 (erc-response.sender parsed))
-	 (car (erc-buffer-list)))
-      ;; do nothing if isn't CTCP
-      )))
+    (when (erc-is-message-ctcp-and-not-action-p msg)
+      (erc-display-line
+       (format "-CTCP- %s request from %s"
+	       ;; (format "%s" parsed)
+	       (replace-regexp-in-string "" "" msg)
+	       (erc-response.sender parsed))
+       (car (erc-buffer-list))))))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-ctcp-notice)
 
 ;; =============================================
