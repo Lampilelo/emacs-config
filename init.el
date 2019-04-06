@@ -1283,5 +1283,9 @@ Return nil if not succeeded."
 (global-set-key (kbd "C-c s") #'web-search)
 ;; end of my web search
 
+;; wgrep
+(use-package wgrep)
+;; end of wgrep
+
 (provide 'init)
 ;;; init.el ends here
