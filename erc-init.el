@@ -244,4 +244,50 @@ Uses `my-erc-server-info' to get the information about server settings.")
        (car (erc-buffer-list))))))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-ctcp-notice)
 
+;; Hide join, quit and part messages of users that haven't spoken in the
+;; current session
+;; TODO: Create a hash table for every channel. (For now there's one, global)
+;; TODO: When a user from the list changes the nick it should be added to
+;;       the list
+;; TODO: A value for the user in the hash table should be the time of his most
+;;       recent message. A variable would define how much time has to pass
+;;       before the user's join/part/quit messages are ignored
+
+;; 1. Create a hash-table of users that have spoken in the current session
+(defvar my-erc-relevant-users (make-hash-table :test #'equal)
+  "List of ERC users that have spoken in the current session. JOIN, PART and
+QUIT messages about them will be shown in the channel buffer. Messages about
+other users will be ignored.")
+
+;; 2. Add a hook to user messages (whatever it is) to populate this table
+(defun my-erc-add-relevant-user (message)
+  (save-match-data
+    (when (string-match (rx (seq
+			     line-start
+			     "<"
+			     (group (one-or-more (not (any blank ?\>))))
+			     ">"))
+			message)
+      (puthash (match-string-no-properties 1 message)
+	       t
+	       my-erc-relevant-users))))
+(add-hook 'erc-insert-pre-hook #'my-erc-add-relevant-user)
+
+;; 3. Capture join, part and quit messages and show only those related to
+;;    relevant users from the hash table
+(defun my-erc-filter-irrelevant-messages (message)
+  (save-match-data
+    (when (string-match
+	   (rx (seq
+		line-start
+		"*** "
+		(group (+ (not whitespace)))
+		(* not-newline)
+		(or "has joined channel" "has left channel" "has quit")))
+	   message)
+      (unless (gethash (match-string-no-properties 1 message)
+		       my-erc-relevant-users)
+	(setq erc-insert-this nil)))))
+(add-hook 'erc-insert-pre-hook #'my-erc-filter-irrelevant-messages)
+
 ;; =============================================
