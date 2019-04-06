@@ -1277,5 +1277,11 @@ Return nil if not succeeded."
 (unkillable-scratch t)
 ;; end of unkillable scratch
 
+;; my web search
+;; TODO: add to load-path?
+(autoload #'web-search "~/.emacs.d/web-search.el" nil t)
+(global-set-key (kbd "C-c s") #'web-search)
+;; end of my web search
+
 (provide 'init)
 ;;; init.el ends here
