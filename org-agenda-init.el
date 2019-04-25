@@ -27,8 +27,9 @@
   (org-todo 'done)
   (org-archive-subtree))
 
-(define-key org-mode-map (kbd "C-c C-x C-s")
-  'hrs/org-todo-mark-done-and-archive)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-x C-s")
+    'hrs/org-todo-mark-done-and-archive))
 
 ;; Record the time that a todo was archived.
 (setq org-log-done 'time)

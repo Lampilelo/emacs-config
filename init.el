@@ -43,10 +43,14 @@
     (progn
       (package-refresh-contents)
       (package-install 'use-package)))
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t
+      use-package-always-defer t)
 
 (use-package diminish
-  :ensure t)
+  :defer nil
+  :ensure t
+  :config
+  (diminish 'eldoc-mode))
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -133,7 +137,8 @@
 (with-check-for-missing-packages ("pygments") "latex minted" nil)
 (setq org-latex-listings 'minted)
 (setq org-export-with-smart-quotes t)
-(add-to-list 'org-latex-packages-alist '("" "minted"))
+(eval-after-load 'org
+  '(add-to-list 'org-latex-packages-alist '("" "minted")))
 
 (setq org-latex-pdf-process
       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
@@ -272,9 +277,11 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (setq help-char ?\C-z)
 (define-key global-map (kbd "C-h") (kbd "DEL"))
 (define-key global-map (kbd "M-h") (kbd "M-DEL"))
-(define-key org-mode-map (kbd "M-h") (kbd "M-DEL"))
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "M-h") (kbd "M-DEL")))
 ;; (define-key counsel-mode-map (kbd "M-h") (kbd "M-DEL"))
-(define-key helm-map (kbd "C-h") 'backward-delete-char)
+(with-eval-after-load 'helm
+  (define-key helm-map (kbd "C-h") 'backward-delete-char))
 
 ;; Monday as first day of the week
 (setq calendar-week-start-day 1)
@@ -451,7 +458,9 @@ init.el. The code snippet changes faces for TODO entries.")))
    ("C-c k" . #'counsel-ag)))
 
 (use-package helm
+  :defer nil
   :config
+  (require 'helm)
   (require 'helm-config)
   (with-eval-after-load 'helm-buffers
     (define-key helm-buffer-map (kbd "C-k") #'helm-buffer-run-kill-persistent)
@@ -486,21 +495,24 @@ init.el. The code snippet changes faces for TODO entries.")))
 ;;       current standard inside compile_commands.json
 
 (use-package company
-  :config
-  (add-hook 'after-init-hook #'global-company-mode)
+  :diminish
+  :init
+  (global-company-mode t)
   :bind
   ("C-\"" . #'company-complete))
 
 (use-package yasnippet
+  :defer nil
+  :diminish yas-minor-mode
   :init
-  (yas-global-mode 1)
-  :config
   (defun my-company-yasnippet (command &optional arg &rest ignore)
     (interactive (list 'interactive))
     "In company-search-mode company-active-map is used.
 We need to exit that mode to call company-yasnippet."
     (company-abort)
     (company-yasnippet command arg ignore))
+  :config
+  (yas-global-mode 1)
   :bind
   ;; In company-search-mode company-active-map is used
   ;; We need to exit that mode to call company-yasnippet
@@ -521,14 +533,16 @@ We need to exit that mode to call company-yasnippet."
 		#'my/c++--find-project-root)))
 
 (use-package eglot
-  :config
+  :init
+  (eval-after-load 'cc-mode
+    '(add-hook 'c++-mode-hook #'eglot-ensure))
+
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
-  (setq company-clang-modes nil)
-  (add-hook 'c++-mode-hook 'eglot))
+  (setq company-clang-modes nil))
 
 ;; eglot uses flymake that doesn't show errors in the minibuffer, so:
-(load "~/.emacs.d/emacs-flymake-cursor/flymake-cursor.el" t)
+(add-to-list 'load-path "~/.emacs.d/emacs-flymake-cursor")
 ;; (add-hook 'flymake-mode-hook #'flymake-cursor)
 
 ;; DOXYMACS
@@ -551,189 +565,193 @@ We need to exit that mode to call company-yasnippet."
 ;; (use-package rmsbolt)
 
 ;; C++ compile functions
-(defvar my/c++-build-systems-alist
-  '(("meson.build" . my/c++--meson-compile)
-    ("CMakeLists.txt" . my/c++--cmake-compile))
-  "List of filenames that determine which build-system is used with corresponding function symbols to call when compiling with this system.")
+(with-eval-after-load 'cc-mode
+  (defvar my/c++-build-systems-alist
+    '(("meson.build" . my/c++--meson-compile)
+      ("CMakeLists.txt" . my/c++--cmake-compile))
+    "List of filenames that determine which build-system is used with corresponding function symbols to call when compiling with this system.")
 
 
-(defun my/c++--create-compile-commands-link (project-root build-dir)
-  "Create symbolic link to compile_commands.json from BUILD-DIR to PROJECT-ROOT.
+  (defun my/c++--create-compile-commands-link (project-root build-dir)
+    "Create symbolic link to compile_commands.json from BUILD-DIR to PROJECT-ROOT.
 
 BUILD-DIR is just a name of directory in PROJECT-ROOT, not whole path.
 
 For internal use only!"
-  (unless (file-exists-p (concat project-root "compile_commands.json"))
-    (message "compile_commands doesn't exist")
-    (make-symbolic-link
-     (concat project-root build-dir "/compile_commands.json")
-     (concat project-root "compile_commands.json")
-     t)))
+    (unless (file-exists-p (concat project-root "compile_commands.json"))
+      (message "compile_commands doesn't exist")
+      (make-symbolic-link
+       (concat project-root build-dir "/compile_commands.json")
+       (concat project-root "compile_commands.json")
+       t)))
 
 
-(defun my/c++--meson-compile (project-root)
-  "Compile C++ project using Meson build system.
+  (defun my/c++--meson-compile (project-root)
+    "Compile C++ project using Meson build system.
 
 PROJECT-ROOT is the root directory of the project you want to compile.
 
 Function uses PROJECT-ROOT/builddir for its build directory and ninja as
 a backend for compilation."
-  ;; if builddir directory doesn't exist, create it
-  (unless (file-exists-p (concat project-root "builddir"))
-    (shell-command "meson builddir"))
-  ;; create symbolic link to compile_commands.json in the project root dir
-  ;; if it doesn't already exist
-  (my/c++--create-compile-commands-link project-root "builddir")
-  ;; compile using ninja
-  (compile (concat "cd " project-root "builddir && " "ninja")))
+    ;; if builddir directory doesn't exist, create it
+    (unless (file-exists-p (concat project-root "builddir"))
+      (shell-command "meson builddir"))
+    ;; create symbolic link to compile_commands.json in the project root dir
+    ;; if it doesn't already exist
+    (my/c++--create-compile-commands-link project-root "builddir")
+    ;; compile using ninja
+    (compile (concat "cd " project-root "builddir && " "ninja")))
 
 
-(defun my/c++--cmake-compile (project-root)
-  "Compile C++ project using CMake build system.
+  (defun my/c++--cmake-compile (project-root)
+    "Compile C++ project using CMake build system.
 
 PROJECT-ROOT is the root directory of the project you want to compile.
 
 Function uses PROJECT-ROOT/build for its build directory."
-  ;; if build directory doesn't exist, create it
-  (unless (file-exists-p (concat project-root "build"))
-    (make-directory (concat project-root "build")))
-  ;; create symbolic link to compile_commands.json in the project root dir
-  ;; if it doesn't already exist
-  (my/c++--create-compile-commands-link project-root "build")
-  ;; run cmake and make from inside build directory
-  (compile (concat "cd " project-root "build && "
-		   "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
-		   "make")))
+    ;; if build directory doesn't exist, create it
+    (unless (file-exists-p (concat project-root "build"))
+      (make-directory (concat project-root "build")))
+    ;; create symbolic link to compile_commands.json in the project root dir
+    ;; if it doesn't already exist
+    (my/c++--create-compile-commands-link project-root "build")
+    ;; run cmake and make from inside build directory
+    (compile (concat "cd " project-root "build && "
+		     "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
+		     "make")))
 
-(defun my/c++--find-project-root ()
-  "Find project root.
+  (defun my/c++--find-project-root ()
+    "Find project root.
 
-Returns string of absolute path to project root directory or nil if not found."
-  (ignore-errors
-    (file-truename (or
-		    ;; check if cquery found root dir, return nil if not
-		    (ignore-errors
-		      (when-let (dir (locate-dominating-file
-				      default-directory
-				      "compile_commands.json"))
-			(expand-file-name dir)))
-		    ;; if cquery didn't find root, find it by git
-		    (vc-git-root buffer-file-name)))))
+Returns string of absolute path to project root directory
+or nil if not found."
+    (ignore-errors
+      (file-truename (or
+		      ;; check if cquery found root dir, return nil if not
+		      (ignore-errors
+			(when-let (dir (locate-dominating-file
+					default-directory
+					"compile_commands.json"))
+			  (expand-file-name dir)))
+		      ;; if cquery didn't find root, find it by git
+		      (vc-git-root buffer-file-name)))))
 
-;; (assoc-default "CMakeLists.txt" my/c++-build-systems-alist)
-;; TODO: When compile_commands.json is a broken symbolic link in the project
-;;       root, function doesn't work (cquery--get-root returns error).
-;;       Maybe ask to initialize a project?
-(defun my/c++-compile ()
-  "Compile current C++ project using detected build system."
-  (interactive)
-  (when (eq major-mode 'c++-mode)	;check if in c++-mode
-    (let ((project-root (my/c++--find-project-root)))
-      (if project-root			;if project-root not found, var is nil
-	  (progn
-	    ;; check list of build systems and call appropriate compile func
-	    (dolist (element my/c++-build-systems-alist)
-	      (when (file-exists-p (concat project-root (car element)))
-		(funcall (cdr element) project-root)))
-	    (lsp-cquery-enable))
-	;; else (when project root directory was not found)
-	(message "Project's root directory not found. \
+  ;; (assoc-default "CMakeLists.txt" my/c++-build-systems-alist)
+  ;; TODO: When compile_commands.json is a broken symbolic link in the project
+  ;;       root, function doesn't work (cquery--get-root returns error).
+  ;;       Maybe ask to initialize a project?
+  (defun my/c++-compile ()
+    "Compile current C++ project using detected build system."
+    (interactive)
+    (when (eq major-mode 'c++-mode)	;check if in c++-mode
+      (let ((project-root (my/c++--find-project-root)))
+	(if project-root	;if project-root not found, var is nil
+	    (progn
+	      ;; check list of build systems and call appropriate compile func
+	      (dolist (element my/c++-build-systems-alist)
+		(when (file-exists-p (concat project-root (car element)))
+		  (funcall (cdr element) project-root)))
+	      (lsp-cquery-enable))
+	  ;; else (when project root directory was not found)
+	  (message "Project's root directory not found. \
 Please initialize version control or build-system project.")))))
 
-;; End of C++ compile functions
+  ;; End of C++ compile functions
 
-(defvar cppreference-path "/usr/share/doc/cppreference/en"
-  "Path to cppreference (HTML book).")
-(if (file-exists-p cppreference-path)
-    (progn
-      ;; (require 'helm-find)
-      (defun my-cpp-doc-at-point ()
-	"Find documentation for a C++ symbol at point."
-	(interactive)
-	(autoload 'helm-find-shell-command-fn "helm-find")
-	(let ((default-directory cppreference-path))
-	  (helm :sources `((name . "Find")
-			   (action . (lambda (candidate)
-				       (eww (concat "file:" candidate))))
-			   (persistent-action
-			    . helm-ff-kill-or-find-buffer-fname)
-			   (requires-pattern . 3)
-			   (filtered-candidate-transformer
-			    helm-findutils-transformer
-			    helm-fuzzy-highlight-matches)
-			   (action-transformer . helm-transform-file-load-el)
-			   (candidate-number-limit . 9999)
-			   (redisplay . identity)
-			   (group . helm)
-			   (candidates-process . helm-find-shell-command-fn))
-		:buffer "*cppreference*"
-		:prompt "Symbol: "
-		:ff-transformer-show-only-basename nil
-		:input (find-tag-default))))
+  (defvar cppreference-path "/usr/share/doc/cppreference/en"
+    "Path to cppreference (HTML book).")
+  (if (file-exists-p cppreference-path)
+      (progn
+	;; (require 'helm-find)
+	(defun my-cpp-doc-at-point ()
+	  "Find documentation for a C++ symbol at point."
+	  (interactive)
+	  (autoload 'helm-find-shell-command-fn "helm-find")
+	  (let ((default-directory cppreference-path))
+	    (helm :sources
+		  `((name . "Find")
+		    (action . (lambda (candidate)
+				(eww (concat "file:" candidate))))
+		    (persistent-action
+		     . helm-ff-kill-or-find-buffer-fname)
+		    (requires-pattern . 3)
+		    (filtered-candidate-transformer
+		     helm-findutils-transformer
+		     helm-fuzzy-highlight-matches)
+		    (action-transformer . helm-transform-file-load-el)
+		    (candidate-number-limit . 9999)
+		    (redisplay . identity)
+		    (group . helm)
+		    (candidates-process . helm-find-shell-command-fn))
+		  :buffer "*cppreference*"
+		  :prompt "Symbol: "
+		  :ff-transformer-show-only-basename nil
+		  :input (find-tag-default))))
 
-      (eval-after-load 'cc-mode
-	'(define-key c++-mode-map (kbd "C-c d") #'my-cpp-doc-at-point)))
-  (display-warning "cppreference"
-		   (concat "cppreference not found in " cppreference-path))
-  (setq cppreference-path nil))
+	(eval-after-load 'cc-mode
+	  '(define-key c++-mode-map (kbd "C-c d") #'my-cpp-doc-at-point)))
+    (display-warning "cppreference"
+		     (concat "cppreference not found in " cppreference-path))
+    (setq cppreference-path nil))
 
-(defun my-grep-references ()
-  "Find references of a symbol at point with grep."
-  (interactive)
-  (counsel-git-grep nil (find-tag-default-as-symbol-regexp)))
-(defun my-find-references ()
-  "Find references of a symbol at point with xref."
-  (interactive)
-  (xref-find-references (find-tag-default)))
+  (defun my-grep-references ()
+    "Find references of a symbol at point with grep."
+    (interactive)
+    ;; (counsel-git-grep nil (find-tag-default-as-symbol-regexp))
+    (counsel-git-grep nil (symbol-name (symbol-at-point))))
+  (defun my-find-references ()
+    "Find references of a symbol at point with xref."
+    (interactive)
+    (xref-find-references (find-tag-default)))
 
-(with-eval-after-load 'cc-mode
   (define-key c++-mode-map (kbd "C-c C-c") #'my/c++-compile)
   (define-key c++-mode-map (kbd "C-.") #'xref-find-definitions-other-window)
   (define-key c++-mode-map (kbd "C-,") #'my-find-references)
   (define-key c++-mode-map (kbd "M-,") #'my-grep-references)
   (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
-  (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack))
+  (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
 
-;; TODO: Check if I could use LSP to give me the type of the variable
-;; TODO: Add "public:" keyword before accessor functions and "private:"
-;;       before a variable or create accessors at the bottom of class
-;;       Maybe add a variable (or prefix argument) to set the behavior.
-(defun my-cpp-create-accessors ()
-  "Create accessors to the variable declared on a current line.
+  ;; TODO: Check if I could use LSP to give me the type of the variable
+  ;; TODO: Add "public:" keyword before accessor functions and "private:"
+  ;;       before a variable or create accessors at the bottom of class
+  ;;       Maybe add a variable (or prefix argument) to set the behavior.
+  (defun my-cpp-create-accessors ()
+    "Create accessors to the variable declared on a current line.
 
 By default accessors use constant references.
-If the variable is a pointer or a reference, only \"const\" qualifier is added."
-  (interactive)
-  (save-excursion
-    (beginning-of-line-text)
-    ;; FIXME: fundamental type variables should be passed by value
-    (condition-case error
-	(save-match-data
-	  (re-search-forward "\\<\\(?1:[[:word:]-_<>: ]*\\)\
+If the variable is a pointer or a reference, only \"const\" qualifier
+is added."
+    (interactive)
+    (save-excursion
+      (beginning-of-line-text)
+      ;; FIXME: fundamental type variables should be passed by value
+      (condition-case error
+	  (save-match-data
+	    (re-search-forward "\\<\\(?1:[[:word:]-_<>: ]*\\)\
 \\(?:\s+\\(?2:[*&]+\\)?\\|\\(?2:[*&]+\\)\s+\\)\
 \\(?3:[[:word:]-_:]+\\)"
-			     (line-end-position))
-	  (let* ((type (match-string 1))
-		 (name (match-string 3))
-		 ;; m_foo, _foo, foo_ => foo ; TODO: mFoo
-		 (setter-name (s-replace-regexp "\\(^m?_+\\)\\|\\(_+$\\)"
-						""
-						name))
-		 (pointer-or-ref (match-string 2)))
-	    (princ-list type "\n" name "\n" setter-name "\n" pointer-or-ref)
-	    (end-of-line)
-	    (newline)
-	    (insert "inline const " type
-		    (format "%s " (or pointer-or-ref "&"))
-		    (s-upper-camel-case name)
-    		    "() const {\n"
-    		    "return " name ";\n}\n")
-	    (c-indent-defun)
-	    (insert "inline void Set" (s-upper-camel-case name) "(const "
-    		    type (format "%s " (or pointer-or-ref "&"))
-		    setter-name ") {\n" name " = " setter-name ";\n}\n")
-	    (c-indent-defun)))
-      (search-failed (message "Couldn't find a variable declaration.")))))
+			       (line-end-position))
+	    (let* ((type (match-string 1))
+		   (name (match-string 3))
+		   ;; m_foo, _foo, foo_ => foo ; TODO: mFoo
+		   (setter-name (s-replace-regexp "\\(^m?_+\\)\\|\\(_+$\\)"
+						  ""
+						  name))
+		   (pointer-or-ref (match-string 2)))
+	      (princ-list type "\n" name "\n" setter-name "\n" pointer-or-ref)
+	      (end-of-line)
+	      (newline)
+	      (insert "inline const " type
+		      (format "%s " (or pointer-or-ref "&"))
+		      (s-upper-camel-case name)
+		      "() const {\n"
+		      "return " name ";\n}\n")
+	      (c-indent-defun)
+	      (insert "inline void Set" (s-upper-camel-case name) "(const "
+		      type (format "%s " (or pointer-or-ref "&"))
+		      setter-name ") {\n" name " = " setter-name ";\n}\n")
+	      (c-indent-defun)))
+	(search-failed (message "Couldn't find a variable declaration."))))))
 ;; TEST CASES THAT PASSED :
 ;; char** foo;
 ;; char **foo;
@@ -751,17 +769,19 @@ If the variable is a pointer or a reference, only \"const\" qualifier is added."
 ;; const int bla::foo = 5;
 ;; std::string id_;
 
-(load "~/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el" t)
+(add-to-list 'load-path "~/.emacs.d/in-progress/cpp-scratchpad/")
 
 (use-package meson-mode
   :config
   (with-check-for-missing-packages ("meson") "MESON-MODE" nil))
 
 (use-package helm-xref
-  :config
+  :init
+  (autoload 'helm-xref-show-xrefs "helm-xref")
   (setq xref-show-xrefs-function #'helm-xref-show-xrefs))
 
 (use-package highlight-parentheses
+  :defer nil
   :config
   (global-highlight-parentheses-mode)
   (diminish 'highlight-parentheses-mode))
@@ -859,14 +879,15 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :bind ("C-x g" . #'magit-status))
 
 (use-package magit-todos
-  :config
+  :init
   (eval-after-load 'magit '(magit-todos-mode t)))
 
 (use-package which-key
+  :defer nil
   ;; According to documentation this should be :config, but it seems
   ;; like these options are reversed
   ;; How do you load mode before package is loaded?
-  :init
+  :config
   (which-key-mode 1)
   (diminish 'which-key-mode)
   ;; (global-unset-key (kbd "C-h C-h"))	;unbind conflicting key binding
@@ -874,11 +895,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
   :bind ("C-*" . #'which-key-show-top-level))
 
 (use-package whole-line-or-region
-  :config
-  ;; When pressing C-w this will check if there is an active region
-  ;; if there's not, it will kill current line (including newline sign)
-  (add-hook 'after-init-hook #'whole-line-or-region-mode)
-  (diminish 'whole-line-or-region-local-mode))
+  :diminish (whole-line-or-region-mode whole-line-or-region-local-mode)
+  :init
+  (whole-line-or-region-global-mode t))
 
 (use-package dockerfile-mode)
 
@@ -899,9 +918,11 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; preview buffer for LaTeX
 (use-package latex-preview-pane
   :pin melpa
+  :init
+  (eval-after-load 'latex-mode
+    (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode))
   :config
   (latex-preview-pane-enable)
-  (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
   (setq shell-escape-mode "-shell-escape"))
 
 ;; emacs' notifications.el
@@ -949,6 +970,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 ;; C-x u - undo-tree-visualize
 ;; C-?   - undo-tree-redo
 (use-package undo-tree
+  :defer nil
   :config
   (global-undo-tree-mode 1)
   (diminish 'undo-tree-mode))
@@ -991,14 +1013,15 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; lyrics
 (use-package lyrics
-  :config
-  (load "~/.emacs.d/my-lyrics.el"))
+  :init
+  (autoload 'my-lyrics "~/.emacs.d/my-lyrics.el"
+    "Gets lyrics for a song playing in MOC player." t))
 
 ;; eww customization
 
 (use-package eww
-  :config
-  (load "~/.emacs.d/eww-init.el" t))
+  :init
+  (autoload 'my-search-web "~/.emacs.d/eww-init.el" nil t))
 
 ;; RUST
 ;; (use-package lsp-rust

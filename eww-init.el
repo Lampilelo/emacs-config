@@ -1,3 +1,5 @@
+(require 'eww)
+
 (setq eww-search-prefix "https://duckduckgo.com/lite/?q=")
 (setq my-search-engines-list
       '(("Słownik Języka Polskiego PWN" .
