@@ -547,8 +547,8 @@ We need to exit that mode to call company-yasnippet."
 		     (concat "file://" (expand-file-name url))))))
   (with-eval-after-load 'cc-mode (require 'doxymacs)))
 
-(use-package rmsbolt)
-
+;; I don't use it so it's disabled for now
+;; (use-package rmsbolt)
 
 ;; C++ compile functions
 (defvar my/c++-build-systems-alist
