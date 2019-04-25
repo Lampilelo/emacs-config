@@ -1124,5 +1124,10 @@ Return nil if not succeeded."
 (use-package wgrep)
 ;; end of wgrep
 
+;; nov.el (epub)
+(use-package nov
+  :init
+  (add-to-list 'auto-mode-alist (cons "\\.epub\\'" 'nov-mode)))
+;; end of nov.el
 (provide 'init)
 ;;; init.el ends here
