@@ -787,14 +787,29 @@ If the variable is a pointer or a reference, only \"const\" qualifier is added."
 
 (show-paren-mode)
 
-(use-package lispy
-  :config
-  (dolist (mode-map (list emacs-lisp-mode-map
-			  lisp-interaction-mode-map))
-    (define-key mode-map (kbd "M-k") #'lispy-raise-sexp)))
+;; (use-package lispy
+;;   :config
+;;   (dolist (mode-map (list emacs-lisp-mode-map
+;; 			  lisp-interaction-mode-map))
+;;     (define-key mode-map (kbd "M-k") #'lispy-raise-sexp)))
 
-(eval-after-load 'scheme
-  '(define-key scheme-mode-map (kbd "M-k") #'lispy-raise-sexp))
+;; (eval-after-load 'scheme
+;;   '(define-key scheme-mode-map (kbd "M-k") #'lispy-raise-sexp))
+
+(use-package paredit
+  :diminish paredit-mode
+  :init
+  (dolist (hook '(emacs-lisp-mode-hook
+		  lisp-interaction-mode-hook
+		  scheme-mode-hook
+		  eval-expression-minibuffer-setup-hook))
+    (add-hook hook 'enable-paredit-mode))
+  :bind (:map paredit-mode-map
+	      ("M-k" . #'paredit-raise-sexp)
+	      ("C-(" . #'paredit-wrap-round)
+	      ("C-)" . #'paredit-close-round-and-newline)
+	      ("M-(" . #'paredit-backward-slurp-sexp)
+	      ("M-)" . #'paredit-forward-slurp-sexp)))
 
 ;; FIXME: Doesn't work so flawlessly inside of a comment.
 ;; TODO: single quotes
