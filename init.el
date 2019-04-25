@@ -511,143 +511,6 @@ We need to exit that mode to call company-yasnippet."
   ("C-'" . #'my-company-yasnippet))
 (use-package yasnippet-snippets)
 
-;; ========================= DEPRECATED =========================
-;;                     (left for reference)
-
-;; ;;(shell-command )
-;; (use-package rtags
-;;   :init
-;;   (setq rtags-path "~/.emacs.d/rtags/build/bin/")
-;;   ;; helm as backend for displaying
-;;   (setq rtags-display-result-backend 'helm)
-;;   :config
-;;   (rtags-enable-standard-keybindings)
-;;   (my-print-missing-packages-as-warnings ;check for requirements on host
-;;    "RTAGS"
-;;    '("make" "cmake" "gcc" "clang" "git" "doxygen"))
-;;   ;; Could use rtags package from aur, but it won't work on other systems
-;;   ;; Maybe search for latest release with python-requests in rtags repo?
-;;   (if (not (file-exists-p rtags-path))
-;;       (shell-command "sh ~/.emacs.d/get-rtags.sh"))
-;;   (rtags-start-process-unless-running)
-;;   ;; Rebind keys for finding symbols and references
-;;   :bind (:map c-mode-map
-;; 	      ("C-." . rtags-find-symbol-at-point)
-;; 	      ("C-," . rtags-find-references-at-point)
-;; 	 :map c++-mode-map
-;; 	      ("C-." . rtags-find-symbol-at-point)
-;; 	      ("C-," . rtags-find-references-at-point)))
-
-;; (use-package company-rtags
-;;   :init
-;;   (setq rtags-completions-enabled t)
-;;   (setq rtags-autostart-diagnostics t)
-;;   :config
-;;   (push 'company-rtags company-backends))
-
-;; (use-package flycheck-rtags
-;;   :config
-;;   (add-hook 'c-mode-common-hook
-;; 	    (lambda ()
-;; 	      "Flycheck RTags setup"
-;; 	      (flycheck-select-checker 'rtags)
-;; 		(message "flycheck-rtags lambda")
-;; 	       ;;RTags creates more accurate overlays
-;; 	       (setq-local flycheck-highlighting-mode nil)
-;; 	       (setq-local flycheck-check-syntax-automatically nil))))
-
-;; (use-package helm-rtags)
-
-;; ;; TODO: build server if there's a new version
-;; (use-package irony
-;;   :config
-;;   (if (not (file-exists-p "~/.emacs.d/irony/bin/irony-server"))
-;;       (irony-install-server
-;;        (format
-;; 	(concat "%s %s %s && %s --build . "
-;; 		"--use-stderr --config Release --target install")
-;; 	(shell-quote-argument irony-cmake-executable)
-;; 	(shell-quote-argument (concat "-DCMAKE_INSTALL_PREFIX="
-;; 				      (expand-file-name
-;; 				       irony-server-install-prefix)))
-;; 	(shell-quote-argument
-;; 	 (or irony-server-source-dir
-;; 	     (expand-file-name "server"
-;; 			       (file-name-directory
-;; 				(find-library-name "irony")))))
-;; 	(shell-quote-argument irony-cmake-executable))))
-;;   (add-hook 'c-mode-common-hook 'irony-mode)
-;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-;;   :bind (:map irony-mode-map
-;; 	      ([remap completion-at-point] .
-;; 	       irony-completion-at-point-async)
-;; 	      ([remap complete-symbol] .
-;; 	       irony-completion-at-point-async)))
-
-;; (use-package company-irony
-;;   :init
-;;   (setq company-idle-delay 0)
-;;   :config
-;;   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;;   (add-to-list 'company-backends 'company-irony)
-;;   :bind (:map c-mode-map ("C-\"" . company-complete)
-;; 	 :map c++-mode-map ("C-\"" . company-complete)))
-
-;; (use-package flycheck-irony
-;;   :config
-;;   (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
-
-;; ;; (use-package company-irony-c-headers
-;;   ;; :config
-;;   ;; (eval-after-load 'company
-;;   ;;   '(add-to-list 'company-backends
-;; 	       ;; '(company-irony-c-headers company-irony))))
-
-;; (use-package cmake-mode)
-
-;; (use-package cmake-ide
-;;   :init
-;;   (my-print-missing-packages-as-warnings "CMAKE-IDE" '("cmake"))
-;;   (setq cmake-ide-rdm-executable "~/.emacs.d/rtags/build/bin/rdm")
-;;   (setq cmake-ide-rdm-rc-path "~/.emacs.d/rtags/build/bin/")
-;;   :bind
-;;   (:map c++-mode-map
-;; 	("C-c C-c" . 'cmake-ide-compile)))
-
-;; ;; Eldoc to show function interface in minibuffer
-;; (defun my-eldoc-hook ()
-;;   (setq-local eldoc-documentation-function #'rtags-eldoc))
-;; (add-hook 'c-mode-common-hook 'my-eldoc-hook)
-
-;; ============================================================
-
-;; Load cc-mode so that c++-mode-map is not void.
-;; (require 'cc-mode)
-
-;; (use-package lsp-mode
-;;   :config
-;;   (eval-after-load 'cc-mode
-;;     '(define-key c++-mode-map (kbd "C-c C-r") #'lsp-rename))
-;;   (setq lsp-auto-guess-root t)
-;;   (add-hook 'c++-mode-hook 'lsp))
-
-;; (use-package lsp-ui
-;;   :config
-;;   (add-hook 'lsp-mode-hook #'lsp-ui-mode)
-;;   ;; TODO: check if lsp-ui checker still sucks (or find out why)
-;;   ;; (setq lsp-ui-flycheck-enable nil)
-;;   (add-hook 'c++-mode-hook
-;; 	    (lambda ()
-;;   	      (setq-local flycheck-checker 'c/c++-clang)
-;; 	      (setq-local flycheck-clang-language-standard "c++17"))))
-
-;; (use-package company-lsp
-;;   :config
-;;   (push 'company-lsp company-backends)
-;;   (setq company-transformers nil
-;; 	company-lsp-async t
-;; 	company-lsp-cache-candidates nil))
-
 (with-check-for-missing-packages ("ccls") "ccls" nil
   (use-package ccls
     :init
@@ -688,35 +551,6 @@ We need to exit that mode to call company-yasnippet."
   (with-eval-after-load 'cc-mode (require 'doxymacs)))
 
 (use-package rmsbolt)
-
-;; Obsolete
-;; (defun my-cpp-git-compile ()
-;;   "Compile current git project in the \"build\" directory.
-
-;; Also checks if there is \"compile_commands.json\" file in the project
-;; root directory. If not, links to the one in \"build\".
-
-;; TEMPORARY FUNCTION"
-;;   (interactive)
-;;   (when (eq major-mode 'c++-mode)	;check if in c++-mode
-;;     (let* ((project-dir (vc-find-root buffer-file-name ".git")))
-;;       ;; make build directory if it doesn't exist
-;;       (when (not (file-exists-p (concat project-dir "build")))
-;; 	(make-directory (concat project-dir "build")))
-;;       ;; run cmake and make from inside build dir
-;;       (compile (concat "cd " project-dir "build && "
-;; 		       "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .. && "
-;; 		       "make"))
-;;       ;; check if cquery is active and if compile_commands.json exists
-;;       ;; if both conditions aren't met, create link to compile_commands.json
-;;       ;;    and try to enable cquery afterwards
-;;       (when (not (or lsp--cur-workspace
-;; 		     (file-exists-p (concat project-dir
-;; 					    "compile_commands.json"))))
-;; 	(async-shell-command (concat "ln -s "
-;; 			       project-dir "build/compile_commands.json "
-;; 			       project-dir "compile_commands.json"))
-;; 	(lsp-cquery-enable)))))
 
 
 ;; C++ compile functions
@@ -1002,31 +836,6 @@ Used second time kills the delimiter and everything up to the next delimiter."
       (sp-kill-hybrid-sexp (point))))
   (define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp))
 
-;; IN PROGRESS
-;; TODO: This could be written easier for certain!
-;; TODO: Check if looking at closing paren
-;; (defun my-kill-hybrid-sexp ()
-;;   "Kill a line respecting delimiters.
-;; Used second time kills the delimiter and everything up to the next delimiter."
-;;   (interactive)
-;;   (let* ((line-end (line-end-position))
-;; 	 (stats (syntax-ppss))
-;; 	 (string-char (nth 3 stats))
-;; 	 (paren-char (nth 1 stats)))
-;;     (cond (string-char	 ; if in string delete to end of line or end of string
-;; 	   (let ((closing-char
-;; 		  (save-excursion (1- (search-forward
-;; 				    (char-to-string string-char))))))
-;; 	     (if (> closing-char line-end)
-;; 		(kill-line)
-;; 	      (kill-region (point) closing-char))))
-;; 	  (paren-char	 ; if in parens delete to end of line or closing paren
-;; 	   (let ((closing-char (1- (scan-sexps paren-char 1))))
-;; 	     (if (> closing-char line-end)
-;; 		(kill-line)
-;; 	       (kill-region (point) closing-char))))
-;; 	  (t (kill-line)))))
-
 (use-package magit
   :init
   (with-check-for-missing-packages ("git") "MAGIT" nil)
@@ -1060,21 +869,6 @@ Used second time kills the delimiter and everything up to the next delimiter."
   (diminish 'whole-line-or-region-local-mode))
 
 (use-package dockerfile-mode)
-
-;; TODO: Rethink if this is necessary. Kinda never used it...
-;; OCTAVE
-;; for info check http://wiki.octave.org/Emacs
-;; set octave-mode for all .m files
-;; (autoload 'octave-mode "octave-mod" nil t)
-;; (setq auto-mode-alist
-;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
-;; ;; turn on the abbrevs, auto-fill and font-lock features automatically
-;; (add-hook 'octave-mode-hook
-;;           (lambda ()
-;;             (abbrev-mode 1)
-;;             (auto-fill-mode 1)
-;;             (if (eq window-system 'x)
-;;                 (font-lock-mode 1))))
 
 ;; ERC
 (load "~/.emacs.d/erc-init.el")
@@ -1130,9 +924,6 @@ Used second time kills the delimiter and everything up to the next delimiter."
 	   (concat "\\<" (char-to-string query-char)) nil t)
     (message "Occurence not found."))
   (backward-char))
-;; DONE: check the difference between char-to-string and make-string
-;; char-to-string makes a string from one byte char,
-;; make-string checks the length first, so kinda more overhead
 
 ;; Mutliple cursors
 ;; Documentation: https://github.com/magnars/multiple-cursors.el
