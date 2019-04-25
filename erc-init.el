@@ -141,6 +141,7 @@ Uses `my-erc-server-info' to get the information about server settings.")
 
 (setq erc-fill-column 76)
 
+;; TODO: This should be probably removed since I use custom code for ident
 (require 'erc-services)
 (add-hook 'erc-mode-hook 'erc-nickserv-mode)
 
