@@ -59,22 +59,23 @@
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
-(defun my-Man-open-in-same-buffer ()
-  "Open new man buffer in place of the current."
-  (interactive)
-  (let ((old-buffer (current-buffer))
-	(Man-notify-method 'pushy))
-    (call-interactively #'man)
-    (when (string-prefix-p "*Man" (buffer-name old-buffer))
-      (kill-buffer old-buffer))))
-(eval-after-load 'man
-  '(define-key Man-mode-map (kbd "M") #'my-Man-open-in-same-buffer))
 ;; adding this variable to $HOME/.profile works but not on an instance
 ;; run as a systemd service, I could include "Environment=INFOPATH=whatever"
 ;; into the service file (systemctl --user edit emacs) or create a service
 ;; just for setting env
 ;; (setenv "INFOPATH"
 ;; 	(substitute-env-vars "/usr/share/info/:$HOME/.local/share/info/"))
+
+(with-eval-after-load 'man
+  (defun my-Man-open-in-same-buffer ()
+    "Open new man buffer in place of the current."
+    (interactive)
+    (let ((old-buffer (current-buffer))
+	  (Man-notify-method 'pushy))
+      (call-interactively #'man)
+      (when (string-prefix-p "*Man" (buffer-name old-buffer))
+	(kill-buffer old-buffer))))
+  (define-key Man-mode-map (kbd "M") #'my-Man-open-in-same-buffer))
 
 ;; NOTE: Probably temporary. I added it because of abnoxious ding when on
 ;;       battery power. Maybe it would be better to call 'ignore instead.
