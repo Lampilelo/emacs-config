@@ -1054,6 +1054,12 @@ Used second time kills the delimiter and everything up to the next delimiter."
     (info-lookmore-add-doc
      'symbol 'scheme-mode
      '("(guile) R5RS Index" nil nil nil))
+    (info-lookmore-add-doc
+     'symbol 'scheme-mode
+     '("(guile) Type Index" nil nil nil))
+    (info-lookmore-add-doc
+     'symbol 'scheme-mode
+     '("(guile) Concept Index" nil nil nil))
 
     ;; Python
     (info-lookup-add-help :mode 'python-mode
