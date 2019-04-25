@@ -1,9 +1,10 @@
-* Info
+* Advice
+** Info
 - [[info:elisp#Advising%20Functions][Advising Functions]] :: Info section about advising
 - [[info:elisp#Advice%20combinators][Advice combinators]] :: :around, :after-until and so on...
 
-* advice-add
-** Without args
+** advice-add
+*** Without args
 #+BEGIN_SRC elisp
   (defun my/fun-to-advice ()
     (interactive)
@@ -20,7 +21,7 @@
 #+RESULTS:
 : Advice: function returns a string, but doesn’t print it
 
-** With args
+*** With args
 #+BEGIN_SRC elisp
 (defun my/fun-to-advice (str) (interactive)
        str)
@@ -36,12 +37,12 @@
 #+RESULTS:
 : Advice: fun-to-advice
 
-** advice-remove
+*** advice-remove
 #+BEGIN_SRC elisp
   (advice-remove #'my/fun-to-advice #'my/advice)
 #+END_SRC
 
-* define-advice
+** define-advice
 #+BEGIN_SRC elisp
   (defun my/fun-to-advice (str &rest args)
     (interactive)
@@ -63,4 +64,3 @@
 #+BEGIN_SRC elisp
   (advice-remove #'my/fun-to-advice nil)
 #+END_SRC
-
