@@ -236,12 +236,9 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (defvar my-autosave-directory "~/.emacs.d/autosaves/")
 (make-directory my-autosave-directory t)
 ;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
-(setq backup-directory-alist
-      `((".*" . ,my-autosave-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,my-autosave-directory t)))
-(setq auto-save-list-file-prefix
-      my-autosave-directory)
+(setq backup-directory-alist `((".*" . ,my-autosave-directory))
+      auto-save-file-name-transforms `((".*" ,my-autosave-directory t))
+      auto-save-list-file-prefix my-autosave-directory)
 
 ;; Set default browser for opening links
 (setq browse-url-browser-function #'browse-url-generic
