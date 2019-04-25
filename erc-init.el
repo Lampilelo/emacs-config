@@ -172,19 +172,6 @@ Uses `my-erc-server-info' to get the information about server settings.")
 		      (plist-get (cdr item) :channels)))
 	      my-erc-server-info))
 
-;; (setq erc-autojoin-channels-alist
-;;       '((".*rizon.*" "#krasnale")
-;; 	(".*freenode.*" "#emacs")))
-
-;; (defun my-post-vhost-autojoin (proc parsed)
-;;   "Autojoin when NickServ tells us to."
-;;   (with-current-buffer (process-buffer proc)
-;;     (when (string-match ".*Password accepted.*"
-;;                              (erc-response.contents parsed))
-;;       (erc-autojoin-channels erc-session-server (erc-current-nick))
-;;       nil)))
-;; (add-hook 'erc-server-NOTICE-functions 'my-post-vhost-autojoin)
-
 (setq erc-autojoin-timing 'ident)
 ;; end of auto-join
 
