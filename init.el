@@ -1016,8 +1016,19 @@ Used second time kills the delimiter and everything up to the next delimiter."
     ("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler"
      "g++" "pkg-config") "pdf-tools" t
   (use-package pdf-tools
+    :init
+    (pdf-loader-install t)
     :config
-    (pdf-tools-install t)))
+    ;; latex-preview-pane hardcodes usage of doc-view so it doesn't update
+    ;; properly when using pdf-tools; this is a workaround:
+    (with-eval-after-load 'LaTeX-mode
+      (when (member #'latex-preview-pane-mode LaTeX-mode-hook)
+	(defun my-redefine-doc-view-revert-buffer-advice (oldfun)
+	  (cl-letf (((symbol-function 'doc-view-revert-buffer)
+		     #'revert-buffer))
+	    (funcall oldfun)))
+	(advice-add 'latex-preview-pane-update-p :around
+		    #'my-redefine-doc-view-revert-buffer-advice)))))
 ;; to uninstall you have to call (pdf-tools-uninstall)
 
 ;; GNUS
