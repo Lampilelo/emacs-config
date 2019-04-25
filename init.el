@@ -81,11 +81,10 @@
 				 (set-face-background 'mode-line bg))
                                orig-bg))))
 
-;; Temporary fix for helm buffers showing slowly
-(if (not (or (> emacs-major-version 26)
-	     (and (eq emacs-major-version 26) (> emacs-minor-version 1))))
-    (setq x-wait-for-event-timeout nil)
-  (display-warning "version changed" "Check if problem with with helm opening slowly still persists. If not, delete this check from init.el."))
+;; Fix for helm buffers showing slowly (it was necessary in emacs 26.1
+;; or some older version of helm but isn't anymore; it's still slightly
+;; beneficial though)
+(setq x-wait-for-event-timeout nil)
 
 (let ((src-dir "~/emacs/"))
   (if (file-exists-p src-dir)
