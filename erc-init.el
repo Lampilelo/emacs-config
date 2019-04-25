@@ -81,7 +81,7 @@ Example:
 ;; Add passwords to erc-nickserv-passwords
 ;; Gets password from command "pass server/nick"
 ;;   where server is :server and nick is :nick from `my-erc-server-info'
-(unless (my-print-missing-packages-as-warnings "my-erc-passwords" '("pass"))
+(with-check-for-missing-packages ("pass") "my-erc-passwords" nil
   (defun my-erc-refresh-passwords ()
     "Reload passwords using \"pass\" command and `my-erc-server-info'."
     (interactive)

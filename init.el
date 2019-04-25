@@ -99,7 +99,7 @@
 ;; (ido-mode 1)
 
 ;; Load functions for checking missing host packages
-(load (concat user-emacs-directory "missing-packages.el"))
+(load "~/.emacs.d/missing-packages.el")
 
 ;; org mode customizations
 (use-package org
@@ -124,7 +124,7 @@
 
 ;; org-mode source coloring
 ;; Note 1: python-pygments needs to be installed
-(my-print-missing-packages-as-warnings "latex minted" '("pygments") t)
+(with-check-for-missing-packages ("pygments") "latex minted" nil)
 (setq org-latex-listings 'minted)
 (setq org-export-with-smart-quotes t)
 (add-to-list 'org-latex-packages-alist '("" "minted"))
@@ -619,7 +619,7 @@ We need to exit that mode to call company-yasnippet."
 ;; 	company-lsp-async t
 ;; 	company-lsp-cache-candidates nil))
 
-(unless (my-print-missing-packages-as-warnings "ccls" '("ccls"))
+(with-check-for-missing-packages ("ccls") "ccls" nil
   (use-package ccls
     :init
     (setq ccls-executable "/usr/bin/ccls")
@@ -895,7 +895,7 @@ If the variable is a pointer or a reference, only \"const\" qualifier is added."
 
 (use-package meson-mode
   :config
-  (my-print-missing-packages-as-warnings "MESON-MODE" '("meson")))
+  (with-check-for-missing-packages ("meson") "MESON-MODE" nil))
 
 (use-package helm-xref
   :config
@@ -1000,7 +1000,7 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 (use-package magit
   :init
-  (my-print-missing-packages-as-warnings "MAGIT" '("git"))
+  (with-check-for-missing-packages ("git") "MAGIT" nil)
   ;; set up ssh-agent
   (setenv "SSH_AUTH_SOCK"
 	  (concat
@@ -1131,13 +1131,13 @@ Used second time kills the delimiter and everything up to the next delimiter."
   ;; Python packages needed:
   ;;   jedi or rope, flake8, importmagic, autopep8, yapf
   :init
-  (my-print-missing-packages-as-warnings
-   "ELPY" '("jedi" "flake8" "importmagic" "autopep8" "yapf") t)
-  :config
-  (elpy-enable))
+  (with-check-for-missing-packages
+      ("jedi" "flake8" "importmagic" "autopep8" "yapf") "ELPY" nil)
+  (eval-after-load 'python-mode
+    '(elpy-enable)))
 
 ;; MAIL
-(unless (my-print-missing-packages-as-warnings "MU4E" '("mu"))
+(with-check-for-missing-packages ("mu") "MU4E" nil
   (require 'mu4e)
   ;; (autoload 'mu4e "mu4e")
   (global-set-key (kbd "C-x m") 'mu4e)
@@ -1193,10 +1193,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
 
 ;; PDF-TOOLS
 ;; Use pdf-tools instead of doc-view
-(unless (my-print-missing-packages-as-warnings
-	 "pdf-tools"
-	 '("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler"
-	   "g++" "pkg-config"))
+(with-check-for-missing-packages
+    ("gcc" "make" "automake" "autoconf" "libpng" "zlib" "poppler"
+     "g++" "pkg-config") "pdf-tools" t
   (use-package pdf-tools
     :config
     (pdf-tools-install t)))
