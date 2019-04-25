@@ -24,7 +24,7 @@ More details in `define-search-engine' docstring.")
 (defun web-search--maybe-pop-to-buffer (buffer)
   (cond ((bufferp buffer) (pop-to-buffer buffer))
 	((stringp buffer) (message buffer))
-	(else (message "Search failed."))))
+	(t (message "Search failed."))))
 
 (defun web-search--dom-remove-recursively (node-type dom)
   (dolist (child (dom-children dom))
