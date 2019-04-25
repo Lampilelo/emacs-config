@@ -249,6 +249,10 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 
 (require 'uniquify)
 ;; (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+(setq save-interprogram-paste-before-kill t
+      ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;; C++ default options
 (use-package google-c-style
   :init
