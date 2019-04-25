@@ -46,6 +46,10 @@
 	org-self-insert-command
 	org-set-tags-command
 	org-shiftmetaright
+	paredit-backslash
+	paredit-forward
+	paredit-forward-delete
+	paredit-forward-kill-word
 	sh-assignment
 	sp-delete-char
 	sp-kill-word
@@ -67,10 +71,7 @@
 	beginning-of-buffer
 	dired-previous-line
 	end-of-buffer
-	eval-last-sexp
-	geiser-eval-definition
 	helm-buffers-list
-	sp-backward-delete-char
 	wdired-finish-edit
 	yank-rectangle
 	))
