@@ -1141,3 +1141,6 @@ Return nil if not succeeded."
 
 (provide 'init)
 ;;; init.el ends here
+
+(put 'erase-buffer 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
