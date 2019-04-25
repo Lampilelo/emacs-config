@@ -1,4 +1,5 @@
 ;;; erc-init.el --- Initialization file for erc -*- lexical-binding: t; -*-
+
 ;; ident
 (setq
  ;; erc-nick "Oxon"
@@ -101,12 +102,12 @@ Example:
 				      (car server-info)
 				      my-erc-password-store-names)
 				     (error (format
-  "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
+    "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
 					     (car server-info))))))
 			  (s-chomp (buffer-string))
 			(error (format "No password for %s"
 				       (car server-info))))))))
-		    erc-nickserv-passwords))
+	       erc-nickserv-passwords))
 	  (error (display-warning "erc-init.el"
 				  (error-message-string pass-err))
 		 (setq ret nil)))))
@@ -163,7 +164,8 @@ Uses `my-erc-server-info' to get the information about server settings.")
 ;; (erc-services-enable)
 ;; (setq erc-services-enable 1)
 
-(setq erc-notifications-icon "/usr/share/icons/hicolor/128x128/apps/emacs.png")
+(setq erc-notifications-icon
+      "/usr/share/icons/hicolor/128x128/apps/emacs.png")
 
 ;; auto-join channels
 (add-hook 'erc-mode-hook 'erc-autojoin-mode)
