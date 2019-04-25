@@ -176,6 +176,7 @@ Uses `my-erc-server-info' to get the information about server settings.")
 (setq erc-autojoin-timing 'ident)
 ;; end of auto-join
 
+(add-hook 'erc-echo-notice-always-hook 'erc-echo-notice-in-minibuffer)
 (add-hook 'erc-server-NOTICE-functions 'erc-server-PRIVMSG)
 
 ;; misc options
