@@ -271,7 +271,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
 (global-set-key (kbd "C-c i") #'iedit-mode)
 
-(define-key global-map (kbd "C-z") 'help-command)
+;; (define-key global-map (kbd "C-z") 'help-command)
 (setq help-char ?\C-z)
 (define-key global-map (kbd "C-h") (kbd "DEL"))
 (define-key global-map (kbd "M-h") (kbd "M-DEL"))
@@ -463,6 +463,22 @@ init.el. The code snippet changes faces for TODO entries.")))
    ("C-x C-f" . helm-find-files)
    ("C-x b" . helm-buffers-list)
    ("C-x C-b" . helm-buffers-list)))
+
+;; The line below conflicts with helm-map. When helm-map is created it throws
+;; an error. The reason are these lines in helm.el inside
+;; (defvar helm-map ...):
+;;; (cl-dolist (k (where-is-internal 'describe-mode global-map))
+;;;   (define-key map k 'helm-help))
+;;
+;; It tries to bind C-z m to the map but it conflicts with previous binding.
+;; The solution is to put (define-key ...) inside (ignore-errors ...). I don't
+;; care if helm can't create some bindings, especially for describe-mode lol.
+;; Non-invasive solution is to eval this line after helm was loaded.
+;; WARNING: byte-compile helm.el after the change
+;; NOTE: if helm-map is loaded before this line, it works fine and since
+;;       helm functions is almost always my first used command, requiring it
+;;       costs pretty much nothing
+(define-key global-map (kbd "C-z") 'help-command)
 
 (use-package flycheck
   :config
