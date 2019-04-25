@@ -233,37 +233,63 @@ Uses `my-erc-server-info' to get the information about server settings.")
        (car (erc-buffer-list))))))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-ctcp-notice)
 
-;; Hide join, quit and part messages of users that haven't spoken in the
+;; Hide join, quit, part and nick messages of users that haven't spoken in the
 ;; current session
-;; TODO: Create a hash table for every channel. (For now there's one, global)
-;; TODO: When a user from the list changes the nick it should be added to
-;;       the list
-;; TODO: A value for the user in the hash table should be the time of his most
-;;       recent message. A variable would define how much time has to pass
-;;       before the user's join/part/quit messages are ignored
+;; TODO: Create a hash table for every server. (For now there's one, global)
+;;       Maybe buffer-local for every server buffer?
 
 ;; 1. Create a hash-table of users that have spoken in the current session
+;; It's local for every channel.
+;; TODO: setq this variable when opening a new channel
 (defvar my-erc-relevant-users (make-hash-table :test #'equal)
-  "List of ERC users that have spoken in the current session. JOIN, PART and
-QUIT messages about them will be shown in the channel buffer. Messages about
-other users will be ignored.")
+  "List of ERC users that have spoken in the current session.
+JOIN, PART, QUIT and NICK messages about them will be shown in the
+channel buffer.
+Messages about other users will be ignored.")
+(make-variable-buffer-local 'my-erc-relevant-users)
+
+(defvar my-erc-relevance-timeout 3600
+  "Time in seconds since user's last activity after which he becomes
+irrelevant. JOIN, PART, QUIT and NICK messages related to him will not be
+shown.")
 
 ;; 2. Add a hook to user messages (whatever it is) to populate this table
 (defun my-erc-add-relevant-user (message)
   (save-match-data
-    (when (string-match (rx (seq
-			     line-start
-			     "<"
-			     (group (one-or-more (not (any blank ?\>))))
-			     ">"))
-			message)
+    (cond
+     ;; user messages (<nick> message text)
+     ;; this will update user's last activity time
+     ((string-match (rx (seq
+			 line-start
+			 "<"
+			 (group (one-or-more (not (any blank ?\>))))
+			 ">"))
+		    message)
       (puthash (match-string-no-properties 1 message)
-	       t
-	       my-erc-relevant-users))))
+	       (current-time)
+	       my-erc-relevant-users))
+     ;; nick change (*** nick (...) is now known as new_nick)
+     ;; this will copy old nick's last activity data to the new one
+     ((string-match (rx (seq
+			 line-start
+			 "*** "
+			 (group (+ (not whitespace)))
+			 (* not-newline)
+			 "is now known as "
+			 (group (+ (not whitespace)))
+			 line-end))
+		    message)
+      (let ((last-activity
+	     (gethash (match-string-no-properties 1 message)
+		      my-erc-relevant-users)))
+	(when last-activity
+	  (puthash (match-string-no-properties 2 message)
+		   last-activity
+		   my-erc-relevant-users)))))))
 (add-hook 'erc-insert-pre-hook #'my-erc-add-relevant-user)
 
-;; 3. Capture join, part and quit messages and show only those related to
-;;    relevant users from the hash table
+;; 3. Capture join, part, quit and nick messages and show only those related
+;;    to relevant users from the hash table
 (defun my-erc-filter-irrelevant-messages (message)
   (save-match-data
     (when (string-match
@@ -272,11 +298,16 @@ other users will be ignored.")
 		"*** "
 		(group (+ (not whitespace)))
 		(* not-newline)
-		(or "has joined channel" "has left channel" "has quit")))
+		(or "has joined channel" "has left channel" "has quit"
+		    "is now known as")))
 	   message)
-      (unless (gethash (match-string-no-properties 1 message)
-		       my-erc-relevant-users)
-	(setq erc-insert-this nil)))))
+      (let ((last-activity (gethash (match-string-no-properties 1 message)
+				    my-erc-relevant-users)))
+	(unless (and last-activity
+		     (< (time-to-seconds
+			 (time-subtract (current-time) last-activity))
+			my-erc-relevance-timeout))
+	   (setq erc-insert-this nil))))))
 (add-hook 'erc-insert-pre-hook #'my-erc-filter-irrelevant-messages)
 
 ;; =============================================
