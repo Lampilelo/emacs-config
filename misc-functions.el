@@ -155,3 +155,53 @@ PROC must be a process."
 ;; int foo = 5;
 ;; std::string foo = "blabla";
 ;; std::string foo("blabla");
+;; This is an elisp version of dmenu's fuzzy sort
+;; TODO: put it somehow into flx; OR make it self-sufficient and fast with
+;;       caches and pre-processing
+(defun my-sort (text cands)
+  "Fuzzy sort.
+
+The algorithm is dmenu's fuzzy sort."
+  ;; iterate over candidates
+  (condition-case nil
+      (mapcar
+       'car ; return only the resulting list without the sorting info
+       (sort
+	(cl-do* ((matches (list))
+		 (text-len (length text))
+		 (candidates cands (cdr candidates))
+		 (candidate (car candidates) (car candidates))
+		 (candidate-len (length candidate) (length candidate))
+		 (start-idx -1 -1)
+		 (end-idx -1 -1))
+	    ((null candidates) matches)
+	  (if (> text-len 0)
+	      (progn
+		;; iterate over chars in candidate
+		(cl-do* ((cand-idx 0 (1+ cand-idx))
+			 (text-idx 0)
+			 (c nil))
+		    ((or (= cand-idx candidate-len)
+			 (= text-idx text-len)))
+		  (setq c (elt candidate cand-idx))
+		  (when (char-equal c (elt text text-idx))
+		    (when (= start-idx -1)
+		      (setq start-idx cand-idx))
+		    (setq text-idx (1+ text-idx))
+		    (when (= text-idx text-len)
+		      (setq end-idx cand-idx))))
+		;; build list of matches
+		(unless (= end-idx -1)
+		  ;; compute distance
+		  ;; add penalty if match starts late
+		  ;; add penalty for a long match without many matching
+		  ;;     characters
+		  (push (cons candidate
+			      (+ (log (+ start-idx 2))
+				 (- end-idx start-idx text-len)))
+			matches)))
+	    (push (cons candidate 0) matches)))
+	;; sorting lambda
+	(lambda (match1 match2)
+	  (<= (cdr match1) (cdr match2)))))
+    (error cands)))
