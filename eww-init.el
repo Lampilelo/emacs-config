@@ -19,8 +19,7 @@
   (interactive)
   (helm
    :prompt "Search: "
-   :sources `((
-	       (name . "Search Engines")
+   :sources `(((name . "Search Engines")
 	       (candidates . ,my-search-engines-list)
 	       (action . (lambda (r)
 			   (eww (concat r (read-string r)))))))))
