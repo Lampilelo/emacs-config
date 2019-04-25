@@ -318,7 +318,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))
      ,@body
-     (message "%.06f" (float-time (time-since time)))))
+     (format "%.06f" (float-time (time-since time)))))
 
 ;; MOTD
 (defun my-create-motd-buffer ()
