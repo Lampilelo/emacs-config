@@ -985,22 +985,9 @@ Used second time kills the delimiter and everything up to the next delimiter."
 (use-package elfeed
   :defer t
   :config
-  (defun my-elfeed-open-yt-video ()
-    (interactive)
-    "Opens a youtube video in the current entry using MPV."
-    (let ((entries (elfeed-search-selected)))
-      (cl-loop for entry in entries
-	       do (elfeed-untag entry 'unread)
-	       when (elfeed-entry-link entry)
-	       do (message (shell-command-to-string
-			    (concat "i3-msg exec mpv \"" it "\""))))
-      (mapc #'elfeed-search-update-entry entries)
-      (unless (use-region-p) (forward-line))))
-  (defun my-elfeed-open-link () (interactive) (my-elfeed-open-yt-video))
-  (define-key elfeed-search-mode-map (kbd "v") #'my-elfeed-open-link)
-
-  (load "~/.emacs.d/elfeed-settings.el" t) ;overrites my-elfeed-open-link
-  (elfeed-search-fetch nil))
+  (with-eval-after-load 'elfeed
+    (load "~/.emacs.d/elfeed-settings.el" t)
+    (elfeed-search-fetch nil)))
 
 ;; lyrics
 (use-package lyrics
