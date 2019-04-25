@@ -1129,5 +1129,15 @@ Return nil if not succeeded."
   :init
   (add-to-list 'auto-mode-alist (cons "\\.epub\\'" 'nov-mode)))
 ;; end of nov.el
+
+;; haskell
+(use-package haskell-mode
+  :init
+  (setq haskell-compile-command
+	"ghc -Wall -ferror-spans -fforce-recomp -dynamic %s")
+  :bind (:map haskell-mode-map
+	      ("C-c C-c" . haskell-compile)))
+;; end of haskell
+
 (provide 'init)
 ;;; init.el ends here
