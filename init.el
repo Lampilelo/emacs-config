@@ -413,7 +413,8 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 init.el. The code snippet changes faces for TODO entries.")))
   (load-theme 'wombat t))
 
-(use-package auto-complete)
+;; TODO: is this a dependency of something?
+;; (use-package auto-complete)
 
 ;; IVY
 (use-package flx)  ;better matching for Ivy
