@@ -1,5 +1,7 @@
 ;;; erc-init.el --- Initialization file for erc -*- lexical-binding: t; -*-
 
+(require 'subr-x)
+
 ;; ident
 (setq
  ;; erc-nick "Oxon"
@@ -104,7 +106,7 @@ Example:
 				     (error (format
     "Couldn't retrieve %s profile password from `my-erc-password-store-names'"
 					     (car server-info))))))
-			  (s-chomp (buffer-string))
+			  (string-trim-right (buffer-string))
 			(error (format "No password for %s"
 				       (car server-info))))))))
 	       erc-nickserv-passwords))
