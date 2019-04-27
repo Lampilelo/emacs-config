@@ -3,8 +3,7 @@
 
 (package-initialize)
 (setq package-archives
-      '(
-	;; ("melpa-stable" . "https://stable.melpa.org/packages/")
+      '(;("melpa-stable" . "https://stable.melpa.org/packages/")
 	("melpa" . "https://melpa.org/packages/")
 	("gnu" . "https://elpa.gnu.org/packages/")
 	("org" . "https://orgmode.org/elpa/")))
@@ -543,6 +542,14 @@ We need to exit that mode to call company-yasnippet."
 
 ;; eglot uses flymake that doesn't show errors in the minibuffer, so:
 (add-to-list 'load-path "~/.emacs.d/emacs-flymake-cursor")
+;; (custom-set-variables
+;;  '(help-at-pt-timer-delay 0.1)
+;;  '(help-at-pt-display-when-idle '(flymake-diagnostic)))
+;; OR (this is a workaround for some bug that above stumbles into
+;; (advice-add 'eglot-eldoc-function :around
+;;             (lambda (oldfun)
+;;               (let ((help (help-at-pt-kbd-string)))
+;;                 (if help (message "%s" help) (funcall oldfun)))))
 ;; (add-hook 'flymake-mode-hook #'flymake-cursor)
 
 ;; DOXYMACS
@@ -769,7 +776,8 @@ is added."
 ;; const int bla::foo = 5;
 ;; std::string id_;
 
-(add-to-list 'load-path "~/.emacs.d/in-progress/cpp-scratchpad/")
+(add-to-list 'load-path (substitute-env-in-file-name
+			 "$HOME/.emacs.d/in-progress/cpp-scratchpad/"))
 
 (use-package meson-mode
   :config
