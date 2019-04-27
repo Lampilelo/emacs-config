@@ -5,6 +5,8 @@
 ;; Existing search engines can be redefined by calling `define-search-engine'
 ;; using the same engine name.
 
+(require 'dom)
+
 (defvar web-search-engines nil
   "Search engines list.
 
