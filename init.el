@@ -332,8 +332,7 @@ With a prefix argument which does not equal a boolean value of nil, remove the u
   "Like find file, but open the file as root.
 FILE-NAME is path to the file."
   (interactive "FSudo Find File: ")
-  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
-    (find-file tramp-file-name)))
+  (find-file (concat "/sudo::" (expand-file-name file-name))))
 
 ;; TERM
 (defun my-term-command (command &optional term-name pop-buffer)
