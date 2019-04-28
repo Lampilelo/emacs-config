@@ -24,6 +24,14 @@
     (insert-file-contents fPath)
     (do-stuff)))
 
+(defun nmapcar (proc lst)
+  "Like mapcar but destructive (modifies the list in-place)."
+  (let ((tail lst))
+    (while tail
+      (setcar tail (funcall proc (car tail)))
+      (setq tail (cdr tail))))
+  lst)
+
 ;; IN-PROGRESS
 
 (defun my/c++--find-project-name ()
