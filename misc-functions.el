@@ -2,31 +2,6 @@
 ;; THIS FILE SHOULD NOT BE EVALUATED
 ;; It stores non-used functions as examples and reference
 
-(defun my-tablify ()
-    (interactive)
-  (goto-char (region-end))
-  (let* ((end-marker (copy-marker (point-marker))))
-    (goto-char (region-beginning))
-    (goto-char (line-beginning-position))
-    (insert "|")
-    (forward-word)
-    (insert "|")
-    (org-delete-char 1)
-    (goto-char (line-end-position))
-    (insert "|")
-    (forward-line)
-    (insert"|-+-|")
-    (newline)
-
-    (dotimes (counter (count-lines (point-marker) end-marker))
-      (insert (format "|%d|" (+ counter 1)))
-      (goto-char (line-end-position))
-      (insert "|")
-      (forward-line))
-    (org-table-align)
-))
-
-
 (defun M-x-other-window ()
       "Call M-x in the other window."
       (interactive)
