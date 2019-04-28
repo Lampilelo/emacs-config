@@ -237,6 +237,11 @@ Uses `my-erc-server-info' to get the information about server settings.")
        (car (erc-buffer-list))))))
 (add-hook 'erc-server-PRIVMSG-functions 'erc-ctcp-notice)
 
+;; FIXME: all of this can be done by
+;;        (setq erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
+;;        (setq erc-lurker-threshold-time 3600)
+;;        Check if nick change recognition is as good as in my version, if not
+;;        maybe make a pull request?
 ;; Hide join, quit, part and nick messages of users that haven't spoken in the
 ;; current session
 ;; TODO: Create a hash table for every server. (For now there's one, global)
