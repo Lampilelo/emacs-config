@@ -200,10 +200,11 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 	      ;; Some modes are called differently in info, so we need
 	      ;; to rename them before evaluating
 	      (concat "helm-info-"
-		      (cond ((equal current-mode "c++") "cpp")
-			    ((equal current-mode "emacs-lisp") "elisp")
-			    ((equal current-mode "lisp-interaction") "elisp")
-			    (t current-mode)))))))
+		      (pcase current-mode
+			("c++" "cpp")
+			("emacs-lisp" "elisp")
+			("lisp-interaction" "elisp")
+			(t current-mode)))))))
       ;; check if helm-info-CURRENT_MODE exists, if so - call it
       ;; otherwise call generic helm-info
       (if (not (eq (fboundp fun-to-call) nil))
@@ -847,20 +848,20 @@ is added."
   (forward-char))
 (global-set-key (kbd "C-(") #'my-wrap-round)
 
-(with-eval-after-load 'cc-mode
-  (use-package smartparens)
-  (defun my-kill-hybrid-sexp ()
-    "Kill a line respecting delimiters.
-Used second time kills the delimiter and everything up to the next delimiter."
-    (interactive)
-    (if (member (char-to-string (char-after))
-		(cl-loop for (left . right) in sp-pair-list
-			 collect right))
-	(progn (delete-char 1)
-	       (unless (looking-at "\n")
-		 (sp-kill-hybrid-sexp (point))))
-      (sp-kill-hybrid-sexp (point))))
-  (define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp))
+;; (with-eval-after-load 'cc-mode
+;;   (use-package smartparens)
+;;   (defun my-kill-hybrid-sexp ()
+;;     "Kill a line respecting delimiters.
+;; Used second time kills the delimiter and everything up to the next delimiter."
+;;     (interactive)
+;;     (if (member (char-to-string (char-after))
+;; 		(cl-loop for (left . right) in sp-pair-list
+;; 			 collect right))
+;; 	(progn (delete-char 1)
+;; 	       (unless (looking-at "\n")
+;; 		 (sp-kill-hybrid-sexp (point))))
+;;       (sp-kill-hybrid-sexp (point))))
+;;   (define-key c-mode-base-map (kbd "C-k") #'my-kill-hybrid-sexp))
 
 (use-package magit
   :init
