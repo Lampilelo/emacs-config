@@ -316,7 +316,7 @@ shown.")
 		     (< (time-to-seconds
 			 (time-subtract (current-time) last-activity))
 			my-erc-relevance-timeout))
-	   (setq erc-insert-this nil))))))
-(add-hook 'erc-insert-pre-hook #'my-erc-filter-irrelevant-messages)
+	  (setq erc-insert-this nil))))))
+(add-hook 'erc-insert-pre-hook #'my-erc-filter-irrelevant-messages t)
 
 ;; =============================================
