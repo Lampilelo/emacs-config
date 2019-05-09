@@ -18,12 +18,6 @@
 		      until (not (eq var nil))
 		      finally return var)))
 
-
-(defun open-file-temporary ()
-  (with-temp-buffer
-    (insert-file-contents fPath)
-    (do-stuff)))
-
 (defun nmapcar (proc lst)
   "Like mapcar but destructive (modifies the list in-place)."
   (let ((tail lst))
@@ -31,6 +25,16 @@
       (setcar tail (funcall proc (car tail)))
       (setq tail (cdr tail))))
   lst)
+
+(defun my-pairs (lst)
+  "Split list LST into pairs."
+  (cl-check-type lst list)
+  (let ((result))
+    (while lst
+      (when (cadr lst)
+	  (setq result (cons (cons (car lst) (cadr lst)) result)))
+      (setq lst (cddr lst)))
+    result))
 
 ;; IN-PROGRESS
 
