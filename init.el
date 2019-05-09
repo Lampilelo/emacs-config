@@ -670,41 +670,18 @@ Please initialize version control or build-system project.")))))
 
   ;; End of C++ compile functions
 
-  (defvar cppreference-path "/usr/share/doc/cppreference/en"
-    "Path to cppreference (HTML book).")
-  (if (file-exists-p cppreference-path)
-      (progn
-	;; (require 'helm-find)
-	(defun my-cpp-doc-at-point ()
-	  "Find documentation for a C++ symbol at point."
-	  (interactive)
-	  (autoload 'helm-find-shell-command-fn "helm-find")
-	  (let ((default-directory cppreference-path))
-	    (helm :sources
-		  `((name . "Find")
-		    (action . (lambda (candidate)
-				(eww (concat "file:" candidate))))
-		    (persistent-action
-		     . helm-ff-kill-or-find-buffer-fname)
-		    (requires-pattern . 3)
-		    (filtered-candidate-transformer
-		     helm-findutils-transformer
-		     helm-fuzzy-highlight-matches)
-		    (action-transformer . helm-transform-file-load-el)
-		    (candidate-number-limit . 9999)
-		    (redisplay . identity)
-		    (group . helm)
-		    (candidates-process . helm-find-shell-command-fn))
-		  :buffer "*cppreference*"
-		  :prompt "Symbol: "
-		  :ff-transformer-show-only-basename nil
-		  :input (find-tag-default))))
+  (setq cpp-reference-index-path
+	"~/cppreference-doc-20180311/")
+  (setq cpp-reference-wiki-path
+	"~/cppreference-doc-20180311/reference/en.cppreference.com/w/")
+  ;; (setq cpp-reference-wiki-path
+  ;; 	"/usr/share/doc/cppreference/en/")
 
-	(eval-after-load 'cc-mode
-	  '(define-key c++-mode-map (kbd "C-c d") #'my-cpp-doc-at-point)))
+  (if (file-exists-p cpp-reference-wiki-path)
+      (define-key c++-mode-map (kbd "C-c d") #'cpp-reference)
     (display-warning "cppreference"
-		     (concat "cppreference not found in " cppreference-path))
-    (setq cppreference-path nil))
+  		     (concat "cppreference not found in "
+			     cpp-reference-wiki-path)))
 
   (defun my-grep-references ()
     "Find references of a symbol at point with grep."
@@ -783,6 +760,10 @@ is added."
 
 (add-to-list 'load-path (substitute-env-in-file-name
 			 "$HOME/.emacs.d/in-progress/cpp-scratchpad/"))
+(autoload 'cpp-scratchpad-new
+  (substitute-env-in-file-name
+   "$HOME/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el")
+  nil t)
 
 (use-package meson-mode
   :config
