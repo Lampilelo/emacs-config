@@ -59,6 +59,12 @@
 (setq scroll-conservatively 101)
 (setq sentence-end-double-space nil)
 (setq bookmark-save-flag 1) ;; always save the bookmark list
+
+(defun my-set-scratch-lexical ()
+  (with-current-buffer "*scratch*"
+    (setq-local lexical-binding t)))
+(add-hook 'emacs-startup-hook #'my-set-scratch-lexical)
+
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
