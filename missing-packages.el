@@ -99,6 +99,7 @@ If not, print warnings"
   (declare (indent 3))
   (let ((missing (my-missing-host-packages packages libs)))
     (if missing
-	(display-warning warn-type
-			 (format "Missing host packages: %s" missing))
+	`(display-warning ,warn-type
+			  (format "Missing host packages: %s"
+				  (quote ,missing)))
       `(progn ,@body))))
