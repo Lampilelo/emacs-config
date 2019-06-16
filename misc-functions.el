@@ -38,22 +38,6 @@
 
 ;; IN-PROGRESS
 
-(defun my/c++--find-project-name ()
-  (let* ((project-root (my/c++--find-project-root))
-	 (search-props (cond ((file-exists-p
-			       (concat project-root "meson.build"))
-			      '("meson.build" . "'"))
-			     ((file-exists-p
-			       (concat project-root "CMakeLists.txt"))
-			      '("CMakeLists.txt" . "\"")))))
-    (unless (eq search-props nil)
-      (with-temp-buffer
-       (insert-file-contents (concat project-root (car search-props)))
-       (search-forward (concat "project(" (cdr search-props)))
-       (let ((start (point)))
-    	 (search-forward (cdr search-props))
-    	 (buffer-substring start (1- (point))))))))
-
 (defun my/c++-new-class (class-name)
   (interactive (let ((class-name (read-string "Class name: ")))
 		 (list class-name)))

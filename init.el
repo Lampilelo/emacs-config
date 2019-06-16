@@ -531,6 +531,8 @@ We need to exit that mode to call company-yasnippet."
   ("C-'" . #'my-company-yasnippet))
 (use-package yasnippet-snippets)
 
+(autoload #'my/c++-create-include-guard "~/.emacs.d/cpp-utils.el" nil t)
+
 (with-check-for-missing-packages ("ccls") "ccls" nil
   (use-package ccls
     :init
