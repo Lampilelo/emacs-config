@@ -5,7 +5,6 @@
 ;; TODO: Create a mode for viewing the documentation
 
 (require 'dom)
-(require 'subr)
 (require 'xref)
 
 (defcustom cpp-reference-index-path nil
@@ -204,16 +203,22 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
 (defun cpp-reference ()
   "Show the documentation of a thing at point."
   (interactive)
-  (eww (concat "file://"
-	       (cpp-reference--get-realpath
-		(cdr (gethash
-		      (completing-read "Symbol: "
+  (let ((symbol (completing-read "Symbol: "
 				       cpp-reference-database
 				       nil t
 				       (xref-backend-identifier-at-point
 					(xref-find-backend))
-				       'cpp-reference--read-history)
-		      cpp-reference-database))))))
+				       'cpp-reference--read-history)))
+    (with-temp-buffer
+      (let ((buffer (get-buffer "*cpp-reference*")))
+	(and buffer (kill-buffer buffer)))
+      (pop-to-buffer (current-buffer))
+      (eww (concat "file://"
+		   (cpp-reference--get-realpath
+		    (cdr (gethash
+			  symbol
+			  cpp-reference-database)))))
+      (rename-buffer "*cpp-reference*"))))
 
 (provide 'cpp-reference)
 
