@@ -38,10 +38,9 @@
 
 
 ;; USE-PACKAGE
-(if (not (package-installed-p 'use-package))
-    (progn
-      (package-refresh-contents)
-      (package-install 'use-package)))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 (setq use-package-always-ensure t
       use-package-always-defer t)
 
@@ -49,7 +48,8 @@
   :defer nil
   :ensure t
   :config
-  (diminish 'eldoc-mode))
+  (diminish 'eldoc-mode)
+  (diminish 'abbrev-mode))
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -119,7 +119,11 @@
 ;; org mode customizations
 (use-package org
   :ensure org-plus-contrib
-  :pin org)
+  :pin org
+  :config
+  (org-babel-do-load-languages 'org-babel-load-languages
+			       (list (cons 'emacs-lisp t)
+				     (cons 'shell t))))
 (setq org-edit-src-content-indentation 2)
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
@@ -269,16 +273,18 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 ;;       c-basic-offset 4)
 
 ;; GDB
-(setq gdb-many-windows t
+(setq gdb-many-windows nil
       ;; Display source file containing the main routine at startup
       gdb-show-main t)
 
 ;; Custom global keybindings
 (global-set-key (kbd "M-o") #'other-window)
 (global-set-key (kbd "M-i") #'imenu)
-(global-set-key (kbd "C-x k") #'kill-this-buffer)
+(global-set-key (kbd "C-x k") #'(lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-c i") #'iedit-mode)
 
+;; TODO: make it the global minor mode instead of rebinding help
+;;       default help bindings are required for some packages
 ;; (define-key global-map (kbd "C-z") 'help-command)
 (setq help-char ?\C-z)
 (define-key global-map (kbd "C-h") (kbd "DEL"))
@@ -544,18 +550,24 @@ We need to exit that mode to call company-yasnippet."
 
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
-  (setq company-clang-modes nil))
+  (setq company-clang-modes nil)
+  :bind (:map c++-mode-map
+	      ("C-c C-r" . #'eglot-rename)))
+
+(use-package eldoc-box
+  :after eglot
+  :hook (eldoc-box-hover-mode . eglot--managed-mode))
 
 ;; eglot uses flymake that doesn't show errors in the minibuffer, so:
-(add-to-list 'load-path "~/.emacs.d/emacs-flymake-cursor")
+;; (add-to-list 'load-path "~/.emacs.d/emacs-flymake-cursor")
 ;; (custom-set-variables
 ;;  '(help-at-pt-timer-delay 0.1)
 ;;  '(help-at-pt-display-when-idle '(flymake-diagnostic)))
 ;; OR (this is a workaround for some bug that above stumbles into
-;; (advice-add 'eglot-eldoc-function :around
-;;             (lambda (oldfun)
-;;               (let ((help (help-at-pt-kbd-string)))
-;;                 (if help (message "%s" help) (funcall oldfun)))))
+(advice-add 'eglot-eldoc-function :around
+            (lambda (oldfun)
+              (let ((help (help-at-pt-kbd-string)))
+                (if help (message "%s" help) (funcall oldfun)))))
 ;; (add-hook 'flymake-mode-hook #'flymake-cursor)
 
 ;; DOXYMACS
@@ -573,6 +585,11 @@ We need to exit that mode to call company-yasnippet."
 		       #'eww)
 		     (concat "file://" (expand-file-name url))))))
   (with-eval-after-load 'cc-mode (require 'doxymacs)))
+
+;; TODO: Configure cedit's map (cedit.el has a good documentation inside)
+;; (use-package cedit
+;;   :bind (:map c-mode-base-map
+;; 	      ()))
 
 ;; I don't use it so it's disabled for now
 ;; (use-package rmsbolt)
@@ -679,7 +696,9 @@ Please initialize version control or build-system project.")))))
   ;; 	"/usr/share/doc/cppreference/en/")
 
   (if (file-exists-p cpp-reference-wiki-path)
-      (define-key c++-mode-map (kbd "C-c d") #'cpp-reference)
+      (progn
+	(autoload #'cpp-reference "~/.emacs.d/cpp-reference-mode.el" nil t)
+	(define-key c++-mode-map (kbd "C-c d") #'cpp-reference))
     (display-warning "cppreference"
   		     (concat "cppreference not found in "
 			     cpp-reference-wiki-path)))
@@ -1156,6 +1175,20 @@ Return nil if not succeeded."
   :bind (:map haskell-mode-map
 	      ("C-c C-c" . haskell-compile)))
 ;; end of haskell
+
+;; emms
+(use-package emms
+  :init
+  (setq emms-source-file-default-directory "~/Music/")
+  :config
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players)
+  (require 'emms-history)
+  (emms-history-load)
+  ;; (load "~/.emacs.d/emms-init.el")
+  )
+;; end of emms
 
 (provide 'init)
 ;;; init.el ends here
