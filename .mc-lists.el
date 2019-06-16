@@ -47,9 +47,12 @@
 	org-set-tags-command
 	org-shiftmetaright
 	paredit-backslash
+	paredit-doublequote
 	paredit-forward
 	paredit-forward-delete
 	paredit-forward-kill-word
+	paredit-open-round
+	paredit-wrap-round
 	sh-assignment
 	sp-delete-char
 	sp-kill-word
