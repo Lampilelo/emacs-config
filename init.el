@@ -116,6 +116,9 @@
 ;; Load functions for checking missing host packages
 (load "~/.emacs.d/missing-packages.el")
 
+(when (with-check-for-missing-packages ("gnutls-cli") "gnutls" nil)
+  (error "gnutls not installed"))
+
 ;; org mode customizations
 (use-package org
   :ensure org-plus-contrib
