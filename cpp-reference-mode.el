@@ -192,17 +192,25 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
 
 ;; TODO: Save the timestamp of index files and check against it if files
 ;;       changed, rebuild the database if so.
-(when (and cpp-reference-database
-	   (= 0 (hash-table-count cpp-reference-database))
-	   (file-exists-p cpp-reference-index-path))
-  (message "[cpp-reference] Building the database...")
-  (cpp-reference--build-database)
-  (message "[cpp-reference] Database built successfully."))
+(defun cpp-reference--initialize-database ()
+  (when (null cpp-reference-index-path)
+    (user-error "[cpp-reference] cpp-reference-index-path is not set"))
+  (when (and cpp-reference-database
+	     (= 0 (hash-table-count cpp-reference-database))
+	     (file-exists-p cpp-reference-index-path))
+    (message "[cpp-reference] Building the database...")
+    (cpp-reference--build-database)
+    (message "[cpp-reference] Database built successfully.")))
 
 ;;;###autoload
 (defun cpp-reference ()
   "Show the documentation of a thing at point."
   (interactive)
+  (cond
+   ((hash-table-empty-p cpp-reference-database)
+    (cpp-reference--initialize-database))
+   ((null cpp-reference-wiki-path)
+    (user-error "[cpp-reference] cpp-reference-wiki-path is not set")))
   (let ((symbol (completing-read "Symbol: "
 				       cpp-reference-database
 				       nil t
