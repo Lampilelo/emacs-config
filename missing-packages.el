@@ -32,14 +32,25 @@
 ;; 							      (point-at-eol)))
 ;; 	  'exe))))))
 
+;; (defvar python-site-path
+;;   (format "/usr/lib/%ssite-packages/"
+;; 	  (file-name-completion
+;; 	   (file-name-base (file-symlink-p "/usr/bin/python"))
+;; 	   "/usr/lib/")))
 (defvar python-site-path
-  (format "/usr/lib/%ssite-packages/"
-	  (file-name-completion
-	   (file-name-base (file-symlink-p "/usr/bin/python"))
-	   "/usr/lib/")))
+  (concat (string-trim-right
+    (shell-command-to-string
+     (combine-and-quote-strings '("python"
+				  "-c"
+				  "import sys
+site_packages = next(p for p in sys.path if 'site-packages' in p)
+print(site_packages)")))))
+  "Python's site module directory.")
+
 
 (defun my-find-python-package (name)
-  (let ((package-path (concat python-site-path name)))
+  (let ((package-path (concat (file-name-as-directory python-site-path)
+			      name)))
     (cond ((file-exists-p package-path)
 	   package-path)
 	  ((file-exists-p (concat package-path ".py"))
