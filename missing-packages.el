@@ -37,6 +37,9 @@
 ;; 	  (file-name-completion
 ;; 	   (file-name-base (file-symlink-p "/usr/bin/python"))
 ;; 	   "/usr/lib/")))
+
+(require 'subr-x)
+
 (defvar python-site-path
   (concat (string-trim-right
     (shell-command-to-string
@@ -106,7 +109,9 @@ Note: Searching for libraries is very slow (more than 1000 times slower)."
 (defmacro with-check-for-missing-packages (packages warn-type libs
 						    &rest body)
   "Check if all PACKAGES from the list are present on the host system.
-If not, print warnings"
+
+Print a warning if any of them is not present. Otherwise eval the BODY.
+If LIBS is not nil, check also for libraries (requires `pkg-config')."
   (declare (indent 3))
   (let ((missing (my-missing-host-packages packages libs)))
     (if missing
