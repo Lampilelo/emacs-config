@@ -229,18 +229,3 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
       (rename-buffer "*cpp-reference*"))))
 
 (provide 'cpp-reference)
-
-;; TODO: Remove the section underneath
-
-;; (with-current-buffer (get-buffer-create "cpp-ref")
-;;   (erase-buffer)
-;;   (maphash (lambda (key value)
-;; 	     (insert key " " (format "%s" value) "\n"))
-;; 	   cpp-reference-database)
-;;   (pop-to-buffer (current-buffer)))
-
-;; (pp-eval-expression
-;;  '(with-temp-buffer
-;;     (insert-file-contents (concat cpp-reference-index-path
-;; 				  "index-functions-cpp.xml"))
-;;     (libxml-parse-xml-region (point-min) (point-max) nil t)))
