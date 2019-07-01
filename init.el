@@ -790,6 +790,11 @@ is added."
   (substitute-env-in-file-name
    "$HOME/.emacs.d/in-progress/cpp-scratchpad/cpp-scratchpad.el")
   nil t)
+(defun my-kill-current-eglot-server ()
+  (ignore-errors (eglot-shutdown (eglot--current-server))))
+(add-hook 'cpp-scratchpad-before-kill-hook #'my-kill-current-eglot-server)
+(setq cpp-scratchpad-before-kill-hook nil)
+
 
 (use-package meson-mode
   :config
