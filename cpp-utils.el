@@ -34,3 +34,25 @@
     (insert "#define " guard-macro "\n\n")
     (save-excursion
       (insert "\n\n#endif  // " guard-macro))))
+
+(require 'ivy)
+(setq my-man-asio-directory
+      "/ssd-data/lampilelo/Programming/asio/include/boost/asio/doxygen/man")
+;;;###autoload
+(defun my-man-asio ()
+  (interactive)
+  (let ((Man-switches (format "-M '%s'" my-man-asio-directory)))
+    (man (ivy-read
+	  "Man: "
+	  (let ((completion-regexp-list '("\\`[^\\.]")))
+	    (mapcar
+	     (lambda (filename)
+	       (replace-regexp-in-string ".3\\'" "" filename))
+	     (file-name-all-completions "" (concat (file-name-as-directory
+						    my-man-asio-directory)
+						   "man3"))))
+	  :require-match t
+	  :preselect (ivy-thing-at-point)
+	  :sort t))))
+
+(provide 'cpp-utils)
