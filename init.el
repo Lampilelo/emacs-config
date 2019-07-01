@@ -1033,7 +1033,8 @@ is added."
   :defer t
   :config
   (with-eval-after-load 'elfeed
-    (load "~/.emacs.d/elfeed-settings.el" t)
+    (load "~/.emacs.d/elfeed-init.el" t)
+    (load "~/.emacs.d/elfeed-feeds.el" t)
     (elfeed-search-fetch nil)))
 
 ;; lyrics
