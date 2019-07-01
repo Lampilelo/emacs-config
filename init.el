@@ -686,7 +686,8 @@ or nil if not found."
 	      (dolist (element my/c++-build-systems-alist)
 		(when (file-exists-p (concat project-root (car element)))
 		  (funcall (cdr element) project-root)))
-	      (lsp-cquery-enable))
+	      (when (functionp 'lsp-cquery-enable)
+		(lsp-cquery-enable)))
 	  ;; else (when project root directory was not found)
 	  (message "Project's root directory not found. \
 Please initialize version control or build-system project.")))))
@@ -1082,7 +1083,7 @@ is added."
 ;; ftp://download.tuxfamily.org/user42/info-lookmore.el
 (let ((file "~/.emacs.d/info-lookmore.el"))
   (when (file-exists-p file)
-    (load "~/.emacs.d/info-lookmore.el")
+    (load file)
     ;; Add Scheme manual to lookmore
     ;; (info-lookmore-add-doc
     ;;  'symbol 'scheme-mode
