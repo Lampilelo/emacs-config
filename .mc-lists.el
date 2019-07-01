@@ -47,6 +47,7 @@
 	org-set-tags-command
 	org-shiftmetaright
 	paredit-backslash
+	paredit-backward
 	paredit-doublequote
 	paredit-forward
 	paredit-forward-delete
