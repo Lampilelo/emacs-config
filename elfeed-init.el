@@ -103,16 +103,17 @@ CATEGORY is a symbol."
 (defun my-elfeed-enable-category (category)
   "Enable feeds from the certain CATEGORY in `my-elfeed-feeds'."
   (dolist (feed (alist-get category my-elfeed-feeds))
-    (cl-pushnew (cdr feed) elfeed-feeds :test 'string-equal)))
+    (cl-pushnew (list (cdr feed) category) elfeed-feeds :test 'equal)))
 (defun my-elfeed-enable-categories (&rest categories)
   "Enable feeds from the certain CATEGORIES in `my-elfeed-feeds'."
   (dolist (category categories)
     (my-elfeed-enable-category category)))
 
+;; FIXME: it expects feeds to have only one category
 (defun my-elfeed-disable-category (category)
   "Disable feeds from the certain CATEGORY in `my-elfeed-feeds'."
   (dolist (feed (alist-get category my-elfeed-feeds))
-    (setq elfeed-feeds (delete (cdr feed) elfeed-feeds))))
+    (setq elfeed-feeds (delete (list (cdr feed) category) elfeed-feeds))))
 (defun my-elfeed-disable-categories (&rest categories)
   "Disable feeds from the certain CATEGORIES in `my-elfeed-feeds'."
   (dolist (category categories)
@@ -123,4 +124,5 @@ CATEGORY is a symbol."
   (dolist (category my-elfeed-feeds)
     (dolist (feed (cdr category))
       (when (member (car feed) names)
-	(setq elfeed-feeds (delete (cdr feed) elfeed-feeds))))))
+	(setq elfeed-feeds (delete (list (cdr feed) (car category))
+				   elfeed-feeds))))))
