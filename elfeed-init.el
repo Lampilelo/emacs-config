@@ -126,3 +126,26 @@ CATEGORY is a symbol."
       (when (member (car feed) names)
 	(setq elfeed-feeds (delete (list (cdr feed) (car category))
 				   elfeed-feeds))))))
+
+(defun my-elfeed-get-feed-name (url)
+  "Return the name of a feed in `my-elfeed-feeds' that matches the URL."
+  (catch 'return
+    (seq-do (lambda (category)
+	      (seq-do (lambda (feed)
+			(when (string-equal (cdr feed) url)
+			  (throw 'return (car feed))))
+		      (cdr category)))
+	    my-elfeed-feeds)
+    nil))
+
+(defun my-elfeed-get-feed-url (name)
+  "Return the url of a feed in `my-elfeed-feeds' that matches the NAME."
+  (catch 'return
+    (seq-do (lambda (category)
+	      (seq-do (lambda (feed)
+			(when (string-equal (car feed) name)
+			  (throw 'return (cdr feed))))
+		      (cdr category)))
+	    my-elfeed-feeds)
+    nil))
+
