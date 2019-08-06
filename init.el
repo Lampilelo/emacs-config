@@ -218,6 +218,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 	  (funcall fun-to-call)
 	(funcall #'helm-info)))))
 (define-key help-map "h" #'my-contextual-helm-info)
+(define-key help-map "F" #'find-function)
 (define-key Info-mode-map (kbd "<up>") #'scroll-down-line)
 (define-key Info-mode-map (kbd "<down>") #'scroll-up-line)
 (define-key Info-mode-map (kbd "<right>") (kbd "]"))
