@@ -350,6 +350,11 @@ FILE-NAME is path to the file."
   (interactive "FSudo Find File: ")
   (find-file (concat "/sudo::" (expand-file-name file-name))))
 
+(defun string-match-from-list-p (regexp-list string)
+  (seq-find (lambda (author)
+	      (string-match-p author string))
+	    regexp-list))
+
 ;; TERM
 (defun my-term-command (command &optional term-name pop-buffer)
   "Run COMMAND in ‘term-mode’ in the default shell.
