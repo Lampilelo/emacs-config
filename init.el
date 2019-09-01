@@ -678,6 +678,9 @@ or nil if not found."
 		      ;; if cquery didn't find root, find it by git
 		      (vc-git-root buffer-file-name)))))
 
+  (defvar my/c++-compile-before-hook nil)
+  (defvar my/c++-compile-after-hook nil)
+
   ;; (assoc-default "CMakeLists.txt" my/c++-build-systems-alist)
   ;; TODO: When compile_commands.json is a broken symbolic link in the project
   ;;       root, function doesn't work (cquery--get-root returns error).
@@ -692,7 +695,19 @@ or nil if not found."
 	      ;; check list of build systems and call appropriate compile func
 	      (dolist (element my/c++-build-systems-alist)
 		(when (file-exists-p (concat project-root (car element)))
-		  (funcall (cdr element) project-root)))
+		  (run-hooks 'my/c++-compile-before-hook)
+		  (funcall (cdr element) project-root)
+		  ;; run my/c++-compile-after-hook after the successful
+		  ;; compilation
+		  (let* ((proc (get-buffer-process
+				(get-buffer "*compilation*")))
+			 (old-sentinel (process-sentinel proc)))
+		    (set-process-sentinel
+		     proc
+		     (lambda (process event)
+		       (funcall old-sentinel process event)
+		       (when (string= event "finished\n")
+			 (run-hooks 'my/c++-compile-after-hook)))))))
 	      (when (functionp 'lsp-cquery-enable)
 		(lsp-cquery-enable)))
 	  ;; else (when project root directory was not found)
