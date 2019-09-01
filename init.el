@@ -445,6 +445,7 @@ init.el. The code snippet changes faces for TODO entries.")))
 (use-package flx)  ;better matching for Ivy
 (use-package smex) ;better M-x, remembers frequently used commands
 (use-package ivy
+  :demand
   :init
   ;; use fuzzy regex for everything but swiper
   (setq ivy-re-builders-alist
