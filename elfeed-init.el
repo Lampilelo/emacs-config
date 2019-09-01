@@ -4,6 +4,28 @@
 (require 'subr-x)
 (require 'cl)
 
+(defun my-elfeed-mpv-play (url &optional no-video)
+  "Play URL in MPV player.
+
+NO-VIDEO should be set to non-nil to start MPV with --no-video option in
+a terminal application.
+
+When used interactively URL is the url at point.
+NO-VIDEO can be set with a prefix argument \\[universal-argument]."
+  (interactive (list (thing-at-point 'url) current-prefix-arg))
+  (if no-video
+      (start-process "mpv" nil
+		   "i3-sensible-terminal"
+		   "-e" (concat "mpv --no-video '"
+				url
+				"'"))
+    (start-process "mpv" nil "mpv"
+		     (format "--ytdl-raw-options=%s%s%s"
+			     "format=bestvideo[height<="
+			     (or (display-pixel-height) 1080)
+			     "]+bestaudio")
+		     url)))
+
 (defun my-elfeed-open-link ()
   (interactive)
   (let ((entries (elfeed-search-selected)))
@@ -16,18 +38,9 @@
 		  (if (and enclosures
 			     (string-match-p "^audio/"
 					     (nth 1 (car enclosures))))
-		      (start-process "mpv" nil
-				     "i3-sensible-terminal"
-				     "-e" (concat "mpv --no-video '"
-						  (caar enclosures)
-						  "'"))
+		      (my-elfeed-mpv-play (caar enclosures) 'no-video)
 		    ;; else open in mpv proper
-		    (start-process "mpv" nil "mpv"
-				   (format "--ytdl-raw-options=%s%s%s"
-					   "format=bestvideo[height<="
-					   (or (display-pixel-height) 1080)
-					   "]+bestaudio")
-				   it))
+		    (my-elfeed-mpv-play it))
 		  (elfeed-search-show-entry entry)))
     (mapc #'elfeed-search-update-entry entries)))
 
