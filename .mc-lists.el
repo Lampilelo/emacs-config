@@ -52,6 +52,7 @@
 	paredit-forward
 	paredit-forward-delete
 	paredit-forward-kill-word
+	paredit-kill
 	paredit-open-round
 	paredit-wrap-round
 	sh-assignment
@@ -73,9 +74,11 @@
       '(
 	avy-goto-word-or-subword-1
 	beginning-of-buffer
+	cpp-reference
 	dired-previous-line
 	end-of-buffer
 	helm-buffers-list
 	wdired-finish-edit
 	yank-rectangle
+	yas-abort-snippet
 	))
