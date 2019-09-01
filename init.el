@@ -715,6 +715,20 @@ or nil if not found."
 	  (message "Project's root directory not found. \
 Please initialize version control or build-system project.")))))
 
+  (defun my/c++-run-cppcheck ()
+    (let* ((project-dir (my/c++--find-project-root))
+	   (cppcheck-file (concat project-dir "cppcheck.sh")))
+      (when (file-exists-p cppcheck-file)
+	(with-current-buffer (get-buffer "*compilation*")
+		 (goto-char (point-max))
+		 (read-only-mode 0)
+		 (insert "\ncppcheck:\n")
+		 (let ((default-directory project-dir))
+		   (call-process "sh" nil t nil "cppcheck.sh"))
+		 (read-only-mode 1)
+		 (setq-local default-directory project-dir)))))
+  (add-hook 'my/c++-compile-after-hook #'my/c++-run-cppcheck)
+
   ;; End of C++ compile functions
 
   (setq cpp-reference-index-path
