@@ -58,7 +58,7 @@ To get specific property from the list, use `my-erc-server-get'")
 	("freenode"
 	 :server "irc.freenode.net"
 	 :nick "lampilelo"
-	 :channels ("#emacs" "#guile"))
+	 :channels ("#emacs" "#emacs-pl" "#guile" "#grpc"))
 	("BitlBee"
 	 :server "localhost"
 	 :nick "Oxon"
