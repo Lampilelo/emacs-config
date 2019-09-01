@@ -278,7 +278,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 ;;       c-basic-offset 4)
 
 ;; GDB
-(setq gdb-many-windows nil
+(setq gdb-many-windows t
       ;; Display source file containing the main routine at startup
       gdb-show-main t)
 
