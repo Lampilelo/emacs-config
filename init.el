@@ -402,9 +402,30 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 ;;   :config
 ;;   (load-theme 'tangotango t))
 
+(defcustom my-theme-light 'leuven
+  "Light theme")
+(defcustom my-theme-dark 'wombat
+  "Dark theme")
+
+(defun my-theme-switch ()
+  "Switch between dark and light themes specified in `my-theme-light' and
+`my-theme-dark' variables."
+  (interactive)
+  (let ((mode (if (member my-theme-light custom-enabled-themes)
+		  'dark
+		'light)))
+    (seq-do #'disable-theme custom-enabled-themes)
+    (case mode
+      ('dark (load-theme my-theme-dark 'no-confirm))
+      ('light (load-theme my-theme-light 'no-confirm))
+      (t (error "Don't know what theme to choose!")))))
+
+(when (member 'monokai custom-known-themes)
+  (setq my-theme-dark 'monokai))
+
 (if (or (daemonp) (display-graphic-p))
     (progn
-      (load-theme 'leuven t)
+      (load-theme my-theme-light t)
       (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
       ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
       ;; If Symbola is not available, use SejaVu Sans (it's not as complete).
