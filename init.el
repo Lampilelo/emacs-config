@@ -806,10 +806,11 @@ is added."
 			       (line-end-position))
 	    (let* ((type (match-string 1))
 		   (name (match-string 3))
-		   ;; m_foo, _foo, foo_ => foo ; TODO: mFoo
-		   (setter-name (s-replace-regexp "\\(^m?_+\\)\\|\\(_+$\\)"
-						  ""
-						  name))
+		   ;; m_foo, _foo, foo_, mFoo => Foo
+		   (setter-name (s-upper-camel-case
+				 (s-replace-regexp "\\(^m?_*\\)\\|\\(_+$\\)"
+						   ""
+						   name)))
 		   (pointer-or-ref (match-string 2)))
 	      (princ-list type "\n" name "\n" setter-name "\n" pointer-or-ref)
 	      (end-of-line)
