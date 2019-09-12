@@ -181,7 +181,7 @@
 (setq org-export-default-language "pl")
 
 (use-package org-bullets
-  :config
+  :init
   (add-hook 'org-mode-hook #'org-bullets-mode))
 
 
@@ -531,7 +531,7 @@ init.el. The code snippet changes faces for TODO entries.")))
 (define-key global-map (kbd "C-z") 'help-command)
 
 (use-package flycheck
-  :config
+  :init
   ;; (add-hook 'c-mode-common-hook #'flycheck-mode)
   (add-hook 'python-mode-hook #'flycheck-mode))
 ;; TODO: Set flycheck-clang-language-standard inside of a cpp buffer to
@@ -996,7 +996,7 @@ is added."
 ;; mainly additional navigation for LaTeX
 (let ((byte-compile-warnings '(not-free-vars)))
   (use-package latex-extra
-    :config
+    :init
     (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
 
 ;; preview buffer for LaTeX
