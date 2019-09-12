@@ -187,7 +187,7 @@ keyword and QUERY is stuff you want to find."
 (define-search-engine
   "Oxford Dictionary"
   "o"
-  "https://en.oxforddictionaries.com/definition/%s"
+  "https://www.lexico.com/en/definition/%s"
   (lambda (dom)
     (setq dom (dom-by-class dom "entryWrapper"))
     (with-current-buffer
