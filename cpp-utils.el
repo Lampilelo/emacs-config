@@ -55,4 +55,64 @@
 	  :preselect (ivy-thing-at-point)
 	  :sort t))))
 
-(provide 'cpp-utils)
+;;;###autoload
+(defun my/c++-make-definition-in-src-file ()
+  "Create a function definition of the declaration at point."
+  (interactive)
+  (let ((filename (concat (file-name-sans-extension (buffer-file-name))
+			  ".cpp"))
+	(namespace (save-excursion
+		     (save-match-data
+		       (search-backward-regexp
+			"namespace \\([^{ ]+\\)" nil t)
+		       (match-string 1))))
+	(class-name (save-excursion
+		      (save-match-data
+			(search-backward-regexp
+			 "\\(?:class\\|struct\\) \\([^{ ]+\\)" nil t)
+			(match-string 1)))))
+    (goto-char (point-at-bol))
+    (kill-ring-save (point) (or (search-forward ";" (point-at-eol) t)
+				(point-at-eol)))
+    (find-file-other-window filename)
+    (goto-char (point-min))
+    (when namespace
+      (if (search-forward (concat "namespace " namespace) nil t)
+	  (progn
+	    (search-forward "{")
+	    (backward-char)
+	    (forward-sexp)
+	    (goto-char (point-at-bol))
+	    (open-line 1)
+	    (newline)
+	    (yank))
+	;; when the file exists already but doesn't have the namespace go to
+	(when (file-exists-p filename)
+	  (goto-char (point-max))
+	  (search-backward "}" nil t)
+	  (forward-char)
+	  (insert "\n\n"))
+	(insert (concat "namespace " namespace " {\n"))
+	(yank)
+	(insert "\n}")
+	(previous-line)
+	(goto-char (point-at-eol)))
+      ;; find the beggining of the function name
+      (indent-region (point-at-bol) (point-at-eol))
+      (search-backward ")")
+      (forward-char)
+      (backward-sexp)
+	;; only operator functions can have whitespaces in the name
+
+      (or (search-backward "operator" (point-at-bol) t)
+	  (and (search-backward-regexp "[[:space:]]" (point-at-bol) t)
+	       (forward-char)))
+      (insert (or (concat class-name "::") ""))
+      (goto-char (point-at-eol))
+      (delete-horizontal-space)
+      (when (looking-back ";")
+	(delete-char -1))
+      (insert " {\n\n}")
+      (backward-char 2)
+
+      (provide 'cpp-utils))))
