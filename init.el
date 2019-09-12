@@ -459,9 +459,6 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
 init.el. The code snippet changes faces for TODO entries.")))
   (load-theme 'wombat t))
 
-;; TODO: is this a dependency of something?
-;; (use-package auto-complete)
-
 ;; IVY
 (use-package flx)  ;better matching for Ivy
 (use-package smex) ;better M-x, remembers frequently used commands
@@ -534,8 +531,6 @@ init.el. The code snippet changes faces for TODO entries.")))
   :init
   ;; (add-hook 'c-mode-common-hook #'flycheck-mode)
   (add-hook 'python-mode-hook #'flycheck-mode))
-;; TODO: Set flycheck-clang-language-standard inside of a cpp buffer to
-;;       current standard inside compile_commands.json
 
 (use-package company
   :diminish
