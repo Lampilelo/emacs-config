@@ -48,6 +48,7 @@
 	org-shiftmetaright
 	paredit-backslash
 	paredit-backward
+	paredit-backward-kill-word
 	paredit-doublequote
 	paredit-forward
 	paredit-forward-delete
@@ -75,6 +76,7 @@
 	avy-goto-word-or-subword-1
 	beginning-of-buffer
 	cpp-reference
+	delete-window
 	dired-previous-line
 	end-of-buffer
 	helm-buffers-list
