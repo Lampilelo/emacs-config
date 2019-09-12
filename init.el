@@ -1261,6 +1261,46 @@ Return nil if not succeeded."
   )
 ;; end of emms
 
+(use-package ox-reveal
+  :after ox
+  :init
+  (require 'ox-reveal)
+  (let* ((ox-reveal-path (file-name-directory (locate-library "ox-reveal")))
+	 (reveal-js-path (concat ox-reveal-path "reveal.js")))
+    (unless (file-exists-p reveal-js-path)
+      (require 'dom)
+      (url-retrieve
+       "https://github.com/hakimel/reveal.js/releases/latest"
+       (lambda (status ox-reveal-args reveal-js-path)
+	 (let* ((ghub-dom
+		 (libxml-parse-html-region (point-min) (point-max)))
+		(tar-file (concat ox-reveal-path "reveal.js.tar.gz"))
+		(default-directory ox-reveal-path)
+		(untarred-dir
+		 (progn
+		   (url-copy-file
+		    (concat
+		     "https://github.com"
+		     (dom-attr (seq-find
+				(lambda (dom)
+				  (string-match-p "archive.*tar\\.gz"
+						  (dom-attr dom 'href)))
+				(dom-by-tag ghub-dom 'a))
+			       'href))
+		    tar-file)
+		   ;; Untar and get the first entry in the log, which should
+		   ;; be the top-most directory
+		   (with-temp-buffer
+		     (call-process "tar" nil t nil
+				   "xvf" tar-file)
+		     (goto-char (point-min))
+		     (buffer-substring-no-properties (point-at-bol)
+						     (point-at-eol))))))
+	   (rename-file untarred-dir reveal-js-path)
+	   (delete-file tar-file)))
+       (list ox-reveal-path reveal-js-path)))
+    (setq org-reveal-root reveal-js-path)))
+
 (provide 'init)
 ;;; init.el ends here
 
