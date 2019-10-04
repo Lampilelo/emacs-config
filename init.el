@@ -535,6 +535,7 @@ init.el. The code snippet changes faces for TODO entries.")))
 (use-package company
   :diminish
   :init
+  (setq company-idle-delay 0.25)
   (global-company-mode t)
   :bind
   ("C-\"" . #'company-complete))
