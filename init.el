@@ -561,6 +561,8 @@ We need to exit that mode to call company-yasnippet."
 
 (autoload #'my/c++-create-include-guard "~/.emacs.d/cpp-utils.el" nil t)
 
+(add-hook 'c-mode-common-hook #'subword-mode)
+
 (with-check-for-missing-packages ("ccls") "ccls" nil
   (use-package ccls
     :init
