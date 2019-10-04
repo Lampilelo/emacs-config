@@ -747,9 +747,9 @@ Please initialize version control or build-system project.")))))
   ;; End of C++ compile functions
 
   (setq cpp-reference-index-path
-	"~/cppreference-doc-20180311/")
+	"~/cppreference-doc")
   (setq cpp-reference-wiki-path
-	"~/cppreference-doc-20180311/reference/en.cppreference.com/w/")
+	"~/cppreference-doc/reference/en.cppreference.com/w/")
   ;; (setq cpp-reference-wiki-path
   ;; 	"/usr/share/doc/cppreference/en/")
 
