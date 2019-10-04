@@ -29,6 +29,7 @@
 	isearch-printing-char
 	kill-sentence
 	kill-sexp
+	kill-visual-line
 	lispy-raise-sexp
 	mark-sexp
 	my-kill-hybrid-sexp
@@ -55,6 +56,7 @@
 	paredit-forward-kill-word
 	paredit-kill
 	paredit-open-round
+	paredit-open-square
 	paredit-wrap-round
 	sh-assignment
 	sp-delete-char
@@ -76,6 +78,7 @@
 	avy-goto-word-or-subword-1
 	beginning-of-buffer
 	cpp-reference
+	cpp-scratchpad-compile
 	delete-window
 	dired-previous-line
 	end-of-buffer
