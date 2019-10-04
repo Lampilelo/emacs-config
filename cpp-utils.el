@@ -67,15 +67,20 @@
 			"namespace \\([^{ ]+\\)" nil t)
 		       (match-string 1))))
 	(class-name (save-excursion
+		      (goto-char (point-at-eol))
+		      (c-beginning-of-statement-1)
+		      (backward-up-list)
+		      (c-beginning-of-statement-1)
 		      (save-match-data
-			(search-backward-regexp
-			 "\\(?:class\\|struct\\) \\([^{ ]+\\)" nil t)
-			(match-string 1)))))
+			(when (looking-at
+			       "\\(?:class\\|struct\\) \\([^{ ]+\\)")
+			  (match-string 1))))))
     (goto-char (point-at-bol))
     (kill-ring-save (point) (or (search-forward ";" (point-at-eol) t)
 				(point-at-eol)))
     (find-file-other-window filename)
     (goto-char (point-min))
+    ;; TODO: handle no namespace option
     (when namespace
       (if (search-forward (concat "namespace " namespace) nil t)
 	  (progn
