@@ -704,7 +704,8 @@ or nil if not found."
   (defun my/c++-compile ()
     "Compile current C++ project using detected build system."
     (interactive)
-    (when (eq major-mode 'c++-mode)	;check if in c++-mode
+    (when (or (eq major-mode 'c++-mode)
+	      (eq major-mode 'glsl-mode))
       (let ((project-root (my/c++--find-project-root)))
 	(if project-root	;if project-root not found, var is nil
 	    (progn
@@ -1294,6 +1295,14 @@ Return nil if not succeeded."
 	   (delete-file tar-file)))
        (list ox-reveal-path reveal-js-path)))
     (setq org-reveal-root reveal-js-path)))
+
+(use-package glsl-mode
+  :bind (:map glsl-mode-map
+	      ("C-c C-c" . my/c++-compile)))
+(use-package company-glsl
+  :config
+  (when (executable-find "glslangValidator")
+    (add-to-list 'company-backends 'company-glsl)))
 
 (provide 'init)
 ;;; init.el ends here
