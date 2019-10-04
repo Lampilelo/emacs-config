@@ -574,14 +574,13 @@ We need to exit that mode to call company-yasnippet."
 
 (use-package eglot
   :init
-  (eval-after-load 'cc-mode
-    '(add-hook 'c++-mode-hook #'eglot-ensure))
+  (with-eval-after-load 'cc-mode
+    (add-hook 'c++-mode-hook #'eglot-ensure)
+    (define-key c++-mode-map (kbd "C-c C-r") #'eglot-rename))
 
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
   (setq company-clang-modes nil)
-  :bind (:map c++-mode-map
-	      ("C-c C-r" . #'eglot-rename)))
 
 (use-package eldoc-box
   :after eglot
