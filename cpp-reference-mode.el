@@ -102,7 +102,7 @@
 ;; (defalias 'cpp-reference--check-variable #'cpp-reference--check-generic)
 
 (defvar cpp-reference-database
-  (make-hash-table :test #'equal :size 5500)
+  (make-hash-table :test #'equal :size 7000)
   "Database of all cpp-reference entries.
 
 The key is a string with a name of the entry.
@@ -110,9 +110,9 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
 
 (defun cpp-reference--get-index-dom (index-filename)
   (with-temp-buffer
-    (insert-file-contents (concat (file-name-as-directory
-				   cpp-reference-index-path)
-				  index-filename))
+    (insert-file-contents-literally (concat (file-name-as-directory
+					     cpp-reference-index-path)
+					    index-filename))
     (libxml-parse-xml-region (point-min) (point-max) nil t)))
 
 (defun cpp-reference--get-realpath (relative-path)
@@ -135,24 +135,41 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
 				   filename directory)))
 		 nil))))))
 
-;; TODO: Handle 'inherits type child (and remove it from the ignore list)
-;; TODO: If there is already an entry for an item, add <number> to its name.
-;;       Also uncomment chapter files.
+(defun cpp-reference--add-to-database (key value)
+  (cl-do ((key-base key)
+	  (count 1 (1+ count)))
+      ((not (gethash key cpp-reference-database))
+       (puthash key value cpp-reference-database))
+    (setq key (format "%s <%s>" key-base count))))
+
+(defun cpp-reference--parse-cpp-search-app-file ()
+  (let ((search-app-file (concat (file-name-as-directory
+				  cpp-reference-index-path)
+				 "index-cpp-search-app.txt")))
+    (when (file-exists-p search-app-file)
+      (with-temp-buffer
+	(insert-file-contents-literally search-app-file)
+	(save-match-data
+	  (while (re-search-forward "^\\(.*?\\) => \\(.+\\)$" nil 'noerror)
+	    (puthash (match-string-no-properties 1)
+		     (cons "help" (match-string-no-properties 2))
+		     cpp-reference-database)))))))
+
+;; TODO: Handle 'inherits type child (and remove it from the ignore list).
 ;; TODO: type in a hashtable should be just plain 'function, 'type etc.
+;; TODO: Break this function up into smaller pieces.
 (defun cpp-reference--build-database ()
   (let ((aliases))
     (dolist (index '("index-functions-cpp.xml" "index-functions-c.xml"
-		     ;; "index-chapters-cpp.xml" "index-chapters-c.xml"
-		     ))
+		     "index-chapters-cpp.xml" "index-chapters-c.xml"))
       (dolist (node (dom-children (cpp-reference--get-index-dom index)))
 	(let* ((item-name (dom-attr node 'name))
 	       (item-type (dom-tag node)))
 	  (when item-name
 	    (let ((link (cpp-reference--get-link node nil)))
-	      (puthash item-name
-		       (cons (symbol-name item-type)
-			     link)
-		       cpp-reference-database)
+	      (cpp-reference--add-to-database
+	       item-name
+	       (cons (symbol-name item-type) link))
 	      (unless link
 		(when-let ((alias (dom-attr node 'alias)))
 		  (setq aliases (cons (cons item-name alias)
@@ -171,24 +188,28 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
 			((or 'function 'overload)
 			 (cpp-reference--add-parens-to-fun
 			  (dom-attr child 'name)))
+			('specialization
+			 (format "%s (%s specialization)"
+				 (dom-attr child 'name) item-name))
 			((or 'comment 'inherits))
 			(_ (dom-attr child 'name)))))
 		(when child-name
 		  (unless (string-match-p "^std::" child-name)
 		    (setq child-name (concat item-name "::" child-name)))
 		  (let ((link (cpp-reference--get-link child node)))
-		    (puthash child-name
-			     (cons (concat item-name " "
-					   (symbol-name child-type))
-				   link)
-			     cpp-reference-database)
+		    (cpp-reference--add-to-database
+		     child-name
+		     (cons (concat item-name " " (symbol-name child-type))
+			   link))
 		    (unless link
 		      (when-let ((alias (dom-attr child 'alias)))
 			(setq aliases (cons (cons child-name alias)
 					    aliases))))))))))))
     (dolist (alias aliases)
       (setcdr (gethash (car alias) cpp-reference-database)
-	      (cdr (gethash (cdr alias) cpp-reference-database))))))
+	      (cdr (gethash (cdr alias) cpp-reference-database))))
+    ;; Add "index-cpp-search-app.txt" contents to the database
+    (cpp-reference--parse-cpp-search-app-file)))
 
 ;; TODO: Save the timestamp of index files and check against it if files
 ;;       changed, rebuild the database if so.
