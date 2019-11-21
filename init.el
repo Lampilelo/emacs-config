@@ -36,6 +36,7 @@
 (setq network-security-level 'high)
 ;; (setq nsm-save-host-names t)
 
+(setq load-prefer-newer t)
 
 ;; USE-PACKAGE
 (unless (package-installed-p 'use-package)
@@ -389,6 +390,21 @@ If POP-BUFFER not nil it will pop the buffer in a new window, otherwise in curre
     (switch-to-buffer-other-window current-buffer)))
 (global-set-key (kbd "M-O") #'my-swap-windows)
 
+(defun my-find-url-file (url)
+  "Open a remote file in place with appropriate major mode selected.
+
+Works for images, pdfs, etc."
+  (interactive "sURL: ")
+  (url-retrieve url
+		(lambda (status)
+		  (when-let* ((err (plist-get status :error))
+			      (code (assoc (nth 2 err) url-http-codes)))
+		    (user-error "[my-find-url-file] %d: %s"
+				(car code) (caddr code)))
+		  (delete-region (point-min) (1+ url-http-end-of-headers))
+		  (switch-to-buffer (current-buffer))
+		  (normal-mode))))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
@@ -631,7 +647,6 @@ We need to exit that mode to call company-yasnippet."
     '(("meson.build" . my/c++--meson-compile)
       ("CMakeLists.txt" . my/c++--cmake-compile))
     "List of filenames that determine which build-system is used with corresponding function symbols to call when compiling with this system.")
-
 
   (defun my/c++--create-compile-commands-link (project-root build-dir)
     "Create symbolic link to compile_commands.json from BUILD-DIR to PROJECT-ROOT.
@@ -1306,6 +1321,32 @@ Return nil if not succeeded."
   :config
   (when (executable-find "glslangValidator")
     (add-to-list 'company-backends 'company-glsl)))
+
+(use-package scala-mode
+  :config
+  (add-hook 'scala-mode-hook #'subword-mode)
+  (let ((metals-executable (concat (file-truename user-emacs-directory)
+				   "scala-metals/metals-emacs")))
+    (unless (file-exists-p metals-executable)
+      (let ((default-directory (file-name-directory metals-executable)))
+	(pop-to-buffer
+	 (process-buffer (start-process "update-metals" "*update-metals*" "sh"
+					"update-metals.sh")))))
+    (when (file-exists-p metals-executable)
+      (with-eval-after-load 'eglot
+	(add-to-list 'eglot-server-programs
+		     `(scala-mode ,metals-executable))))))
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  ;; :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  ;; (substitute-key-definition
+  ;;  'minibuffer-complete-word
+  ;;  'self-insert-command
+  ;;  minibuffer-local-completion-map)
+  )
 
 (provide 'init)
 ;;; init.el ends here

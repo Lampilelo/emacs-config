@@ -9,12 +9,14 @@
 	ace-jump-move
 	backward-sexp
 	backward-up-list
+	beginning-of-visual-line
 	c-electric-brace
 	c-electric-colon
 	c-electric-delete-forward
 	c-electric-lt-gt
 	c-electric-paren
 	c-electric-semi&comma
+	c-electric-slash
 	c-electric-star
 	c-indent-line-or-region
 	counsel-M-x
@@ -50,6 +52,7 @@
 	paredit-backslash
 	paredit-backward
 	paredit-backward-kill-word
+	paredit-close-round-and-newline
 	paredit-doublequote
 	paredit-forward
 	paredit-forward-delete
@@ -83,6 +86,7 @@
 	dired-previous-line
 	end-of-buffer
 	helm-buffers-list
+	iedit-switch-to-mc-mode
 	wdired-finish-edit
 	yank-rectangle
 	yas-abort-snippet

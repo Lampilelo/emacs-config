@@ -9,15 +9,6 @@
         (other-window 1)
         (execute-extended-command nil)))
 
-
-;; loop example
-(defun temp/find-root () (interactive)
-       (message "%s"
-		(loop for (key . value) in my/c++-build-systems-alist
-		      for var = (vc-find-root buffer-file-name key)
-		      until (not (eq var nil))
-		      finally return var)))
-
 (defun nmapcar (proc lst)
   "Like mapcar but destructive (modifies the list in-place)."
   (let ((tail lst))
@@ -35,6 +26,36 @@
 	  (setq result (cons (cons (car lst) (cadr lst)) result)))
       (setq lst (cddr lst)))
     result))
+
+
+(require 'cl-lib)
+(require 'subr-x)
+(cl-defun my-id3tag (filename &key artist album song number)
+  "Set id3 tags of an mp3 file."
+  (unless (file-name-absolute-p filename)
+    (user-error "[id3tag] File name must be absolute"))
+  (unless (string= (file-name-extension filename) "mp3")
+    (user-error "[id3tag] Not an mp3 file"))
+  (setq filename (file-truename filename))
+  (let ((id3-exec
+	 (or (executable-find "id3v2")
+	     (executable-find "id3tag")
+	     (user-error "[id3tag] Could not find id3tag and id3v2")))
+	(id3iconv-exec
+	 (or (executable-find "mid3iconv")
+	     (user-error "[id3tag] Could not find any id3iconv utility")))
+	(args))
+    (when artist (setq args (nconc (list "--artist" artist) args)))
+    (when album (setq args (nconc (list "--album" album) args)))
+    (when song (setq args (nconc (list "--song" song) args)))
+    (when number (setq args (nconc (list "--track" number) args)))
+    (setq args (nconc args (list filename)))
+    (with-temp-buffer
+      (unless (= 0 (apply #'call-process id3-exec nil t nil args))
+	(user-error (format "[id3tag] %s" (string-trim (buffer-string)))))
+      (erase-buffer)
+      (unless (= 0 (call-process id3iconv-exec nil t nil filename))
+      	(user-error (format "[id3tag] %s" (string-trim (buffer-string))))))))
 
 ;; IN-PROGRESS
 
@@ -76,16 +97,6 @@ PROC must be a process."
 ;; 	(message "fin"))))
 ;;   nil)
 
-
-(let* ((xml (car '((api nil (query-continue nil (allpages ((apcontinue . c/string/multibyte/char16_t)))) (query nil (allpages nil (p ((pageid . 6047) (ns . 0) (title . c/string/byte/toupper))) (p ((pageid . 5758) (ns . 0) (title . c/string/multibyte))) (p ((pageid . 6111) (ns . 0) (title . c/string/multibyte/btowc))) (p ((pageid . 9392) (ns . 0) (title . c/string/multibyte/c16rtomb))) (p ((pageid . 9393) (ns . 0) (title . c/string/multibyte/c32rtomb)))))))))
-       (continue (xml-get-attribute
-		  (xml-query '(query-continue allpages) xml)
-		  'apcontinue))
-       (query (xml-query '(query) xml)))
-  (pop-to-buffer (get-buffer-create "*xml-shenanigans*"))
-  (erase-buffer)
-  (dolist (page (xml-query-all '(query allpages p) xml))
-    (insert (symbol-name (xml-get-attribute page 'title)) ?\n)))
 
 (defun my-get-cppreference ()
   (let ((url-template "https://en.cppreference.com/mwiki/api.php?action=query&list=allpages&aplimit=500&apcontinue&format=xml&apfrom=%s")

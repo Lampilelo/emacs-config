@@ -162,3 +162,7 @@ CATEGORY is a symbol."
 	    my-elfeed-feeds)
     nil))
 
+
+;; TODO: Create an advice for the function in elfeed that reads elfeed-feeds.
+;;       my-elfeed-feeds should store structs with name, url, category and
+;;       enabled keywords (or maybe plists with these keywords).

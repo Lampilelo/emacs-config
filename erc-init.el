@@ -58,7 +58,9 @@ To get specific property from the list, use `my-erc-server-get'")
 	("freenode"
 	 :server "irc.freenode.net"
 	 :nick "lampilelo"
-	 :channels ("#emacs" "#emacs-pl" "#guile" "#grpc"))
+	 :channels ("#emacs" "#emacs-beginners" "#emacs-pl"
+		    "#guile"
+		    "#grpc"))
 	("BitlBee"
 	 :server "localhost"
 	 :nick "Oxon"
@@ -180,7 +182,7 @@ Uses `my-erc-server-info' to get the information about server settings.")
 (setq erc-autojoin-timing 'ident)
 ;; end of auto-join
 
-(add-hook 'erc-echo-notice-always-hook 'erc-echo-notice-in-minibuffer)
+(add-hook 'erc-echo-notice-always-hook 'erc-echo-notice-in-server-buffer)
 (add-hook 'erc-server-NOTICE-functions 'erc-server-PRIVMSG)
 
 ;; misc options

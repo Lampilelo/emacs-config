@@ -223,6 +223,19 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
     (cpp-reference--build-database)
     (message "[cpp-reference] Database built successfully.")))
 
+(defun cpp-reference--identifier-at-point ()
+  (if-let ((identifier (symbol-at-point)))
+      (symbol-name identifier)
+    ""))
+
+(define-minor-mode cpp-reference-mode
+  "Mode for browsing C++ documentation."
+  nil
+  " cppref"
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "i") 'cpp-reference)
+    map))
+
 ;;;###autoload
 (defun cpp-reference ()
   "Show the documentation of a thing at point."
@@ -235,18 +248,18 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
   (let ((symbol (completing-read "Symbol: "
 				       cpp-reference-database
 				       nil t
-				       (xref-backend-identifier-at-point
-					(xref-find-backend))
+				       (cpp-reference--identifier-at-point)
 				       'cpp-reference--read-history)))
-    (with-temp-buffer
-      (let ((buffer (get-buffer "*cpp-reference*")))
-	(and buffer (kill-buffer buffer)))
-      (pop-to-buffer (current-buffer))
-      (eww (concat "file://"
-		   (cpp-reference--get-realpath
-		    (cdr (gethash
-			  symbol
-			  cpp-reference-database)))))
-      (rename-buffer "*cpp-reference*"))))
+    (pop-to-buffer (get-buffer-create "*cpp-reference*"))
+    (unless (eq major-mode 'eww)
+      (eww-mode))
+    (unless cpp-reference-mode
+      (cpp-reference-mode 1))
+    (eww (concat "file://"
+		 (cpp-reference--get-realpath
+		  (cdr (gethash
+			symbol
+			cpp-reference-database)))))
+    (rename-buffer "*cpp-reference*")))
 
 (provide 'cpp-reference)
