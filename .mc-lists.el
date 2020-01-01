@@ -60,6 +60,7 @@
 	paredit-kill
 	paredit-open-round
 	paredit-open-square
+	paredit-raise-sexp
 	paredit-wrap-round
 	sh-assignment
 	sp-delete-char
