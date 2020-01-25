@@ -26,22 +26,34 @@ NO-VIDEO can be set with a prefix argument \\[universal-argument]."
 			     "]+bestaudio")
 		     url)))
 
+(defun my-elfeed--bitchute-video-url (url)
+  "Return the url of an mp4 file given bitchute video's URL."
+  (when (string-match "/embed/" url)
+    (setq url (replace-match "/video/" nil nil url)))
+  (with-current-buffer (url-retrieve-synchronously url)
+    (let ((dom (libxml-parse-html-region (point-min) (point-max))))
+      (dom-attr (car (dom-children (dom-by-id dom "player"))) 'src))))
+
 (defun my-elfeed-open-link ()
   (interactive)
   (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-	     do (elfeed-untag entry 'unread)
-	     when (elfeed-entry-link entry)
-	     do (let* ((enclosures (elfeed-entry-enclosures entry)))
-		  ;; If there is an audio file in enclosures, open it
-		  ;; with --no-video
-		  (if (and enclosures
-			     (string-match-p "^audio/"
-					     (nth 1 (car enclosures))))
-		      (my-elfeed-mpv-play (caar enclosures) 'no-video)
-		    ;; else open in mpv proper
-		    (my-elfeed-mpv-play it))
-		  (elfeed-search-show-entry entry)))
+    (cl-loop
+     for entry in entries
+     do (elfeed-untag entry 'unread)
+     when (elfeed-entry-link entry)
+     do (let* ((enclosures (elfeed-entry-enclosures entry)))
+	  ;; If there is an audio file in enclosures, open it
+	  ;; with --no-video
+	  (if (and enclosures
+		   (string-match-p "^audio/"
+				   (nth 1 (car enclosures))))
+	      (my-elfeed-mpv-play (caar enclosures) 'no-video)
+	    ;; else open in mpv proper
+	    (cond
+	     ((string-match-p "bitchute.com/\\(embed\\|video\\)" it)
+	      (my-elfeed-mpv-play (my-elfeed--bitchute-video-url it)))
+	     (t (my-elfeed-mpv-play it))))
+	  (elfeed-search-show-entry entry)))
     (mapc #'elfeed-search-update-entry entries)))
 
 (define-key elfeed-search-mode-map (kbd "v") #'my-elfeed-open-link)
