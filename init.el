@@ -405,6 +405,14 @@ Works for images, pdfs, etc."
 		  (switch-to-buffer (current-buffer))
 		  (normal-mode))))
 
+(defun my-current-file-name ()
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+   (with-temp-buffer
+     (insert file-name)
+     (clipboard-kill-ring-save (point-min) (point-max))
+     (message file-name))))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
@@ -864,7 +872,8 @@ is added."
   nil t)
 (defun my-kill-current-eglot-server ()
   (ignore-errors (eglot-shutdown (eglot--current-server))))
-(add-hook 'cpp-scratchpad-before-kill-hook #'my-kill-current-eglot-server)
+(eval-after-load 'cpp-scratchpad
+  (add-hook 'cpp-scratchpad-before-kill-hook #'my-kill-current-eglot-server))
 (setq cpp-scratchpad-before-kill-hook nil)
 
 
