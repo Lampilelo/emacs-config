@@ -195,7 +195,10 @@ Uses `my-erc-server-info' to get the information about server settings.")
  ;; Interpret mIRC-style color commands in IRC chats
 (setq erc-interpret-mirc-color t)
 ;; Ignore certain type of messages when showing on the modeline
-(dolist (item '("JOIN" "PART" "QUIT" "MODE"))
+;; 324 - Channel or nick modes
+;; 329 - Channel creation date notice
+;; 353 - NAMES notice (ignored by default)
+(dolist (item '("JOIN" "PART" "QUIT" "MODE" "TOPIC" "NICK" "324" "329"))
   (add-to-list 'erc-track-exclude-types item))
 (setq erc-track-exclude-server-buffer t)
 (push "&bitlbee" erc-track-exclude)
