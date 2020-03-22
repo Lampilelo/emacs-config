@@ -23,6 +23,7 @@
 	delete-horizontal-space
 	electric-newline-and-maybe-indent
 	electric-pair-delete-pair
+	end-of-defun
 	end-of-visual-line
 	forward-sexp
 	indent-for-tab-command
@@ -67,6 +68,7 @@
 	sp-kill-word
 	swiper
 	transpose-sexps
+	transpose-words
 	wdired-next-line
 	wdired-previous-line
 	wdired-upcase-word
