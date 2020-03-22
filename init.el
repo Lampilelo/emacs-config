@@ -1268,7 +1268,11 @@ Return nil if not succeeded."
 ;; nov.el (epub)
 (use-package nov
   :init
-  (add-to-list 'auto-mode-alist (cons "\\.epub\\'" 'nov-mode)))
+  (add-to-list 'auto-mode-alist (cons "\\.epub\\'" 'nov-mode))
+  (setq nov-text-width 77)
+  :bind (:map nov-mode-map
+	      ("<up>" . #'scroll-down-line)
+	      ("<down>" . #'scroll-up-line)))
 ;; end of nov.el
 
 ;; haskell
