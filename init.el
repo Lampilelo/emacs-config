@@ -1376,6 +1376,21 @@ Return nil if not succeeded."
   :init
   (eval-after-load 'ox '(require 'ox-hugo)))
 
+(defun my-translate--maybe-start-goldendict ()
+  (unless (= 0 (call-process "pidof" nil nil nil "goldendict"))
+    (start-process "goldendict" nil "goldendict")
+    (sleep-for 0.5)))
+
+(defun my-translate (string)
+  "Translate a STRING using goldendict."
+  (interactive "MString: ")
+  (my-translate--maybe-start-goldendict)
+  (call-process "goldendict" nil nil nil string))
+
+(defun my-translate-word-at-point ()
+  (interactive)
+  (my-translate (word-at-point)))
+
 (provide 'init)
 ;;; init.el ends here
 
