@@ -245,11 +245,17 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
     (cpp-reference--initialize-database))
    ((null cpp-reference-wiki-path)
     (user-error "[cpp-reference] cpp-reference-wiki-path is not set")))
-  (let ((symbol (completing-read "Symbol: "
-				       cpp-reference-database
-				       nil t
-				       (cpp-reference--identifier-at-point)
-				       'cpp-reference--read-history)))
+  (let ((symbol (if ivy-mode
+		    (ivy-read "Symbol: "
+			    cpp-reference-database
+			    :require-match t
+			    :preselect (cpp-reference--identifier-at-point)
+			    :history 'cpp-reference--read-history)
+		  (completing-read "Symbol: "
+				   cpp-reference-database
+				   nil t
+				   (cpp-reference--identifier-at-point)
+				   'cpp-reference--read-history))))
     (pop-to-buffer (get-buffer-create "*cpp-reference*"))
     (unless (eq major-mode 'eww)
       (eww-mode))
