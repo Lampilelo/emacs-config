@@ -150,13 +150,14 @@
 (with-check-for-missing-packages ("pygments") "latex minted" nil)
 (setq org-latex-listings 'minted)
 (setq org-export-with-smart-quotes t)
+(setq org-html-postamble nil)
 (eval-after-load 'org
   '(add-to-list 'org-latex-packages-alist '("" "minted")))
 
 (setq org-latex-pdf-process
-      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+      '("%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 (load "~/.emacs.d/org-agenda-init.el")
 (use-package helm-org-rifle
