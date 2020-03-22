@@ -5,9 +5,9 @@
   (cond
    ((windowp result)
     (with-current-buffer (window-buffer result)
-      (message (buffer-string))))
+      (princ (format "%s\n" (buffer-string)))))
    ((bufferp result)
     (while (not (get-buffer "*Lyrics*"))
       (sleep-for 0.25))
     (with-current-buffer (get-buffer "*Lyrics*")
-      (message "\n%s" (buffer-string))))))
+      (princ (format "\n%s\n" (buffer-string)))))))
