@@ -1131,7 +1131,9 @@ is added."
 (use-package lyrics
   :init
   (autoload 'my-lyrics "~/.emacs.d/my-lyrics.el"
-    "Gets lyrics for a song playing in MOC player." t))
+    "Gets lyrics for a song playing in MOC player." t)
+  :config
+  (load "~/.emacs.d/my-lyrics.el" t))
 
 ;; eww customization
 
