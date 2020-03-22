@@ -4,6 +4,22 @@
 (require 'subr-x)
 (require 'cl)
 
+(let* ((sentinel
+	(lambda (process event)
+	  (unless (process-live-p process)
+	    (with-current-buffer (process-buffer process)
+	      (if (= (process-exit-status process) 0)
+		  (kill-buffer (current-buffer))
+		(ansi-color-apply-on-region (point-min) (point-max))
+		(read-only-mode 1)
+		(pop-to-buffer (current-buffer))))))))
+  (defun my-start-process-show-errors (name program &rest program-args)
+    (let* ((buffer (generate-new-buffer (format " *%s*" name))))
+      (make-process :name name
+		    :buffer buffer
+		    :command (cons program program-args)
+		    :sentinel sentinel))))
+
 (defun my-elfeed-mpv-play (url &optional no-video)
   "Play URL in MPV player.
 
@@ -14,17 +30,17 @@ When used interactively URL is the url at point.
 NO-VIDEO can be set with a prefix argument \\[universal-argument]."
   (interactive (list (thing-at-point 'url) current-prefix-arg))
   (if no-video
-      (start-process "mpv" nil
-		   "i3-sensible-terminal"
-		   "-e" (concat "mpv --no-video '"
-				url
-				"'"))
-    (start-process "mpv" nil "mpv"
-		     (format "--ytdl-raw-options=%s%s%s"
-			     "format=bestvideo[height<="
-			     (or (display-pixel-height) 1080)
-			     "]+bestaudio")
-		     url)))
+      (my-start-process-show-errors
+       "mpv"
+       "i3-sensible-terminal"
+       "-e" (concat "mpv --no-video '" url "'"))
+    (my-start-process-show-errors
+     "mpv" "mpv"
+     (format "--ytdl-raw-options=%s%s%s"
+	     "format=bestvideo[height<="
+	     (or (display-pixel-height) 1080)
+	     "]+bestaudio")
+     url)))
 
 (defun my-elfeed--bitchute-video-url (url)
   "Return the url of an mp4 file given bitchute video's URL."
