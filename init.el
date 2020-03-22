@@ -608,6 +608,23 @@ We need to exit that mode to call company-yasnippet."
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
   (setq company-clang-modes nil)
+  :config
+  (push (list 'c++-mode ccls-executable)
+	eglot-server-programs)
+  (defun my-eglot-shutdown-all ()
+    (interactive)
+    (maphash (lambda (key value)
+	       (when value
+		 (eglot-shutdown (car value))))
+	     eglot--servers-by-project))
+  (defun my-eglot-restart ()
+    (interactive)
+    (if (eglot--current-server)
+	(progn (eglot-shutdown (eglot--current-server))
+	       (call-interactively #'eglot))
+      (message "Server not running in the current buffer")))
+  (defalias 'eglot-shutdown-all #'my-eglot-shutdown-all)
+  (defalias 'eglot-restart #'my-eglot-restart))
 
 (use-package eldoc-box
   :after eglot
