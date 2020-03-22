@@ -39,25 +39,27 @@
 ;; 	   "/usr/lib/")))
 
 (require 'subr-x)
+(require 'seq)
 
 (defvar python-site-path
-  (concat (string-trim-right
-    (shell-command-to-string
-     (combine-and-quote-strings '("python"
-				  "-c"
-				  "import sys
-site_packages = next(p for p in sys.path if 'site-packages' in p)
-print(site_packages)")))))
-  "Python's site module directory.")
+  (split-string (shell-command-to-string
+		     (combine-and-quote-strings '("python"
+						  "-c"
+						  "import sys
+for p in sys.path:
+    if 'site-packages' in p:
+        print(p)"))))
+  "Python's site module directories as a list.")
 
 
 (defun my-find-python-package (name)
-  (let ((package-path (concat (file-name-as-directory python-site-path)
-			      name)))
-    (cond ((file-exists-p package-path)
-	   package-path)
-	  ((file-exists-p (concat package-path ".py"))
-	   (concat package-path ".py")))))
+  (let ((candidate-files
+	 (mapcan (lambda (path-entry)
+		   (let ((filename (concat (file-name-as-directory path-entry)
+					   name)))
+		     (list filename (concat filename ".py"))))
+		 python-site-path)))
+    (seq-find #'file-exists-p candidate-files)))
 
 (defun my-find-library (name)
   "Check host system for a library NAME.
