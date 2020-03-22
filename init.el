@@ -1372,6 +1372,10 @@ Return nil if not succeeded."
   ;;  minibuffer-local-completion-map)
   )
 
+(use-package ox-hugo
+  :init
+  (eval-after-load 'ox '(require 'ox-hugo)))
+
 (provide 'init)
 ;;; init.el ends here
 
