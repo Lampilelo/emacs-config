@@ -931,15 +931,6 @@ is added."
 
 (show-paren-mode)
 
-;; (use-package lispy
-;;   :config
-;;   (dolist (mode-map (list emacs-lisp-mode-map
-;; 			  lisp-interaction-mode-map))
-;;     (define-key mode-map (kbd "M-k") #'lispy-raise-sexp)))
-
-;; (eval-after-load 'scheme
-;;   '(define-key scheme-mode-map (kbd "M-k") #'lispy-raise-sexp))
-
 (use-package paredit
   :diminish paredit-mode
   :init
