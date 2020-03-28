@@ -432,25 +432,57 @@ Works for images, pdfs, etc."
 (defcustom my-theme-dark 'wombat
   "Dark theme")
 
-(defun my-theme-switch ()
-  "Switch between dark and light themes specified in `my-theme-light' and
-`my-theme-dark' variables."
-  (interactive)
-  (let ((mode (if (member my-theme-light custom-enabled-themes)
-		  'dark
-		'light)))
-    (seq-do #'disable-theme custom-enabled-themes)
-    (case mode
-      ('dark (load-theme my-theme-dark 'no-confirm))
-      ('light (load-theme my-theme-light 'no-confirm))
-      (t (error "Don't know what theme to choose!")))))
+(defvar my-theme-after-switch-hook nil
+  "Functions to call after theme is switched with `my-theme-switch'.
 
-(when (member 'monokai custom-known-themes)
+A function should take one argument - the type of the theme.")
+
+(defun my-theme-switch (&optional type)
+  "Switch between dark and light themes specified in `my-theme-light' and
+`my-theme-dark' variables.
+
+TYPE is either 'light or 'dark symbol."
+  (interactive)
+  (unless type
+    (setq type (if (member my-theme-light custom-enabled-themes)
+		   'dark
+		 'light)))
+  (unless (member type '(light dark))
+    (user-error "Wrong theme type: %s" type))
+  (seq-do #'disable-theme custom-enabled-themes)
+  (cl-case type
+    ('dark (load-theme my-theme-dark 'no-confirm))
+    ('light (load-theme my-theme-light 'no-confirm))
+    (t (error "Don't know what theme to choose!")))
+  (run-hook-with-args 'my-theme-after-switch-hook type))
+
+(when (member 'monokai (custom-available-themes))
   (setq my-theme-dark 'monokai))
+
+(defun my-theme-after-load-leuven (type)
+  (when (and (eq type 'light) (member 'leuven custom-enabled-themes))
+    (setq org-todo-keyword-faces
+	  '(("TODO" .
+	     (t (:box (:line-width 1 :color "#ec9e14") :weight bold
+		      :background "#f2e3ca" :foreground "#ec9e14")))
+	    ("IN-PROGRESS" .
+	     ((t (:box (:line-width 1 :color "#00a2e4")
+		       :background "#bcd6e0" :foreground "#00a2e4"))))
+	    ("WAITING" .
+	     ((t (:box (:line-width 1 :color "#c96332") :weight bold
+		       :background "#eed2c5" :foreground "#c96332"))))))
+    (custom-theme-set-faces
+     'leuven
+     '(default ((t (:background "#fffff7"))))
+     '(Man-overstrike ((t (:foreground "#82481e" :weight bold))))
+     '(Man-underline ((t (:foreground "lime green" :weight bold))))
+     '(Info-quoted ((t (:foreground "dark slate blue" :weight bold)))))))
+
+(add-hook 'my-theme-after-switch-hook #'my-theme-after-load-leuven)
 
 (if (or (daemonp) (display-graphic-p))
     (progn
-      (load-theme my-theme-light t)
+      (my-theme-switch 'light)
       (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
       ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
       ;; If Symbola is not available, use SejaVu Sans (it's not as complete).
@@ -458,31 +490,8 @@ Works for images, pdfs, etc."
 	  (set-fontset-font t (cons #x1f030 #x1f644)
 			    "Symbola" nil 'prepend)
 	(set-fontset-font t (cons #x1f030 #x1f644)
-			  "DejaVu Sans" nil 'prepend))
-
-      ;; NOTE: it was created for leuven theme, so if I change it,
-      ;; I should also edit this
-      (if (member 'leuven custom-enabled-themes)
-	  (progn
-	    (setq org-todo-keyword-faces
-		  '(("TODO" .
-		     (t (:box (:line-width 1 :color "#ec9e14") :weight bold
-			      :background "#f2e3ca" :foreground "#ec9e14")))
-		    ("IN-PROGRESS" .
-		     ((t (:box (:line-width 1 :color "#00a2e4")
-			       :background "#bcd6e0" :foreground "#00a2e4"))))
-		    ("WAITING" .
-		     ((t (:box (:line-width 1 :color "#c96332") :weight bold
-			       :background "#eed2c5" :foreground "#c96332"))))))
-	    (custom-theme-set-faces
-	     'leuven
-	     '(default ((t (:background "#fffff7"))))
-	     '(Man-overstrike ((t (:foreground "#82481e" :weight bold))))
-	     '(Man-underline ((t (:foreground "lime green" :weight bold))))
-	     '(Info-quoted ((t (:foreground "dark slate blue" :weight bold))))))
-	(display-warning "theme changed" "Check if you need this check inside \
-init.el. The code snippet changes faces for TODO entries.")))
-  (load-theme 'wombat t))
+			  "DejaVu Sans" nil 'prepend)))
+  (my-theme-switch 'dark))
 
 ;; IVY
 (use-package flx)  ;better matching for Ivy
