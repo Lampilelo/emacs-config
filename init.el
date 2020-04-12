@@ -687,6 +687,10 @@ We need to exit that mode to call company-yasnippet."
   :config
   (push (list 'c++-mode ccls-executable)
 	eglot-server-programs)
+  (defun my-eglot-show-help ()
+    (interactive)
+    (display-buffer (eglot--help-buffer)))
+  (define-key eglot-mode-map (kbd "C-c h") #'my-eglot-show-help)
   (defun my-eglot-shutdown-all ()
     (interactive)
     (maphash (lambda (key value)
