@@ -75,6 +75,9 @@
 ;; just for setting env
 ;; (setenv "INFOPATH"
 ;; 	(substitute-env-vars "/usr/share/info/:$HOME/.local/share/info/"))
+(setq Info-additional-directory-list
+      `("/usr/local/share/info/"
+	,(substitute-env-vars "$HOME/.guix-profile/share/info")))
 
 (with-eval-after-load 'man
   (defun my-Man-open-in-same-buffer ()
