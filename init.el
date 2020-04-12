@@ -551,7 +551,7 @@ TYPE is either 'light or 'dark symbol."
       (my-theme-switch 'light)
       (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
       ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
-      ;; If Symbola is not available, use SejaVu Sans (it's not as complete).
+      ;; If Symbola is not available, use DejaVu Sans (it's not as complete).
       (if (member "Symbola" (font-family-list))
 	  (set-fontset-font t (cons #x1f030 #x1f644)
 			    "Symbola" nil 'prepend)
@@ -1267,6 +1267,7 @@ is added."
 (setq gnus-read-active-file nil)
 
 ;; INFO-LOOKMORE
+;; TODO: Switch to info-look.el (which is built-in)
 ;; ftp://download.tuxfamily.org/user42/info-lookmore.el
 (let ((file "~/.emacs.d/info-lookmore.el"))
   (when (file-exists-p file)
