@@ -419,6 +419,41 @@ Works for images, pdfs, etc."
      (clipboard-kill-ring-save (point-min) (point-max))
      (message file-name))))
 
+
+;; Import parts of the environment from .zshrc
+(defvar my-env-to-import
+  '("CXX" "CC" "PATH" "LD_LIBRARY_PATH" "C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH")
+  "A list of environment variables to import from ~/.zshrc")
+
+(defun my-env-from-export (export-directive)
+  "Return a list (VARIABLE VALUE) given an EXPORT_DIRECTIVE
+(i.e. \"export VARIABLE=VALUE\"."
+  (save-match-data
+    (let ((export (and (string-match "^export " export-directive)
+		       (split-string-and-unquote
+			(substring-no-properties export-directive
+						 (match-end 0))
+			"="))))
+      (unless (and export
+		   (consp export)
+		   (= (length export) 2))
+	(user-error "Error: Bad export: %s" export-directive))
+      (list (car export) (substitute-env-vars (cadr export))))))
+
+;; FIXME: For multiple entries of the same variable it sets only the last one.
+;;        Referred env variables are resolved before modifying any of them.
+(let ((vars
+       (with-temp-buffer
+	 (insert-file-contents-literally "~/.zshrc")
+	 (goto-char (point-min))
+	 (cl-loop
+	  while (re-search-forward "^export [[:alnum:]_]+=.*$" nil t)
+	  collect (my-env-from-export (match-string-no-properties 0))))))
+  (dolist (var (seq-filter (lambda (item)
+			     (member (car item) my-env-to-import))
+			   vars))
+    (apply #'setenv var)))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
