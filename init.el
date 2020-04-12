@@ -1480,6 +1480,22 @@ Return nil if not succeeded."
   (interactive)
   (my-translate (word-at-point)))
 
+(use-package gdscript-mode
+  :init
+  (with-eval-after-load 'eglot
+    (defun my-eglot-godot-connect ()
+      (interactive)
+      (eglot--connect
+       'gdscript-mode
+       (cons 'transient
+	     (locate-dominating-file default-directory "project.godot"))
+       'eglot-lsp-server
+       (list "localhost" 6008)))
+    ;; FIXME: doesn't work because of eglot bug
+    ;; (add-to-list 'eglot-server-programs
+    ;; 		 '(gdscript-mode . ("localhost" 6008)))
+    ))
+
 (provide 'init)
 ;;; init.el ends here
 
