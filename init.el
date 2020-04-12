@@ -1228,7 +1228,17 @@ is added."
 ;;   (add-hook 'rust-mode-hook #'flycheck-mode))
 
 ;; GUILE (SCHEME)
-(use-package geiser)
+(use-package geiser
+  :config
+  (setq geiser-default-implementation 'guile)
+  (let ((guix-profile (substitute-env-vars "$HOME/.guix-profile/")))
+    (add-to-list 'exec-path (concat guix-profile "bin"))
+    (setenv "GUILE_LOAD_PATH" (concat guix-profile "share/guile/site/3.0"))
+    (setenv "GUILE_LOAD_COMPILED_PATH"
+	    (concat guix-profile "lib/guile/3.0/site-ccache" ":"
+		    guix-profile "share/guile/site/3.0"))
+    (setenv "PKG_CONFIG_PATH"
+	    (concat guix-profile "lib/pkgconfig"))))
 
 ;; PDF-TOOLS
 ;; Use pdf-tools instead of doc-view
