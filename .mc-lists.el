@@ -53,6 +53,7 @@
 	paredit-backslash
 	paredit-backward
 	paredit-backward-kill-word
+	paredit-backward-up
 	paredit-close-round-and-newline
 	paredit-doublequote
 	paredit-forward
@@ -62,6 +63,7 @@
 	paredit-open-round
 	paredit-open-square
 	paredit-raise-sexp
+	paredit-splice-sexp
 	paredit-wrap-round
 	sh-assignment
 	sp-delete-char
