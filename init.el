@@ -467,40 +467,66 @@ Works for images, pdfs, etc."
 ;;   :config
 ;;   (load-theme 'tangotango t))
 
+(dolist (theme-dir (directory-files (concat user-emacs-directory "themes")
+				    'full "[^\.]"))
+  (add-to-list 'custom-theme-load-path theme-dir)
+  (add-to-list 'load-path theme-dir))
+
 (defcustom my-theme-light 'leuven
-  "Light theme")
+  "Light theme.
+
+Can be a symbol or a function that takes no arguments and returns a symbol.")
 (defcustom my-theme-dark 'wombat
-  "Dark theme")
+  "Dark theme.
+
+Can be a symbol or a function that takes no arguments and returns a symbol.")
+(when (member 'monokai (custom-available-themes))
+  (setq my-theme-dark 'one-dark))
+(when (member 'one-dark (custom-available-themes))
+  (setq my-theme-dark 'one-dark))
+
+(defvar my-theme-current-type 'light)
+
+(defvar my-light-themes '(one-light lenlen))
+(let ((themes (apply #'vector
+		     (or (seq-intersection my-light-themes
+					   (custom-available-themes))
+			 '(leuven)))))
+  (defun my-random-light-theme ()
+    (elt themes (random (length themes)))))
+(setq my-theme-light #'my-random-light-theme)
 
 (defvar my-theme-after-switch-hook nil
   "Functions to call after theme is switched with `my-theme-switch'.
 
 A function should take one argument - the type of the theme.")
-
+(funcall #'my-random-light-theme)
 (defun my-theme-switch (&optional type)
   "Switch between dark and light themes specified in `my-theme-light' and
 `my-theme-dark' variables.
 
 TYPE is either 'light or 'dark symbol."
   (interactive)
+  (defun get-theme (theme)
+    (cond ((functionp theme) (funcall theme))
+	  (t theme)))
   (unless type
-    (setq type (if (member my-theme-light custom-enabled-themes)
+    (setq type (if (eq my-theme-current-type 'light)
 		   'dark
 		 'light)))
   (unless (member type '(light dark))
     (user-error "Wrong theme type: %s" type))
   (seq-do #'disable-theme custom-enabled-themes)
   (cl-case type
-    ('dark (load-theme my-theme-dark 'no-confirm))
-    ('light (load-theme my-theme-light 'no-confirm))
+    ('dark (load-theme (get-theme my-theme-dark) 'no-confirm)
+	   (setq my-theme-current-type 'dark))
+    ('light (load-theme (get-theme my-theme-light) 'no-confirm)
+	    (setq my-theme-current-type 'light))
     (t (error "Don't know what theme to choose!")))
   (run-hook-with-args 'my-theme-after-switch-hook type))
 
-(when (member 'monokai (custom-available-themes))
-  (setq my-theme-dark 'monokai))
-
 (defun my-theme-after-load-leuven (type)
-  (when (and (eq type 'light) (member 'leuven custom-enabled-themes))
+  (when (and (eq type 'light) (custom-theme-enabled-p 'leuven))
     (setq org-todo-keyword-faces
 	  '(("TODO" .
 	     (t (:box (:line-width 1 :color "#ec9e14") :weight bold
