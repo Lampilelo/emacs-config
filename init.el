@@ -1496,6 +1496,48 @@ Return nil if not succeeded."
     ;; 		 '(gdscript-mode . ("localhost" 6008)))
     ))
 
+(use-package haxe-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.hx\\'" . haxe-mode))
+  (with-check-for-missing-packages ("node") "HAXE" nil
+    (let ((haxe-lang-serv "/home/lampilelo/Programming/haxe/haxe-language-server/bin/server.js"))
+      (if (file-exists-p haxe-lang-serv)
+	  (with-eval-after-load 'eglot
+	    (defclass eglot-haxe-ls (eglot-lsp-server) ()
+	      :documentation "Haxe Language Server")
+	    (cl-defmethod eglot-initialization-options
+	      ((server eglot-haxe-ls))
+	      (let* ((roots (project-roots (eglot--project server)))
+		     (root (car roots)))
+	       `(:displayArguments [,(concat root "build.hxml")])))
+
+	    (defun eglot--haxe-ls-contact (interactive)
+	      (cons 'eglot-haxe-ls
+		    (list (executable-find "node")
+			  haxe-lang-serv)))
+	    (add-to-list 'eglot-server-programs
+			 `(haxe-mode . eglot--haxe-ls-contact))
+
+	    ;; HACK: eglot-workspace-configuration should be used, but how?
+	    ;;       Should it be set in haxe-mode-hook?
+	    (defun my-eglot-haxe-advice (server)
+	      (when (eglot-haxe-ls-p server)
+		(jsonrpc-notify
+		 server :workspace/didChangeConfiguration
+		 (list :settings
+		       '(:haxe.executable "/usr/bin/haxe")))
+		t))
+	    (advice-add #'eglot-signal-didChangeConfiguration :before-until
+			#'my-eglot-haxe-advice))
+	(warn "Haxe Language Server not found at `%s'" haxe-lang-serv))))
+  (defun my-haxe-find-project (dir)
+    (when (eq major-mode 'haxe-mode)
+      (when-let ((file (locate-dominating-file dir "build.hxml")))
+	(cons 'haxe (file-name-directory file)))))
+  (cl-defmethod project-roots ((project (head haxe)))
+    (list (cdr project)))
+  (add-hook 'project-find-functions #'my-haxe-find-project))
+
 (provide 'init)
 ;;; init.el ends here
 
