@@ -313,6 +313,8 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (setq type-break-demo-functions '(type-break-demo-boring))
 (setq type-break-query-function 'y-or-n-p)
 
+(add-to-list 'face-remapping-alist '(eshell-prompt . font-lock-keyword-face))
+
 ;; ==================== FUNCTIONS ===================
 
 ;; Got it from here: http://www.draketo.de/light/english/emacs/babcore
