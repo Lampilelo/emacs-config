@@ -94,12 +94,15 @@
 ;;       battery power. Maybe it would be better to call 'ignore instead.
 (setq ring-bell-function
       (lambda ()
-        (let ((orig-bg (face-background 'mode-line)))
-          (set-face-background 'mode-line "black")
+        (let ((orig-bg (face-background 'mode-line))
+	      (orig-fg (face-foreground 'mode-line)))
+          (set-face-background 'mode-line orig-fg)
+	  (set-face-foreground 'mode-line orig-bg)
           (run-with-idle-timer 0.1 nil
-                               (lambda (bg)
-				 (set-face-background 'mode-line bg))
-                               orig-bg))))
+                               (lambda (bg fg)
+				 (set-face-background 'mode-line bg)
+				 (set-face-foreground 'mode-line fg))
+                               orig-bg orig-fg))))
 
 ;; Fix for helm buffers showing slowly (it was necessary in emacs 26.1
 ;; or some older version of helm but isn't anymore; it's still slightly
