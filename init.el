@@ -471,6 +471,22 @@ Works for images, pdfs, etc."
 			   vars))
     (apply #'setenv var)))
 
+(defun my-timer (time message)
+  "Show the notification with MESSAGE after TIME."
+  (interactive (list (read-string "Time: ")
+		     (read-string "Message: ")))
+  (unless (string-match-p "[[:digit:]:]+" time)
+    (user-error "[my-timer] Wrong time format"))
+  (let* ((split-time (nreverse (mapcar #'string-to-number
+				       (split-string time ":")))))
+    (setq time (apply #'+ (seq-map-indexed (lambda (value idx)
+				   (* (expt 60 idx) value))
+				 split-time)))
+    (run-at-time time nil (lambda ()
+			    (call-process "notify-send" nil nil nil
+					  "Timer finished" message)))
+    (message "Timer started. Finishing in %s seconds..." time)))
+
 ;; ==================== PACKAGES ====================
 
 ;; TODO: customize company theming for tangotango and remove monokai
