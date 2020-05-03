@@ -4,19 +4,10 @@
 
 ;; ident
 (setq
- ;; erc-nick "Oxon"
- ;; erc-server "irc.rizon.net"
  erc-prompt-for-password nil
  erc-prompt-for-nickserv-password nil)
-;;(erc :server "irc.rizon.net" :port 6667 :nick "Oxon")
 (require 'erc-track)
 (add-hook 'erc-mode-hook 'erc-track-mode)
-
-;; (defun start-irc()
-;;   "Connect to IRC."
-;;   (interactive)
-;;   (erc-tls :server erc-server :port 6697
-;; 	   :nick erc-nick))
 
 (defvar my-erc-server-info nil
   "Info on how to connect and identify on a specific server.
