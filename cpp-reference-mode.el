@@ -266,6 +266,9 @@ The value is a pair (TYPE . LINK). LINK is an absolute path to entry's doc.")
 		  (cdr (gethash
 			symbol
 			cpp-reference-database)))))
+    (and (search-forward "Defined in header" nil 'noerror)
+	 (move-beginning-of-line nil)
+	 (recenter-top-bottom 'top))
     (rename-buffer "*cpp-reference*")))
 
 (provide 'cpp-reference)
