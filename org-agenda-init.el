@@ -44,19 +44,19 @@
 	("p" "Programming note"
 	 entry
 	 (file+headline "Notes.org" "Programming")
-	 "* %?\n---\nCREATED: %u\n")
+	 "* %?\nCREATED: %u\n---\n")
 	("C" "C++ note"
 	 entry
 	 (file+headline "Notes.org" "C++")
-	 "* %?\n---\nCREATED: %u\n")
+	 "* %?\nCREATED: %u\n---\n")
 	("e" "Emacs note"
 	 entry
 	 (file+headline "Notes.org" "Emacs")
-	 "* %?\n---\nCREATED: %u\n")
+	 "* %?\nCREATED: %u\n---\n")
 	("n" "Note"
 	 entry
 	 (file+headline "Notes.org" "Other")
-	 "* %?\n---\nCREATED: %u\n")
+	 "* %?\nCREATED: %u\n---\n")
 	("c" "Contact"
 	 entry
 	 (file "Contacts.org")
