@@ -58,6 +58,11 @@
 ;; (global-hl-line-mode) ;; slows down next-line nad previous-line
 (setq inhibit-startup-screen t)
 (setq scroll-conservatively 101)
+;; Default value for scroll-conservatively when isearching.
+(add-hook 'isearch-mode-hook
+	  (lambda () (setq-local scroll-conservatively 0)))
+(add-hook 'isearch-mode-end-hook
+	  (lambda () (kill-local-variable 'scroll-conservatively)))
 (setq sentence-end-double-space nil)
 (setq bookmark-save-flag 1) ;; always save the bookmark list
 
@@ -582,9 +587,10 @@ TYPE is either 'light or 'dark symbol."
 
 (use-package swiper
   :bind
-  (("C-s" . #'counsel-grep-or-swiper)
-   ("M-s M-s" . #'isearch-forward)
-   ("M-s M-r" . #'isearch-backward)))
+  ;; (("C-s" . #'counsel-grep-or-swiper)
+  ;;  ("M-s M-s" . #'isearch-forward)
+  ;;  ("M-s M-r" . #'isearch-backward))
+  ("M-s M-s" . #'swiper))
 (use-package counsel
   :bind
   (("M-x" . #'counsel-M-x)
