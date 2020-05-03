@@ -139,16 +139,18 @@
   (org-babel-do-load-languages 'org-babel-load-languages
 			       (list (cons 'emacs-lisp t)
 				     (cons 'shell t))))
-(setq org-edit-src-content-indentation 2)
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
-(setq org-startup-indented t)
-(setq org-use-extra-keys t)
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
-(setq org-todo-keyword-faces
-      '(("IN-PROGRESS" . "yellow1")
-	("WAITING" . "gold2")))
+(setq org-edit-src-content-indentation 2
+      org-hide-emphasis-markers t
+      org-pretty-entities t
+      org-pretty-entities-include-sub-superscripts nil
+      org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-startup-indented t
+      org-use-extra-keys t
+      org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE"))
+      org-todo-keyword-faces '(("IN-PROGRESS" . "yellow1")
+			       ("WAITING" . "gold2")))
+(add-to-list 'face-remapping-alist '(org-block . font-lock-builtin-face))
 
 ;; Enable changing width of an image in org with #+ATTR_ORG: :width <width>
 (setq org-image-actual-width nil)
@@ -157,6 +159,7 @@
 ;; (setq org-ellipsis " ↴")
 
 ;; org-mode source coloring
+(use-package htmlize)
 ;; Note 1: python-pygments needs to be installed
 (with-check-for-missing-packages ("pygments") "latex minted" nil)
 (setq org-latex-listings 'minted)
