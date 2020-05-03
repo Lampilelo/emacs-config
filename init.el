@@ -324,7 +324,11 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (setq type-break-demo-functions '(type-break-demo-boring))
 (setq type-break-query-function 'y-or-n-p)
 
-(add-to-list 'face-remapping-alist '(eshell-prompt . font-lock-keyword-face))
+(dolist (spec '((eshell-prompt . font-lock-keyword-face)
+		(erc-timestamp-face . font-lock-constant-face)))
+  (add-to-list 'face-remapping-alist spec))
+
+(setq indent-tabs-mode nil)
 
 ;; ==================== FUNCTIONS ===================
 
@@ -337,7 +341,8 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 
 If you unset the urgency, you still have to visit the frame to make the urgency setting disappear (at least in KDE)."
   (let* ((wm-hints (append (x-window-property
-			    "WM_HINTS" frame "WM_HINTS" source nil t) nil))
+			    "WM_HINTS" frame "WM_HINTS" source nil t)
+			   nil))
 	 (flags (car wm-hints)))
     (setcar wm-hints
 	    (if arg
@@ -453,6 +458,7 @@ Works for images, pdfs, etc."
 
 ;; FIXME: For multiple entries of the same variable it sets only the last one.
 ;;        Referred env variables are resolved before modifying any of them.
+(warn "Fix the loading of the environment from .zshrc")
 (let ((vars
        (with-temp-buffer
 	 (insert-file-contents-literally "~/.zshrc")
@@ -505,13 +511,14 @@ Can be a symbol or a function that takes no arguments and returns a symbol.")
 			 '(leuven)))))
   (defun my-random-light-theme ()
     (elt themes (random (length themes)))))
-(setq my-theme-light #'my-random-light-theme)
+;; (setq my-theme-light #'my-random-light-theme)
+(setq my-theme-light 'one-light)
 
 (defvar my-theme-after-switch-hook nil
   "Functions to call after theme is switched with `my-theme-switch'.
 
 A function should take one argument - the type of the theme.")
-(funcall #'my-random-light-theme)
+
 (defun my-theme-switch (&optional type)
   "Switch between dark and light themes specified in `my-theme-light' and
 `my-theme-dark' variables.
@@ -557,18 +564,25 @@ TYPE is either 'light or 'dark symbol."
 
 (add-hook 'my-theme-after-switch-hook #'my-theme-after-load-leuven)
 
-(if (or (daemonp) (display-graphic-p))
-    (progn
-      (my-theme-switch 'light)
-      (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
-      ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
-      ;; If Symbola is not available, use DejaVu Sans (it's not as complete).
-      (if (member "Symbola" (font-family-list))
-	  (set-fontset-font t (cons #x1f030 #x1f644)
-			    "Symbola" nil 'prepend)
-	(set-fontset-font t (cons #x1f030 #x1f644)
-			  "DejaVu Sans" nil 'prepend)))
-  (my-theme-switch 'dark))
+(use-package org-beautify-theme
+  :init
+  (defun my-org-beautify-enable (arg)
+    (run-at-time
+     1 nil
+     (lambda () (load-theme 'org-beautify 't))))
+  (add-hook 'my-theme-after-switch-hook #'my-org-beautify-enable))
+
+
+(when (or (daemonp) (display-graphic-p))
+  (my-theme-switch 'light)
+  (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
+  ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
+  ;; If Symbola is not available, use DejaVu Sans (it's not as complete).
+  (if (member "Symbola" (font-family-list))
+      (set-fontset-font t (cons #x1f030 #x1f644)
+			"Symbola" nil 'prepend)
+    (set-fontset-font t (cons #x1f030 #x1f644)
+		      "DejaVu Sans" nil 'prepend)))
 
 ;; IVY
 (use-package flx)  ;better matching for Ivy
@@ -690,12 +704,13 @@ We need to exit that mode to call company-yasnippet."
 (use-package eglot
   :init
   (with-eval-after-load 'cc-mode
-    (add-hook 'c++-mode-hook #'eglot-ensure)
+    ;; (add-hook 'c++-mode-hook #'eglot-ensure)
     (define-key c++-mode-map (kbd "C-c C-r") #'eglot-rename))
 
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
   (setq company-clang-modes nil)
+  (setq eglot-autoshutdown t)
   :config
   (push (list 'c++-mode ccls-executable)
 	eglot-server-programs)
@@ -711,8 +726,8 @@ We need to exit that mode to call company-yasnippet."
 	     eglot--servers-by-project))
   (defun my-eglot-restart ()
     (interactive)
-    (if (eglot--current-server)
-	(progn (eglot-shutdown (eglot--current-server))
+    (if (eglot-current-server)
+	(progn (eglot-shutdown (eglot-current-server))
 	       (call-interactively #'eglot))
       (message "Server not running in the current buffer")))
   (defalias 'eglot-shutdown-all #'my-eglot-shutdown-all)
@@ -753,13 +768,15 @@ We need to exit that mode to call company-yasnippet."
 ;; TODO: Configure cedit's map (cedit.el has a good documentation inside)
 ;; (use-package cedit
 ;;   :bind (:map c-mode-base-map
-;; 	      ()))
+;; 	      ("M-k" . #'cedit-raise)))
 
 ;; I don't use it so it's disabled for now
 ;; (use-package rmsbolt)
 
 ;; C++ compile functions
 (with-eval-after-load 'cc-mode
+  (and (load (concat user-emacs-directory "cpp-editing-cmds.el") t)
+       (define-key c-mode-base-map (kbd "C-M-t") #'cppedit-transpose-sexps))
   (defvar my/c++-build-systems-alist
     '(("meson.build" . my/c++--meson-compile)
       ("CMakeLists.txt" . my/c++--cmake-compile))
@@ -910,7 +927,7 @@ Please initialize version control or build-system project.")))))
   (define-key c++-mode-map (kbd "C-c C-c") #'my/c++-compile)
   (define-key c++-mode-map (kbd "C-.") #'xref-find-definitions-other-window)
   (define-key c++-mode-map (kbd "C-,") #'my-find-references)
-  (define-key c++-mode-map (kbd "M-,") #'my-grep-references)
+  ;; (define-key c++-mode-map (kbd "M-,") #'my-grep-references)
   (define-key c++-mode-map (kbd "M-i") #'counsel-imenu)
   (define-key c++-mode-map (kbd "M-[") #'xref-pop-marker-stack)
 
@@ -1368,6 +1385,15 @@ Return nil if not succeeded."
 ;; end of wgrep
 
 ;; nov.el (epub)
+;; (add-to-list 'auto-mode-alist (cons "\\.epub\\'" 'nov-mode))
+;; (let ((nov-file "/ssd-data/lampilelo/Programming/nov.el/nov.elc"))
+;;   (autoload 'nov-mode nov-file nil t)
+;;   (eval-after-load nov-file '(warn "Using local nov.el"))
+;;   (setq nov-text-width 77)
+;;   (with-eval-after-load 'nov
+;;     (define-key nov-mode-map (kbd "<up>") #'scroll-down-line)
+;;     (define-key nov-mode-map (kbd "<down>") #'scroll-up-line)))
+
 (use-package nov
   :init
   (add-to-list 'auto-mode-alist (cons "\\.epub\\'" 'nov-mode))
@@ -1382,6 +1408,14 @@ Return nil if not succeeded."
   :init
   (setq haskell-compile-command
 	"ghc -Wall -ferror-spans -fforce-recomp -dynamic %s")
+  (eval-after-load 'haskell-mode
+    '(setq flymake-allowed-file-name-masks
+	   (remove '("\\.l?hs\\'" haskell-flymake-init)
+		   flymake-allowed-file-name-masks)))
+  (with-eval-after-load 'eglot
+    (add-to-list
+     'eglot-server-programs
+     '(haskell-mode . ("/home/lampilelo/docker/haskell-ide-engine/installed/bin/hie" "--lsp"))))
   :bind (:map haskell-mode-map
 	      ("C-c C-c" . haskell-compile)))
 ;; end of haskell
@@ -1474,9 +1508,9 @@ Return nil if not succeeded."
   ;;  minibuffer-local-completion-map)
   )
 
-(use-package ox-hugo
-  :init
-  (eval-after-load 'ox '(require 'ox-hugo)))
+;; (use-package ox-hugo
+;;   :init
+;;   (eval-after-load 'ox '(require 'ox-hugo)))
 
 (defun my-translate--maybe-start-goldendict ()
   (unless (= 0 (call-process "pidof" nil nil nil "goldendict"))
@@ -1551,8 +1585,21 @@ Return nil if not succeeded."
     (list (cdr project)))
   (add-hook 'project-find-functions #'my-haxe-find-project))
 
+;; LUA + fennel
+(use-package lua-mode
+  :init
+  (use-package company-lua
+    :init
+    (eval-after-load 'company '(add-to-list 'company-backends 'company-lua))
+    :config
+    (add-hook 'lua-mode-hook
+	      (lambda () (setq-local company-lua-interpreter 'love))))
+  (use-package flymake-lua
+    :config
+    (add-hook 'lua-mode-hook #'flymake-lua-load)))
+(use-package fennel-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.fnl\\'" . fennel-mode)))
+
 (provide 'init)
 ;;; init.el ends here
-
-(put 'erase-buffer 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
