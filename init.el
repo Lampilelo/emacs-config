@@ -861,6 +861,15 @@ or nil if not found."
 			  (expand-file-name dir)))
 		      ;; if cquery didn't find root, find it by git
 		      (vc-git-root buffer-file-name)))))
+  (defun my-c++-find-project (dir)
+    (let* ((default-directory dir)
+	   (root (my/c++--find-project-root)))
+      (when root
+	(cons 'cpp root))))
+  (cl-defmethod project-roots ((project (head cpp)))
+    (list (cdr project)))
+  (add-hook 'project-find-functions #'my-c++-find-project t)
+
 
   (defvar my/c++-compile-before-hook nil)
   (defvar my/c++-compile-after-hook nil)

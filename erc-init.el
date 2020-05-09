@@ -316,3 +316,13 @@ shown.")
 (add-hook 'erc-insert-pre-hook #'my-erc-filter-irrelevant-messages t)
 
 ;; =============================================
+
+;; (defun my-erc-quit-all-servers ()
+;;   "Quit all open ERC sessions"
+;;  (mapc (lambda (buffer)
+;; 	 (when (erc-server-buffer-p buffer)
+;; 	   (with-current-buffer buffer
+;; 	     (erc-cmd-QUIT (erc-quit-reason-normal)))))
+;;        (buffer-list)))
+
+;; (add-hook 'kill-emacs-hook #'my-erc-quit-all-servers)
