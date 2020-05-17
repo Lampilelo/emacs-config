@@ -72,6 +72,7 @@
 	swiper
 	transpose-sexps
 	transpose-words
+	wdired-capitalize-word
 	wdired-next-line
 	wdired-previous-line
 	wdired-upcase-word
@@ -92,6 +93,7 @@
 	dired-previous-line
 	end-of-buffer
 	helm-buffers-list
+	helm-for-files
 	iedit-switch-to-mc-mode
 	wdired-finish-edit
 	yank-rectangle
