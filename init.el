@@ -74,15 +74,13 @@
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
-;; adding this variable to $HOME/.profile works but not on an instance
-;; run as a systemd service, I could include "Environment=INFOPATH=whatever"
-;; into the service file (systemctl --user edit emacs) or create a service
-;; just for setting env
-;; (setenv "INFOPATH"
-;; 	(substitute-env-vars "/usr/share/info/:$HOME/.local/share/info/"))
-(setq Info-additional-directory-list
-      `("/usr/local/share/info/"
-	,(substitute-env-vars "$HOME/.guix-profile/share/info")))
+;; If a new info file is added to a directory from Info-default-directory-list
+;; install-info DIR/FILE DIR/dir needs to be called for Emacs to be able to
+;; detect it. Info-default-directory-list, Info-additional-directory-list.
+(dolist (dir '("$HOME/.local/share/info/"
+	       "$HOME/.guix-profile/share/info"))
+  (add-to-list 'Info-additional-directory-list
+	       (substitute-env-in-file-name dir)))
 
 (with-eval-after-load 'man
   (defun my-Man-open-in-same-buffer ()
