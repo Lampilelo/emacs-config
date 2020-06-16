@@ -14,8 +14,6 @@ The cdr of every entry is a plist of setters (:set) and getters (:get).")
   (unless (member (file-name-extension filename) ext-list)
     (error "Wrong file type" filename)))
 
-;; FIXME: The tags can be lowercase and capitalized too, so currently it
-;;        doesn't overwrite these. Just adds new ones.
 (defun media--set-vorbis-tags (artist album year title track-num filename)
   (setq filename (shell-quote-argument filename))
   (media--check-extension media--vorbis-exts filename)
@@ -23,7 +21,7 @@ The cdr of every entry is a plist of setters (:set) and getters (:get).")
     (error "Could not find vorbiscomment"))
   (let ((tags (mapcar (lambda (tag)
 			(string-match "\\([^=]+?\\)=\\(.*\\)" tag)
-			(cons (match-string-no-properties 1 tag)
+			(cons (upcase (match-string-no-properties 1 tag))
 			      (match-string-no-properties 2 tag)))
 		      (process-lines "vorbiscomment" "--list" filename))))
     (dolist (tag `(("ARTIST" . ,artist)
