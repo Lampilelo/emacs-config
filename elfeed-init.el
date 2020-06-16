@@ -29,11 +29,13 @@ a terminal application.
 When used interactively URL is the url at point.
 NO-VIDEO can be set with a prefix argument \\[universal-argument]."
   (interactive (list (thing-at-point 'url) current-prefix-arg))
+  (cl-check-type url string "Expected URL as string")
   (if no-video
       (my-start-process-show-errors
        "mpv"
-       "i3-sensible-terminal"
-       "-e" (concat "mpv --no-video '" url "'"))
+       "alacritty"
+       "-e" ;(concat "mpv --no-video '" url "'")
+       "mpv" "--no-video" url)
     (my-start-process-show-errors
      "mpv" "mpv"
      (format "--ytdl-raw-options=%s%s%s"
@@ -46,6 +48,7 @@ NO-VIDEO can be set with a prefix argument \\[universal-argument]."
   "Return the url of an mp4 file given bitchute video's URL."
   (when (string-match "/embed/" url)
     (setq url (replace-match "/video/" nil nil url)))
+  ;; TODO: Try 3 times for a response lower than 400
   (with-current-buffer (url-retrieve-synchronously url)
     (let ((dom (libxml-parse-html-region (point-min) (point-max))))
       (dom-attr (car (dom-children (dom-by-id dom "player"))) 'src))))

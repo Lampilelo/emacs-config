@@ -19,14 +19,18 @@
 	c-electric-semi&comma
 	c-electric-slash
 	c-electric-star
+	c-end-of-statement
 	c-indent-line-or-region
 	counsel-M-x
+	cppedit-transpose-sexps
+	dabbrev-expand
 	delete-horizontal-space
 	electric-newline-and-maybe-indent
 	electric-pair-delete-pair
 	end-of-defun
 	end-of-visual-line
 	forward-sexp
+	haskell-indentation-common-electric-command
 	indent-for-tab-command
 	indent-region
 	isearch-forward-regexp
@@ -38,6 +42,7 @@
 	mark-sexp
 	my-kill-hybrid-sexp
 	my-wrap-round
+	nxml-electric-slash
 	org-beginning-of-line
 	org-cycle
 	org-delete-char

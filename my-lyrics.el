@@ -19,6 +19,9 @@
       (message "Could not determine song title or artist.\nPlease check if metadata is present in current playing file (ID3 tags for mp3, Vorbis comments for flac, etc.)"))
      (t (lyrics (cadr info) (caddr info))))))
 
+;; This could be used to set the default behavior
+;; (setq lyrics-current-song-function ...)
+
 ;; key for refreshing lyrics if there's playing a new song
 (define-key lyrics-show-mode-map (kbd "g") #'my-lyrics)
 (define-key lyrics-show-mode-map (kbd "n") #'scroll-up-line)

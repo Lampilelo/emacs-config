@@ -55,6 +55,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(blink-cursor-mode -1)
 ;; (global-hl-line-mode) ;; slows down next-line nad previous-line
 (setq inhibit-startup-screen t)
 (setq scroll-conservatively 101)
@@ -77,6 +78,7 @@
 ;; If a new info file is added to a directory from Info-default-directory-list
 ;; install-info DIR/FILE DIR/dir needs to be called for Emacs to be able to
 ;; detect it. Info-default-directory-list, Info-additional-directory-list.
+;; (info "(efaq) Installing Texinfo documentation")
 (dolist (dir '("$HOME/.local/share/info/"
 	       "$HOME/.guix-profile/share/info"))
   (add-to-list 'Info-additional-directory-list
@@ -127,7 +129,7 @@
 (load "~/.emacs.d/missing-packages.el")
 
 (when (with-check-for-missing-packages ("gnutls-cli") "gnutls" nil)
-  (error "gnutls not installed"))
+  (error "GnuTLS not installed"))
 
 ;; org mode customizations
 (use-package org
@@ -192,7 +194,8 @@
    org-export-smart-quotes-alist))
 ;; Default to polish language for export
 ;; To change language per document add i.e. '#+LANGUAGE: en' to the org file
-(setq org-export-default-language "pl")
+(setq org-export-default-language "pl"
+      org-export-with-smart-quotes t)
 
 (use-package org-bullets
   :init
@@ -328,6 +331,12 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 
 (setq indent-tabs-mode nil)
 
+(eval-after-load 'iso-transl
+  '(let ((map (make-sparse-keymap)))
+     (define-key map (kbd "c") [?č])
+     (define-key map (kbd "C") [?Č])
+     (define-key iso-transl-ctl-x-8-map (kbd "v") map)))
+
 ;; ==================== FUNCTIONS ===================
 
 ;; Got it from here: http://www.draketo.de/light/english/emacs/babcore
@@ -426,6 +435,7 @@ Works for images, pdfs, etc."
 		  (normal-mode))))
 
 (defun my-current-file-name ()
+  "Show and save to the kill ring and the X clipboard current file's name."
   (interactive)
   (let ((file-name (buffer-file-name)))
    (with-temp-buffer
@@ -704,16 +714,13 @@ We need to exit that mode to call company-yasnippet."
 (add-hook 'c-mode-common-hook #'subword-mode)
 
 (with-check-for-missing-packages ("ccls") "ccls" nil
-  (use-package ccls
-    :init
-    (setq ccls-executable "/usr/bin/ccls")
-    :config
-    ;; (eval-after-load 'lsp-clients
-    ;;   '(remhash 'clangd lsp-clients))
-    (setq ccls-args '("-Wall" "-Wextra"))
-    (advice-add 'ccls--suggest-project-root
-		:after-until
-		#'my/c++--find-project-root)))
+  (setq ccls-executable
+		  "/home/lampilelo/Programming/ccls/build/Release/ccls"))
+
+(use-package eldoc :pin gnu)
+(use-package flymake :pin gnu)
+(use-package xref :pin gnu)
+(use-package project :pin gnu)
 
 (use-package eglot
   :init
@@ -726,8 +733,34 @@ We need to exit that mode to call company-yasnippet."
   (setq company-clang-modes nil)
   (setq eglot-autoshutdown t)
   :config
-  (push (list 'c++-mode ccls-executable)
-	eglot-server-programs)
+  (push (list 'c++-mode ccls-executable) eglot-server-programs)
+  (push (list 'c-mode ccls-executable) eglot-server-programs)
+  (defun my-eglot-imenu-flatten-c-mode-advice (oldfun)
+    (if (eq major-mode 'c-mode)
+	(seq-reduce (lambda (result category)
+		      (mapcar
+		       (lambda (elem)
+			 (setf (car elem)
+			       (concat (car elem) "\t(" (car category) ")"))
+			 elem)
+		       (cdr category))
+		      (append (cdr category) result))
+		    (funcall oldfun)
+		    '())
+      (funcall oldfun)))
+  (advice-add 'eglot-imenu :around #'my-eglot-imenu-flatten-c-mode-advice)
+  (defun my-company-add-space-before-args (arg)
+    (when (and (eq major-mode 'c-mode)
+	       (stringp arg))
+      (save-excursion
+	(cond
+	 ((looking-back "(" 0)
+	  (backward-char 1)
+	  (insert ?\ ))
+	 ((looking-back "()" 0)
+	  (backward-sexp)
+	  (insert ?\ ))))))
+  (add-hook 'company-after-completion-hook #'my-company-add-space-before-args)
   (defun my-eglot-show-help ()
     (interactive)
     (display-buffer (eglot--help-buffer)))
@@ -747,9 +780,9 @@ We need to exit that mode to call company-yasnippet."
   (defalias 'eglot-shutdown-all #'my-eglot-shutdown-all)
   (defalias 'eglot-restart #'my-eglot-restart))
 
-(use-package eldoc-box
-  :after eglot
-  :hook (eldoc-box-hover-mode . eglot--managed-mode))
+;; (use-package eldoc-box
+;;   :after eglot
+;;   :hook (eldoc-box-hover-mode . eglot--managed-mode))
 
 ;; eglot uses flymake that doesn't show errors in the minibuffer, so:
 ;; (add-to-list 'load-path "~/.emacs.d/emacs-flymake-cursor")
@@ -925,7 +958,7 @@ Please initialize version control or build-system project.")))))
   (setq cpp-reference-index-path
 	"~/cppreference-doc")
   (setq cpp-reference-wiki-path
-	"~/cppreference-doc/reference/en.cppreference.com/w/")
+	"~/cppreference-doc/reference/en")
   ;; (setq cpp-reference-wiki-path
   ;; 	"/usr/share/doc/cppreference/en/")
 
@@ -1032,8 +1065,12 @@ is added."
 
 (use-package helm-xref
   :init
-  (autoload 'helm-xref-show-xrefs "helm-xref")
-  (setq xref-show-xrefs-function #'helm-xref-show-xrefs))
+  (eval-after-load 'xref '(require 'helm-xref))
+  ;; (autoload 'helm-xref-show-xrefs "helm-xref")
+  :config
+  (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27)
+  (setq xref-show-definitions-function 'helm-xref-show-defs-27))
+
 
 (use-package highlight-parentheses
   :defer nil
@@ -1143,7 +1180,11 @@ is added."
 (use-package whole-line-or-region
   :diminish (whole-line-or-region-mode whole-line-or-region-local-mode)
   :init
-  (whole-line-or-region-global-mode t))
+  (whole-line-or-region-global-mode t)
+  :config
+  (setcar (alist-get 'kill-ring-save whole-line-or-region-extensions-alist)
+	  'kill-ring-save)
+  (whole-line-or-region-bind-keys))
 
 (use-package dockerfile-mode)
 
@@ -1319,39 +1360,52 @@ is added."
 (setq gnus-read-active-file nil)
 
 ;; INFO-LOOKMORE
-;; TODO: Switch to info-look.el (which is built-in)
 ;; ftp://download.tuxfamily.org/user42/info-lookmore.el
-(let ((file "~/.emacs.d/info-lookmore.el"))
-  (when (file-exists-p file)
-    (load file)
-    ;; Add Scheme manual to lookmore
-    ;; (info-lookmore-add-doc
-    ;;  'symbol 'scheme-mode
-    ;;  '("(r5rs) Index" nil nil nil))
-    (info-lookmore-add-doc
-     'symbol 'scheme-mode
-     '("(guile) Procedure Index" nil nil nil))
-    (info-lookmore-add-doc
-     'symbol 'scheme-mode
-     '("(guile) Variable Index" nil nil nil))
-    (info-lookmore-add-doc
-     'symbol 'scheme-mode
-     '("(guile) R5RS Index" nil nil nil))
-    (info-lookmore-add-doc
-     'symbol 'scheme-mode
-     '("(guile) Type Index" nil nil nil))
-    (info-lookmore-add-doc
-     'symbol 'scheme-mode
-     '("(guile) Concept Index" nil nil nil))
 
-    ;; Python
-    (info-lookup-add-help :mode 'python-mode
-			  :regexp "[[:alnum:]_()<> )]+"
-			  :doc-spec
-			  '(("(python) Index" nil "")))
-    (info-lookmore-add-doc
-     'symbol 'python-mode
-     '("(python) Index" nil nil nil))))
+(with-eval-after-load 'info-look
+  (info-lookup-add-help
+   :mode 'scheme-mode
+   :regexp "[^()`'‘’,\" \t\n]+"
+   :doc-spec '(("(guile) Procedure Index" nil nil nil)
+	       ("(guile) Variable Index" nil nil nil)
+	       ("(guile) R5RS Index" nil nil nil)
+	       ("(guile) Type Index" nil nil nil)
+	       ("(guile) Concept Index" nil nil nil)
+	       ("(r5rs)Index" nil "^[ 	]+-+ [^:]+:[ 	]*" "\\b")))
+  ;; (info-lookup-add-help
+  ;;  :mode 'c-mode
+  ;;  :regexp "\\(?:scm\\|SCM\\)_.*"
+  ;;  :doc-spec '(("(guile) Procedure Index" nil nil nil)))
+  (info-lookup-add-help :mode 'python-mode
+			:regexp "[[:alnum:]_()<> )]+"
+			:doc-spec
+			'(("(python) Index" nil ""))))
+
+;; FIXME: Make it a function since dir-locals can't load a mode with just
+;;        setting the variable. The function should be sufficient.
+(define-minor-mode c-guile-mode
+  "Minor mode enabling guile documentation when using `info-lookup-symbol' in
+C files.
+
+The documentation will be added to `c-mode' globally and be visible from the
+outside of `c-guile-mode'."
+  nil " Cguile" nil
+  (defun c-guile--translation-func (item)
+    (and (string-match-p "^\\*?\\(?:scm\\|SCM\\)_.*" item)
+	 (concat item " (guile)")))
+  (with-eval-after-load 'info-look
+    (info-lookup-maybe-add-help
+     :mode 'c-guile-mode
+     :regexp "\\(?:scm\\|SCM\\)_.*"
+     :doc-spec '(("(guile) Procedure Index" c-guile--translation-func nil nil)
+		 ("(guile) Variable Index" c-guile--translation-func nil nil)
+		 ("(guile) Type Index" c-guile--translation-func nil nil)))
+    (let* ((mode-value (info-lookup->mode-value 'symbol 'c-mode))
+	   (lst (nth 5 mode-value)))
+      (unless (member 'c-guile-mode lst)
+	(add-to-list 'lst 'c-guile-mode 'append)
+	(setcar (nthcdr 5 mode-value) lst)
+	(info-lookup-reset)))))
 
 ;; dpaste (like pastebin)
 ;; TODO: Interactively get syntax info to font-lock the paste
