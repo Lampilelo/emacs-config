@@ -30,28 +30,22 @@ When used interactively URL is the url at point.
 NO-VIDEO can be set with a prefix argument \\[universal-argument]."
   (interactive (list (thing-at-point 'url) current-prefix-arg))
   (cl-check-type url string "Expected URL as string")
-  (if no-video
-      (my-start-process-show-errors
-       "mpv"
-       "alacritty"
-       "-e" ;(concat "mpv --no-video '" url "'")
-       "mpv" "--no-video" url)
-    (my-start-process-show-errors
-     "mpv" "mpv"
-     (format "--ytdl-raw-options=%s%s%s"
-	     "format=bestvideo[height<="
-	     (or (display-pixel-height) 1080)
-	     "]+bestaudio")
-     url)))
-
-(defun my-elfeed--bitchute-video-url (url)
-  "Return the url of an mp4 file given bitchute video's URL."
-  (when (string-match "/embed/" url)
-    (setq url (replace-match "/video/" nil nil url)))
-  ;; TODO: Try 3 times for a response lower than 400
-  (with-current-buffer (url-retrieve-synchronously url)
-    (let ((dom (libxml-parse-html-region (point-min) (point-max))))
-      (dom-attr (car (dom-children (dom-by-id dom "player"))) 'src))))
+  (cond (no-video
+	 (my-start-process-show-errors
+	  "mpv"
+	  "alacritty"
+	  "-e" ;(concat "mpv --no-video '" url "'")
+	  "mpv" "--no-video" url))
+	((string-match-p "https?://\\(?:www\\.\\)?bitchute\\." url)
+	 (my-start-process-show-errors "mpv" "mpv" url))
+	(t
+	 (my-start-process-show-errors
+	  "mpv" "mpv"
+	  (format "--ytdl-raw-options=%s%s%s"
+		  "format=bestvideo[height<="
+		  (or (display-pixel-height) 1080)
+		  "]+bestaudio")
+	  url))))
 
 (defun my-elfeed-open-link ()
   (interactive)
@@ -68,12 +62,10 @@ NO-VIDEO can be set with a prefix argument \\[universal-argument]."
 				   (nth 1 (car enclosures))))
 	      (my-elfeed-mpv-play (caar enclosures) 'no-video)
 	    ;; else open in mpv proper
-	    (cond
-	     ((string-match-p "bitchute.com/\\(embed\\|video\\)" it)
-	      (my-elfeed-mpv-play (my-elfeed--bitchute-video-url it)))
-	     (t (my-elfeed-mpv-play it))))
+	    (my-elfeed-mpv-play it))
 	  (elfeed-search-show-entry entry)))
     (mapc #'elfeed-search-update-entry entries)))
+
 
 (define-key elfeed-search-mode-map (kbd "v") #'my-elfeed-open-link)
 
