@@ -1,40 +1,28 @@
 ;;; init.el --- Initialization file for Emacs -*- lexical-binding: t; -*-
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
-(package-initialize)
+(when (< emacs-major-version 27)
+  (package-initialize))
 (setq package-archives
       '(;("melpa-stable" . "https://stable.melpa.org/packages/")
 	("melpa" . "https://melpa.org/packages/")
 	("gnu" . "https://elpa.gnu.org/packages/")
 	("org" . "https://orgmode.org/elpa/")))
 
-;; Privacy and security while downloading packages
-;; it needs gnutls(-bin) and python-certifi packages to work
-(require 'tls)
-;; (let ((trustfile
-;;        (replace-regexp-in-string
-;;         "\\\\" "/"
-;;         (replace-regexp-in-string
-;;          "\n" ""
-;;          (shell-command-to-string "python -m certifi")))))
-;;   (setq tls-program
-;;         (list
-;;          (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-;;                  (if (eq window-system 'w32) ".exe" "") trustfile)))
-;;   (setq gnutls-verify-error t)
-;;   (setq gnutls-trustfiles (list trustfile)))
+(when (< emacs-major-version 27)
+  (require 'tls)
+  (defun safe-tls-disable-gnutls (&rest args) nil)
+  (advice-add 'gnutls-available-p :override 'safe-tls-disable-gnutls)
+  (setq tls-program
+	'("gnutls-cli -p %p --dh-bits=2048 --ocsp --x509cafile=%t \
+--priority='SECURE192:+SECURE128:-VERS-ALL:+VERS-TLS1.2:%%PROFILE_MEDIUM' %h")))
 
-;; this is from: https://github.com/antifuchs/safe-tls-defaults-mode/blob/master/safe-tls-defaults.el
-;; reddit topic: https://old.reddit.com/r/emacs/comments/8sykl1/emacs_tls_defaults_are_downright_dangerous/
-(defun safe-tls-disable-gnutls (&rest args) nil)
-(advice-add 'gnutls-available-p :override 'safe-tls-disable-gnutls)
-(setq tls-program
-      '("gnutls-cli -p %p --dh-bits=2048 --ocsp --x509cafile=%t \
---priority='SECURE192:+SECURE128:-VERS-ALL:+VERS-TLS1.2:%%PROFILE_MEDIUM' %h"))
 (setq gnutls-verify-error t)
 (setq tls-checktrust t)
 (setq network-security-level 'high)
 ;; (setq nsm-save-host-names t)
+
+(setq network-stream-use-client-certificates t)
 
 (setq load-prefer-newer t)
 
@@ -182,14 +170,14 @@
 (eval-after-load 'ox
   '(push
    '("pl"
-     (opening-double-quote :utf-8 "„"  :html "&bdquo;"
+     (primary-opening :utf-8 "„"  :html "&bdquo;"
 			   :latex ",," :texinfo "@quotedblbase{}")
-     (closing-double-quote :utf-8 "”"  :html "&rdquo;"
+     (primary-closing :utf-8 "”"  :html "&rdquo;"
 			   :latex "''" :texinfo "@quotedblright{}")
-     (opening-single-quote :utf-8 "‚"  :html "&sbquo;"
-			   :latex "," :texinfo "@quotesinglbase{}")
-     (closing-single-quote :utf-8 "’"  :html "&rsquo;"
-			   :latex "'" :texinfo "@quoteright{}")
+     (secondary-opening :utf-8 "»"  :html "&raquo;"
+			   :latex ">>" :texinfo "@guillemetright{}")
+     (secondary-closing :utf-8 "«"  :html "&laquo;"
+			   :latex "<<" :texinfo "@guillemetleft{}")
      (apostrophe :utf-8 "’" :html "&rsquo;"))
    org-export-smart-quotes-alist))
 ;; Default to polish language for export
@@ -228,7 +216,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 			("c++" "cpp")
 			("emacs-lisp" "elisp")
 			("lisp-interaction" "elisp")
-			(t current-mode)))))))
+			(_ current-mode)))))))
       ;; check if helm-info-CURRENT_MODE exists, if so - call it
       ;; otherwise call generic helm-info
       (if (not (eq (fboundp fun-to-call) nil))
@@ -253,7 +241,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
   (defun my-dired-open-file-with-default-tool ()
     "Open FILE with the default tool on this platform."
     (interactive)
-    (dired-do-shell-command
+    (dired-do-async-shell-command
      (cond ((eq system-type 'gnu/linux)
 	    "xdg-open")
 	   ((or (eq system-type 'darwin) ;; Mac OS X
@@ -321,7 +309,7 @@ With a prefix argument \\[universal-argument], just call generic ‘helm-info’
 (setq calendar-week-start-day 1)
 
 ;; Type break config
-(type-break-mode 1)
+;; (type-break-mode 1)
 (setq type-break-demo-functions '(type-break-demo-boring))
 (setq type-break-query-function 'y-or-n-p)
 
@@ -462,22 +450,17 @@ Works for images, pdfs, etc."
 		   (consp export)
 		   (= (length export) 2))
 	(user-error "Error: Bad export: %s" export-directive))
-      (list (car export) (substitute-env-vars (cadr export))))))
+      (list (car export)
+	    (string-trim (shell-command-to-string
+			  (concat "echo " (cadr export))))))))
 
-;; FIXME: For multiple entries of the same variable it sets only the last one.
-;;        Referred env variables are resolved before modifying any of them.
-(warn "Fix the loading of the environment from .zshrc")
-(let ((vars
-       (with-temp-buffer
-	 (insert-file-contents-literally "~/.zshrc")
-	 (goto-char (point-min))
-	 (cl-loop
-	  while (re-search-forward "^export [[:alnum:]_]+=.*$" nil t)
-	  collect (my-env-from-export (match-string-no-properties 0))))))
-  (dolist (var (seq-filter (lambda (item)
-			     (member (car item) my-env-to-import))
-			   vars))
-    (apply #'setenv var)))
+(with-temp-buffer
+  (insert-file-contents-literally "~/.zshrc")
+  (goto-char (point-min))
+  (while (re-search-forward "^export [[:alnum:]_]+=.*$" nil t)
+    (let ((var (my-env-from-export (match-string-no-properties 0))))
+      (when (member (car var) my-env-to-import)
+	(apply #'setenv var)))))
 
 (defun my-timer (time message)
   "Show the notification with MESSAGE after TIME."
@@ -598,7 +581,7 @@ TYPE is either 'light or 'dark symbol."
 
 
 (when (or (daemonp) (display-graphic-p))
-  (my-theme-switch 'light)
+  (my-theme-switch 'dark)
   (set-face-attribute 'default nil :height 120 :family "DejaVu Sans Mono")
   ;; Set font for emoticons since DejaVu Sans Mono doesn't have them.
   ;; If Symbola is not available, use DejaVu Sans (it's not as complete).
@@ -718,7 +701,9 @@ We need to exit that mode to call company-yasnippet."
 		  "/home/lampilelo/Programming/ccls/build/Release/ccls"))
 
 (use-package eldoc :pin gnu)
-(use-package flymake :pin gnu)
+(use-package flymake :pin gnu
+  :init
+  (setq flymake-start-on-save-buffer t))
 (use-package xref :pin gnu)
 (use-package project :pin gnu)
 
@@ -899,7 +884,7 @@ or nil if not found."
 	(cons 'cpp root))))
   (cl-defmethod project-roots ((project (head cpp)))
     (list (cdr project)))
-  (add-hook 'project-find-functions #'my-c++-find-project t)
+  (add-hook 'project-find-functions #'my-c++-find-project)
 
 
   (defvar my/c++-compile-before-hook nil)
@@ -1125,15 +1110,36 @@ is added."
       (cons -1 (1+ pos)))))
 ;; to remove advice: (advice-remove #'show-paren--categorize-paren nil)
 
-(defun my-wrap-round ()
-  "Wrap the following sexp in parentheses."
-  (interactive)
-  (save-excursion
-    (insert "(")
-    (forward-sexp)
-    (insert ")"))
-  (indent-sexp)
-  (forward-char))
+;; TODO: Maybe use 'C-( C-(' for it, making C-( a prefix command.
+;;       It would let you select the wrapping char (instead of using prefix
+;;       arg).
+;; TODO: The region thing is redundant because of electric-pair-mode. It's
+;;       only useful in c++-mode because syntax table doesn't specify < as a
+;;       paren char.
+(defun my-wrap-round (&optional prefix beg end)
+  "Wrap the following sexp in parentheses.
+
+If \\[universal-argument\\] is used, wrap with a selected char in accordance
+to the mode's syntax-table.
+If region is selected, wrap the region instead of the sexp."
+  (interactive "P\nr")
+  (let* ((ch (if prefix (read-char "Input wrapping char") ?\())
+	 (syntax (electric-pair-syntax-info ch)))
+    (when (and (eq major-mode 'c++-mode)
+	       (eq ch ?\<))
+      (setq syntax (list ch ?\> nil nil)))
+    (when syntax
+      (save-excursion
+	(unless (region-active-p)
+	  (setq beg (point))
+	  (setq end (progn (forward-sexp 1) (point))))
+	(goto-char beg)
+	(insert ch)
+	(goto-char (1+ end))
+	(insert (cadr syntax)))
+      (goto-char beg)
+      (indent-sexp)
+      (forward-char))))
 (global-set-key (kbd "C-(") #'my-wrap-round)
 
 ;; (with-eval-after-load 'cc-mode
@@ -1215,6 +1221,11 @@ is added."
 ;; emacs' notifications.el
 (use-package notifications)
 
+;; ACE for switching windows
+;; (use-package ace-window
+;;   ;; TODO: Bind ace-delete-window
+;;   :bind ("M-o" . #'ace-window))
+
 ;; Avy for jumping to char
 (use-package avy
   :config
@@ -1294,6 +1305,7 @@ is added."
 (use-package elfeed
   :defer t
   :config
+  (setq elfeed-db-directory "~/.emacs.d/elfeed-db")
   (with-eval-after-load 'elfeed
     (load "~/.emacs.d/elfeed-init.el" t)
     (load "~/.emacs.d/elfeed-feeds.el" t)
@@ -1324,14 +1336,15 @@ is added."
 (use-package geiser
   :config
   (setq geiser-default-implementation 'guile)
-  (let ((guix-profile (substitute-env-vars "$HOME/.guix-profile/")))
-    (add-to-list 'exec-path (concat guix-profile "bin"))
-    (setenv "GUILE_LOAD_PATH" (concat guix-profile "share/guile/site/3.0"))
-    (setenv "GUILE_LOAD_COMPILED_PATH"
-	    (concat guix-profile "lib/guile/3.0/site-ccache" ":"
-		    guix-profile "share/guile/site/3.0"))
-    (setenv "PKG_CONFIG_PATH"
-	    (concat guix-profile "lib/pkgconfig"))))
+  ;; (let ((guix-profile (substitute-env-vars "$HOME/.guix-profile/")))
+  ;;   (add-to-list 'exec-path (concat guix-profile "bin"))
+  ;;   (setenv "GUILE_LOAD_PATH" (concat guix-profile "share/guile/site/3.0"))
+  ;;   (setenv "GUILE_LOAD_COMPILED_PATH"
+  ;; 	    (concat guix-profile "lib/guile/3.0/site-ccache" ":"
+  ;; 		    guix-profile "share/guile/site/3.0"))
+  ;;   (setenv "PKG_CONFIG_PATH"
+  ;; 	    (concat guix-profile "lib/pkgconfig")))
+  )
 
 ;; PDF-TOOLS
 ;; Use pdf-tools instead of doc-view
@@ -1604,6 +1617,10 @@ Return nil if not succeeded."
   (interactive)
   (my-translate (word-at-point)))
 
+;; (use-package projectile
+;;   :init
+;;   (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map))
+
 (use-package gdscript-mode
   :init
   (with-eval-after-load 'eglot
@@ -1677,6 +1694,18 @@ Return nil if not succeeded."
 (use-package fennel-mode
   :init
   (add-to-list 'auto-mode-alist '("\\.fnl\\'" . fennel-mode)))
+
+;; TODO: Set it up so that the project root for elm is the directory with
+;;       elm.json file in it.
+(use-package elm-mode
+  :init
+  (eval-after-load 'eglot
+    '(add-to-list 'eglot-server-programs '(elm-mode "elm-language-server")))
+  (defun my-elm-find-project (dir)
+    (when (eq major-mode 'elm-mode)
+      (when-let ((file (locate-dominating-file dir "elm.json")))
+	(cons 'elm (file-name-directory file)))))
+  (add-hook 'project-find-functions #'my-elm-find-project))
 
 (provide 'init)
 ;;; init.el ends here

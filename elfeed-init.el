@@ -2,7 +2,7 @@
 
 (require 'elfeed)
 (require 'subr-x)
-(require 'cl)
+(require 'cl-lib)
 
 (let* ((sentinel
 	(lambda (process event)

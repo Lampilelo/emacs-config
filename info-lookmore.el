@@ -69,7 +69,7 @@
 (eval-when-compile
   (unless (and (fboundp 'declare)  ;; macros
                (fboundp 'ignore-errors))
-    (require 'cl))) ;; for macros
+    (require 'cl-lib))) ;; for macros
 
 
 (defun info-lookmore->mode-value (topic mode)

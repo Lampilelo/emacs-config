@@ -52,12 +52,13 @@ To get specific property from the list, use `my-erc-server-get'")
 	 :channels ("#emacs" "#emacs-beginners" "#emacs-pl"
 		    "#guile"
 		    "#grpc"))
-	("BitlBee"
-	 :server "localhost"
-	 :nick "Oxon"
-	 :port 6667
-	 :no-tls t
-	 :before-functions (my-erc-maybe-run-Bitlbee))))
+	;; ("BitlBee"
+	;;  :server "localhost"
+	;;  :nick "Oxon"
+	;;  :port 6667
+	;;  :no-tls t
+	;;  :before-functions (my-erc-maybe-run-Bitlbee))
+	))
 
 (defvar my-erc-password-store-names nil
   "Alist of password names corresponding to entries from `my-erc-server-info'.

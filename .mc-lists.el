@@ -19,12 +19,14 @@
 	c-electric-semi&comma
 	c-electric-slash
 	c-electric-star
+	c-end-of-defun
 	c-end-of-statement
 	c-indent-line-or-region
 	counsel-M-x
 	cppedit-transpose-sexps
 	dabbrev-expand
 	delete-horizontal-space
+	downcase-region
 	electric-newline-and-maybe-indent
 	electric-pair-delete-pair
 	end-of-defun

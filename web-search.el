@@ -179,7 +179,7 @@ keyword and QUERY is stuff you want to find."
 	  (web-search--dom-remove-recursively 'img dom)
 	  (shr-insert-document dom)
 	  (goto-char (point-min))
-	  (read-only-mode)
+	  (view-mode 1)
 	  (local-set-key (kbd "q") #'kill-this-buffer)
 	  (current-buffer))
       nil)))
@@ -196,7 +196,7 @@ keyword and QUERY is stuff you want to find."
       (erase-buffer)
       (shr-insert-document dom)
       (goto-char (point-min))
-      (read-only-mode)
+      (view-mode 1)
       (local-set-key (kbd "q") #'kill-this-buffer)
       (current-buffer))))
 
@@ -212,7 +212,7 @@ keyword and QUERY is stuff you want to find."
 	;; (web-search--dom-remove-by-attr-recursively 'class "dropdown-menu" dom)
 	(shr-insert-document dom)
 	(goto-char (point-min))
-	(read-only-mode)
+	(view-mode 1)
 	(local-set-key (kbd "q") #'kill-this-buffer)
 	(current-buffer))))
 
