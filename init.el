@@ -83,6 +83,19 @@
 	(kill-buffer old-buffer))))
   (define-key Man-mode-map (kbd "M") #'my-Man-open-in-same-buffer))
 
+(setq woman-fill-frame t)
+
+(defvar my-man-function 'man)
+(global-set-key (kbd "C-c m") my-man-function)
+
+(dolist (spec '((woman-bold . font-lock-function-name-face)
+		(woman-italic . font-lock-keyword-face)
+		(woman-addition . font-lock-constant-face)
+		(woman-unknown . error)
+		(Man-overstrike . woman-bold)
+		(Man-underline . woman-italic)))
+  (add-to-list 'face-remapping-alist spec))
+
 ;; NOTE: Probably temporary. I added it because of abnoxious ding when on
 ;;       battery power. Maybe it would be better to call 'ignore instead.
 (setq ring-bell-function
@@ -434,7 +447,8 @@ Works for images, pdfs, etc."
 
 ;; Import parts of the environment from .zshrc
 (defvar my-env-to-import
-  '("CXX" "CC" "PATH" "LD_LIBRARY_PATH" "C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH")
+  '("CXX" "CC" "PATH" "LD_LIBRARY_PATH" "C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"
+    "PKG_CONFIG_PATH")
   "A list of environment variables to import from ~/.zshrc")
 
 (defun my-env-from-export (export-directive)
@@ -632,6 +646,9 @@ TYPE is either 'light or 'dark symbol."
 
 (use-package helm
   :defer nil
+  :init
+  ;; HACK: Fix for the memory leak.
+  (setq helm-ff-keep-cached-candidates nil)
   :config
   (require 'helm)
   (require 'helm-config)
@@ -711,7 +728,8 @@ We need to exit that mode to call company-yasnippet."
   :init
   (with-eval-after-load 'cc-mode
     ;; (add-hook 'c++-mode-hook #'eglot-ensure)
-    (define-key c++-mode-map (kbd "C-c C-r") #'eglot-rename))
+    (define-key c++-mode-map (kbd "C-c C-r") #'eglot-rename)
+    (define-key c-mode-base-map (kbd "C-c o") #'ff-find-other-file))
 
   ;; company-clang backend is higher on a list but when using ccls it's
   ;; better to use company-capf backend
@@ -720,6 +738,7 @@ We need to exit that mode to call company-yasnippet."
   :config
   (push (list 'c++-mode ccls-executable) eglot-server-programs)
   (push (list 'c-mode ccls-executable) eglot-server-programs)
+  (push (list 'c++-mode "clangd") eglot-server-programs)
   (defun my-eglot-imenu-flatten-c-mode-advice (oldfun)
     (if (eq major-mode 'c-mode)
 	(seq-reduce (lambda (result category)
@@ -882,8 +901,8 @@ or nil if not found."
 	   (root (my/c++--find-project-root)))
       (when root
 	(cons 'cpp root))))
-  (cl-defmethod project-roots ((project (head cpp)))
-    (list (cdr project)))
+  (cl-defmethod project-root ((project (head cpp)))
+    (cdr project))
   (add-hook 'project-find-functions #'my-c++-find-project)
 
 
@@ -1186,11 +1205,13 @@ If region is selected, wrap the region instead of the sexp."
 (use-package whole-line-or-region
   :diminish (whole-line-or-region-mode whole-line-or-region-local-mode)
   :init
-  (whole-line-or-region-global-mode t)
+  (whole-line-or-region-global-mode nil)
   :config
-  (setcar (alist-get 'kill-ring-save whole-line-or-region-extensions-alist)
-	  'kill-ring-save)
-  (whole-line-or-region-bind-keys))
+  (defalias 'whole-line-or-region-kill-ring-save #'kill-ring-save)
+  ;; (setcar (alist-get 'kill-ring-save whole-line-or-region-extensions-alist)
+  ;; 	  'kill-ring-save)
+  ;; (whole-line-or-region-bind-keys)
+  )
 
 (use-package dockerfile-mode)
 
@@ -1290,6 +1311,7 @@ If region is selected, wrap the region instead of the sexp."
 
 ;; MAIL
 (with-check-for-missing-packages ("mu") "MU4E" nil
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
   ;; (autoload 'mu4e "mu4e")
   (global-set-key (kbd "C-x m") 'mu4e)
@@ -1317,6 +1339,7 @@ If region is selected, wrap the region instead of the sexp."
   (autoload 'my-lyrics "~/.emacs.d/my-lyrics.el"
     "Gets lyrics for a song playing in MOC player." t)
   :config
+  (setq lyrics-backend 'lyrics-azlyrics)
   (load "~/.emacs.d/my-lyrics.el" t))
 
 ;; eww customization
@@ -1648,7 +1671,7 @@ Return nil if not succeeded."
 	      :documentation "Haxe Language Server")
 	    (cl-defmethod eglot-initialization-options
 	      ((server eglot-haxe-ls))
-	      (let* ((roots (project-roots (eglot--project server)))
+	      (let* ((roots (project-root (eglot--project server)))
 		     (root (car roots)))
 	       `(:displayArguments [,(concat root "build.hxml")])))
 
@@ -1675,7 +1698,7 @@ Return nil if not succeeded."
     (when (eq major-mode 'haxe-mode)
       (when-let ((file (locate-dominating-file dir "build.hxml")))
 	(cons 'haxe (file-name-directory file)))))
-  (cl-defmethod project-roots ((project (head haxe)))
+  (cl-defmethod project-root ((project (head haxe)))
     (list (cdr project)))
   (add-hook 'project-find-functions #'my-haxe-find-project))
 

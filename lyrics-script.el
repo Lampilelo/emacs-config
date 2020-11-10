@@ -1,5 +1,6 @@
 (package-initialize)
 (load "~/.emacs.d/my-lyrics.el" t t)
+(setq lyrics-backend 'lyrics-azlyrics)
 
 (let ((result (my-lyrics)))
   (cond
